@@ -1,0 +1,11 @@
+name = "tka-sd-worker"
+main = "cloudflare-worker.js"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tka-sd"
+database_id = "41e9e595-c7c8-452d-b00a-5e0cce11b009"
+
+[vars]
+JWT_SECRET = "rahasia_super_aman_tka_sd_2026"
