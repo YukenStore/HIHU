@@ -1,9 +1,16 @@
 import axios from 'axios';
 
-// Gunakan URL dari .env frontend jika ada, atau URL backend live Vercel di production, atau '/api' di development (proxy Vite)
-const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ||
-  (import.meta.env.PROD ? 'https://tka-sd-six.vercel.app/api' : '/api');
+// Gunakan '/api' secara otomatis di Vercel (same-origin serverless function) dan localhost (Vite proxy),
+// atau fallback ke VITE_API_BASE_URL / https://hihu-group.vercel.app/api jika diakses dari domain lain (misal GitHub Pages)
+const isSameOriginApi =
+  typeof window !== 'undefined' &&
+  (window.location.hostname.endsWith('.vercel.app') ||
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1');
+
+const BASE_URL = isSameOriginApi
+  ? '/api'
+  : import.meta.env.VITE_API_BASE_URL || 'https://hihu-group.vercel.app/api';
 
 const api = axios.create({
   baseURL: BASE_URL,

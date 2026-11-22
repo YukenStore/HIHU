@@ -53,8 +53,8 @@ app.get('/', (req, res) => {
   });
 });
 
-// Endpoint cek kesehatan server (/api/health)
-app.get('/api/health', (req, res) => {
+// Endpoint cek kesehatan server (/api/health dan /health)
+app.get(['/api/health', '/health'], (req, res) => {
   res.json({
     status: 'ok',
     message: 'Backend API TKA SD siap melayani request.',
@@ -62,9 +62,11 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Pendaftaran route autentikasi dan profil
+// Pendaftaran route autentikasi dan profil (mendukung prefix /api maupun root /)
 app.use('/api', authRoutes);
 app.use('/api', profileRoutes);
+app.use('/', authRoutes);
+app.use('/', profileRoutes);
 
 
 // Middleware penanganan 404

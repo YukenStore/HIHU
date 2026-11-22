@@ -1,14 +1,16 @@
 import nodemailer from 'nodemailer';
 import { Resend } from 'resend';
 import dotenv from 'dotenv';
+import { env } from '../config/env.js';
 dotenv.config();
 
 // Buat transporter jika SMTP dikonfigurasi di .env
 const createTransporter = () => {
   const host = process.env.SMTP_HOST || 'smtp.gmail.com';
   const port = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 465;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS ? process.env.SMTP_PASS.replace(/\s+/g, '') : '';
+  const user = process.env.SMTP_USER || env.smtpUser;
+  const rawPass = process.env.SMTP_PASS || env.smtpPass;
+  const pass = rawPass ? rawPass.replace(/\s+/g, '') : '';
 
   if (user && pass) {
     if (host.includes('gmail') || user.includes('@gmail.com')) {
@@ -35,8 +37,8 @@ const createTransporter = () => {
 export const sendMailInternal = async ({ to, subject, text, html }) => {
   const brevoApiKey = process.env.BREVO_API_KEY;
   const resendApiKey = process.env.RESEND_API_KEY;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
+  const user = process.env.SMTP_USER || env.smtpUser;
+  const pass = process.env.SMTP_PASS || env.smtpPass;
 
   if (!brevoApiKey && !resendApiKey && (!user || !pass)) {
     throw new Error(
@@ -126,8 +128,8 @@ export const sendMailInternal = async ({ to, subject, text, html }) => {
 
   try {
     await transporter.sendMail({
-      from: `"${senderName}" <${process.env.SMTP_USER}>`,
-      replyTo: process.env.SMTP_USER,
+      from: `"${senderName}" <${user}>`,
+      replyTo: user,
       to,
       subject,
       text,
