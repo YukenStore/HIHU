@@ -212,12 +212,15 @@ export const resendOtp = async (req, res, next) => {
       });
     }
 
-    // Periksa batas maksimal 5 kali pengiriman OTP
-    const currentCount = user.otp_count !== undefined && user.otp_count !== null ? user.otp_count : 1;
+    // Periksa apakah masa berlaku OTP lama sudah habis (expired), jika ya reset counter pengiriman
+    const isExpired = !user.otp_expires_at || isNaN(new Date(user.otp_expires_at).getTime()) || new Date(user.otp_expires_at) < new Date();
+    const currentCount = isExpired ? 0 : (user.otp_count !== undefined && user.otp_count !== null ? user.otp_count : 1);
+
+    // Periksa batas maksimal 5 kali pengiriman OTP dalam masa aktif kode
     if (currentCount >= 5) {
       return res.status(429).json({
         success: false,
-        message: 'Batas pengiriman kode OTP telah tercapai (maksimal 5 kali). Silakan periksa folder Inbox atau Spam email Anda.',
+        message: 'Batas pengiriman kode OTP telah tercapai (maksimal 5 kali). Silakan tunggu hingga masa berlaku kode berakhir (10 menit) atau periksa folder Inbox/Spam email Anda.',
       });
     }
 
@@ -369,12 +372,15 @@ export const forgotPassword = async (req, res, next) => {
       });
     }
 
-    // Periksa batas maksimal 5 kali pengiriman OTP reset
-    const currentCount = user.otp_count || 0;
+    // Periksa apakah masa berlaku OTP reset lama sudah habis (expired), jika ya reset counter pengiriman
+    const isExpired = !user.otp_expires_at || isNaN(new Date(user.otp_expires_at).getTime()) || new Date(user.otp_expires_at) < new Date();
+    const currentCount = isExpired ? 0 : (user.otp_count || 0);
+
+    // Periksa batas maksimal 5 kali pengiriman OTP reset dalam masa aktif kode
     if (currentCount >= 5) {
       return res.status(429).json({
         success: false,
-        message: 'Batas permintaan kode OTP reset password telah tercapai (maksimal 5 kali). Silakan periksa folder Inbox atau Spam email Anda.',
+        message: 'Batas permintaan kode OTP reset password telah tercapai (maksimal 5 kali). Silakan tunggu hingga masa berlaku kode berakhir (10 menit) atau periksa folder Inbox/Spam email Anda.',
       });
     }
 
