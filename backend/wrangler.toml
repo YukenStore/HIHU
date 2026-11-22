@@ -1,4 +1,4 @@
-name = "tka-sd-worker"
+name = "tka-sd"
 main = "cloudflare-worker.js"
 compatibility_date = "2024-01-01"
 
