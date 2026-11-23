@@ -2,6 +2,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authService } from '../services/authService';
 import { syncLeaderboardUser } from '../utils/leaderboardData';
 import { syncProfileFromDatabase } from '../utils/activityTracker';
+import { syncCustomContentFromServer } from '../services/contentService';
+import { isAdminUser } from '../config/adminConfig';
 
 const AuthContext = createContext(null);
 
@@ -16,6 +18,8 @@ export const AuthProvider = ({ children }) => {
   // Verifikasi token dan muat profil pengguna saat aplikasi pertama kali dimuat
   useEffect(() => {
     const initAuth = async () => {
+      // Muat kustomisasi Materi & Latihan Soal dari database Cloudflare D1
+      syncCustomContentFromServer();
       const storedToken = localStorage.getItem('token');
       if (storedToken) {
         try {
@@ -137,6 +141,7 @@ export const AuthProvider = ({ children }) => {
     token,
     loading,
     isAuthenticated: !!token,
+    isAdmin: isAdminUser(user),
     login,
     register,
     verifyOtp,

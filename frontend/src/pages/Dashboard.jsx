@@ -4,9 +4,10 @@ import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import CharacterIllustration from '../components/CharacterIllustration';
 import PillMenuButton from '../components/PillMenuButton';
-import { BookOpen, ClipboardCheck, Trophy, BarChart3, Crown } from 'lucide-react';
+import { BookOpen, ClipboardCheck, Trophy, BarChart3, Crown, ShieldCheck } from 'lucide-react';
 import { getUserProfileStats, getTitleBadgeClass } from '../utils/activityTracker';
 import { getCharacterAvatar } from '../utils/characterAvatars';
+import { isAdminUser } from '../config/adminConfig';
 import LeaderboardModal from '../components/LeaderboardModal';
 import ProfileModal from '../components/ProfileModal';
 
@@ -88,7 +89,18 @@ const Dashboard = () => {
             </div>
 
             {/* Quick Stats: Level & EXP (Display Only) */}
-            <div className="flex items-center self-stretch md:self-auto justify-between md:justify-end border-t border-[#1E3A8A] md:border-t-0 pt-2.5 md:pt-0">
+            <div className="flex items-center self-stretch md:self-auto justify-between md:justify-end border-t border-[#1E3A8A] md:border-t-0 pt-2.5 md:pt-0 gap-2">
+              {isAdminUser(user) && (
+                <button
+                  type="button"
+                  onClick={() => navigate('/admin')}
+                  className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-extrabold transition-all cursor-pointer shadow-md active:scale-95"
+                  title="Kelola Materi & Latihan Soal (Khusus Admin)"
+                >
+                  <ShieldCheck className="w-4 h-4 text-slate-950" />
+                  <span>Admin Panel</span>
+                </button>
+              )}
               <span className="text-[11px] text-blue-300 md:hidden font-medium">Progres EXP</span>
               <div
                 className="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-[#0F2042] border-2 border-blue-500/40 shadow-xs select-none"

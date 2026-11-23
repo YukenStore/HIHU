@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { PUSMENDIK_MATERI } from '../data/pusmendikData';
+import { syncCustomContentFromServer } from '../services/contentService';
 import {
   markMateriComplete,
   unlockMateri,
@@ -58,11 +59,17 @@ const SUBJECTS_CONFIG = {
   bahasa_indonesia: {
     key: 'bahasa_indonesia',
     title: 'Bahasa Indonesia',
-    tagline: '21 Topik Materi Standar Pusmendik',
+    get totalLevels() {
+      return this.levels.length;
+    },
+    get tagline() {
+      return `${this.levels.length} Topik Materi Standar Pusmendik`;
+    },
     deskripsi: 'Ejaan, huruf kapital, kata depan, tanda baca, kalimat efektif, sastra (puisi & prosa), hingga analisis teks.',
     icon: BookOpen,
-    totalLevels: 21,
-    levels: PUSMENDIK_MATERI.bahasa_indonesia.elemen.flatMap((e) => e.bab),
+    get levels() {
+      return PUSMENDIK_MATERI.bahasa_indonesia.elemen.flatMap((e) => e.bab);
+    },
     theme: {
       gradient: 'from-slate-900 to-slate-900',
       border: 'border-[#33261D]',
@@ -106,11 +113,17 @@ const SUBJECTS_CONFIG = {
   matematika: {
     key: 'matematika',
     title: 'Matematika',
-    tagline: '12 Topik Materi Standar Pusmendik',
+    get totalLevels() {
+      return this.levels.length;
+    },
+    get tagline() {
+      return `${this.levels.length} Topik Materi Standar Pusmendik`;
+    },
     deskripsi: 'Operasi hitung, skala, KPK/FPB, bilangan pangkat, kecepatan, geometri, sudut, dan pengolahan data.',
     icon: Calculator,
-    totalLevels: 12,
-    levels: PUSMENDIK_MATERI.matematika.elemen.flatMap((e) => e.bab),
+    get levels() {
+      return PUSMENDIK_MATERI.matematika.elemen.flatMap((e) => e.bab);
+    },
     theme: {
       gradient: 'from-slate-900 to-slate-900',
       border: 'border-[#33261D]',
@@ -179,6 +192,14 @@ const Materi = () => {
 
   // State Aktivitas Pengguna (Tersimpan di localStorage)
   const [activity, setActivity] = useState(() => getActivityData());
+  const [, setContentVersion] = useState(0);
+
+  useEffect(() => {
+    const handleContentUpdate = () => setContentVersion((v) => v + 1);
+    window.addEventListener('tka_content_updated', handleContentUpdate);
+    syncCustomContentFromServer();
+    return () => window.removeEventListener('tka_content_updated', handleContentUpdate);
+  }, []);
   const completedBabIds = activity?.materiCompleted || [];
   const unlockedBabIds = activity?.unlockedMateri || ['mtk_1', 'bi_1'];
   const materiStars = activity?.materiStars || {};

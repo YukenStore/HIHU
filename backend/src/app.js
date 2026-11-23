@@ -3,6 +3,7 @@ import cors from 'cors';
 import { env } from './config/env.js';
 import authRoutes from './routes/auth.routes.js';
 import profileRoutes from './routes/profile.routes.js';
+import contentRoutes from './routes/content.routes.js';
 import { notFoundHandler, errorHandler } from './middlewares/error.middleware.js';
 
 const app = express();
@@ -62,11 +63,13 @@ app.get(['/api/health', '/health'], (req, res) => {
   });
 });
 
-// Pendaftaran route autentikasi dan profil (mendukung prefix /api maupun root /)
+// Pendaftaran route autentikasi, profil, dan manajemen konten (mendukung prefix /api maupun root /)
 app.use('/api', authRoutes);
 app.use('/api', profileRoutes);
+app.use('/api', contentRoutes);
 app.use('/', authRoutes);
 app.use('/', profileRoutes);
+app.use('/', contentRoutes);
 
 
 // Middleware penanganan 404
