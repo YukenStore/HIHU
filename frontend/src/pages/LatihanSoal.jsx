@@ -796,24 +796,6 @@ const LatihanSoal = () => {
             {/* Header Pengerjaan Latihan */}
             <div className="flex items-center justify-between pb-4 border-b border-[#E6DFD5] mb-6">
               <div className="flex items-center space-x-3">
-                <button
-                  onClick={() => {
-                    if (
-                      !isFinished &&
-                      Object.keys(userAnswers).length > 0 &&
-                      !window.confirm('Yakin ingin kembali? Lembar jawaban belum dikumpulkan.')
-                    ) {
-                      return;
-                    }
-                    setActiveLatihan(null);
-                    refreshActivity();
-                  }}
-                  className="w-8 h-8 rounded-lg bg-[#F2ECE4] hover:bg-[#E6DFD5] text-[#261C14] flex items-center justify-center transition-colors cursor-pointer"
-                  title="Kembali ke Peta Latihan"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                </button>
-
                 <div>
                   <div className="flex items-center space-x-2">
                     <span

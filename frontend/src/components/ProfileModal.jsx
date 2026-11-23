@@ -179,7 +179,7 @@ const ProfileModal = ({ isOpen, onClose, user, profileStats, onProfileUpdated, o
         )}
 
         {/* Body Modal (Scrollable) */}
-        <div className="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1 bg-[#162E5B]">
+        <div className="p-4 sm:p-5 overflow-y-auto navy-scrollbar space-y-4 flex-1 bg-[#162E5B]">
           {/* Form Ganti Username (Muncul saat tombol Ganti Username / Ubah Nama diklik) */}
           {isEditingUsername && (
             <form
@@ -456,16 +456,6 @@ const ProfileModal = ({ isOpen, onClose, user, profileStats, onProfileUpdated, o
               })}
             </div>
           </div>
-        </div>
-
-        {/* Footer Modal */}
-        <div className="p-4 bg-[#162E5B] border-t-2 border-blue-900/60 flex-shrink-0 flex justify-end">
-          <button
-            onClick={onClose}
-            className="w-full sm:w-auto px-5 py-2 rounded-xl bg-[#1E3A8A] hover:bg-blue-600 text-white text-xs font-bold transition-all duration-200 cursor-pointer shadow-sm"
-          >
-            Tutup
-          </button>
         </div>
       </div>
 
