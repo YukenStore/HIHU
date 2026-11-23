@@ -41,124 +41,173 @@ const Dashboard = () => {
       <Navbar />
 
       {/* 2. Area Utama di Bawah Navbar */}
-      {/* 2. Area Utama di Bawah Navbar */}
-      <main className="flex-1 flex flex-col justify-center items-center px-3 sm:px-6 lg:px-12 py-3 xs:py-4 sm:py-10">
-        <div className="max-w-6xl w-full mx-auto flex flex-col justify-center">
-          {/* Bagian Profil Siswa di Dashboard - Dominan Navy Solid (Tanpa Gradient) */}
-          <div className="mb-4 sm:mb-8 p-3.5 sm:p-5 rounded-2xl bg-[#162E5B] border-2 border-blue-500/40 shadow-lg text-white flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
-            <div className="flex items-center space-x-3 sm:space-x-4">
-              {/* Foto Profil dengan Badge Gelar di Luar Container */}
-              <div className="relative flex-shrink-0">
-                <div
-                  onClick={() => setIsProfileModalOpen(true)}
-                  className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white hover:border-blue-300 border-2 border-blue-400 flex items-center justify-center shadow-md cursor-pointer transition-all active:scale-95 group overflow-hidden"
-                  title="Buka profil & ganti karakter"
-                >
-                  <img
-                    src={getCharacterAvatar(profileStats?.avatar).image}
-                    alt={getCharacterAvatar(profileStats?.avatar).name}
-                    className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
-                  />
-                </div>
+      
+{/* 2. Area Utama Dashboard */}
+<main className="flex-1 w-full px-3 py-4 sm:px-6 sm:py-6 lg:px-10 lg:py-8 flex flex-col justify-start lg:justify-center">
+  <div className="w-full max-w-6xl mx-auto flex flex-col gap-4 sm:gap-6">
 
-                {/* Icon Gelar Aktif di Kiri Atas (posisi & kemiringan disesuaikan per icon) */}
-                {profileStats?.activeTitle?.icon && (
-                  <span
-                    className={`absolute text-xl sm:text-2xl filter drop-shadow-md select-none pointer-events-none z-20 leading-none inline-block transform ${getTitleBadgeClass(profileStats.activeTitle)}`}
-                    title={`Gelar: ${profileStats.activeTitle.name}`}
-                  >
-                    {profileStats.activeTitle.icon}
-                  </span>
-                )}
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center space-x-1.5 sm:space-x-2 flex-wrap">
-                  <h1 className="text-lg sm:text-2xl font-bold text-white tracking-tight truncate">
-                    Halo, {user?.username || user?.email?.split('@')[0] || 'Siswa'}!
-                  </h1>
-                  {profileStats?.activeTitle && (
-                    <span className="px-2 sm:px-2.5 py-0.5 rounded-full text-[9px] sm:text-xs font-bold bg-blue-600 text-white border border-blue-400 shadow-2xs">
-                      {profileStats.activeTitle.name}
-                    </span>
-                  )}
-                </div>
-                <p className="text-[11px] sm:text-sm text-blue-200 mt-0.5 sm:mt-1 line-clamp-1 sm:line-clamp-none">
-                  Siap belajar hari ini? Kumpulkan EXP dan raih prestasi!
-                </p>
-              </div>
-            </div>
+    
+{/* Profil Siswa */}
+<div className="w-full relative overflow-hidden p-3.5 sm:p-5 lg:px-6 rounded-2xl bg-[#162E5B] border border-blue-500/40 shadow-lg text-white">
 
-            {/* Quick Stats: Level & EXP (Display Only) */}
-            <div className="flex items-center self-stretch md:self-auto justify-between md:justify-end border-t border-[#1E3A8A] md:border-t-0 pt-2.5 md:pt-0">
-              <span className="text-[11px] text-blue-300 md:hidden font-medium">Progres EXP</span>
-              <div
-                className="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-[#0F2042] border-2 border-blue-500/40 shadow-xs select-none"
-              >
-                <span className="text-xs font-bold text-blue-400">Lv.{profileStats.level}</span>
-                <div className="w-16 sm:w-20 bg-slate-800 h-2 rounded-full overflow-hidden">
-                  <div
-                    className="bg-blue-500 h-full rounded-full transition-all duration-300"
-                    style={{ width: `${profileStats.progressPercent}%` }}
-                  />
-                </div>
-                <span className="text-[10px] text-blue-200 font-semibold">{profileStats.progressPercent}%</span>
-              </div>
-            </div>
-          </div>
+  {/* Identitas dan Progres */}
+  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-5">
 
-          {/* Kontainer 2 Kolom (Side-by-side tetap berdampingan di Mobile & Desktop) */}
-          <div className="grid grid-cols-12 gap-2 sm:gap-6 lg:gap-12 items-center">
-            {/* Kolom Kiri: 5 Tombol Menu Kapsul (Lebar 7/12 di mobile, 6/12 di desktop) */}
-            <section className="col-span-7 sm:col-span-7 lg:col-span-6 flex flex-col justify-center space-y-2 sm:space-y-3 md:space-y-3.5">
-              {/* Tombol 1: Materi */}
-              <PillMenuButton
-                label="Materi"
-                icon={BookOpen}
-                accentColor="blue"
-                onClick={() => navigate('/materi')}
-              />
+    {/* Bagian Identitas Siswa */}
+    <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
 
-              {/* Tombol 2: Latihan Soal */}
-              <PillMenuButton
-                label="Latihan Soal"
-                icon={ClipboardCheck}
-                accentColor="emerald"
-                onClick={() => navigate('/latihan')}
-              />
+      {/* Avatar dan Gelar */}
+      <div className="relative flex-shrink-0">
+        <button
+          type="button"
+          onClick={() => setIsProfileModalOpen(true)}
+          className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-2xl bg-white border-2 border-blue-400 hover:border-blue-300 flex items-center justify-center shadow-md cursor-pointer transition-all duration-200 active:scale-95 group overflow-hidden"
+          title="Buka profil & ganti karakter"
+        >
+          <img
+            src={getCharacterAvatar(profileStats?.avatar).image}
+            alt={getCharacterAvatar(profileStats?.avatar).name}
+            className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
+          />
+        </button>
 
-              {/* Tombol 3: Tryout */}
-              <PillMenuButton
-                label="Tryout"
-                icon={Trophy}
-                accentColor="amber"
-                onClick={() => navigate('/tryout')}
-              />
+        {profileStats?.activeTitle?.icon && (
+          <span
+            className={`absolute text-xl sm:text-2xl filter drop-shadow-md select-none pointer-events-none z-20 leading-none inline-block transform ${getTitleBadgeClass(profileStats.activeTitle)}`}
+            title={`Gelar: ${profileStats.activeTitle.name}`}
+          >
+            {profileStats.activeTitle.icon}
+          </span>
+        )}
+      </div>
 
-              {/* Tombol 4: Rapor */}
-              <PillMenuButton
-                label="Rapor"
-                icon={BarChart3}
-                accentColor="purple"
-                onClick={() => navigate('/rapor')}
-              />
+      {/* Nama dan Informasi */}
+      <div className="min-w-0 flex-1">
 
-              {/* Tombol 5: Leaderboard (Papan Peringkat) */}
-              <PillMenuButton
-                label="Leaderboard"
-                icon={Crown}
-                accentColor="yellow"
-                badgeText={`Lv. ${profileStats.level}`}
-                onClick={() => setIsLeaderboardOpen(true)}
-              />
-            </section>
+        <div className="flex items-center gap-2 flex-wrap">
+          <h1 className="text-base sm:text-xl lg:text-2xl font-bold text-white tracking-tight leading-tight">
+            Halo, {user?.username || user?.email?.split('@')[0] || 'Siswa'}!
+          </h1>
 
-            {/* Kolom Kanan: Karakter Siswa Tetap di Sebelah Kanan pada Mobile */}
-            <section className="col-span-5 sm:col-span-5 lg:col-span-6 flex items-center justify-center">
-              <CharacterIllustration />
-            </section>
-          </div>
+          {profileStats?.activeTitle && (
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[9px] sm:text-[10px] lg:text-xs font-bold bg-blue-600/80 text-blue-50 border border-blue-400/70 shadow-sm whitespace-nowrap">
+              {profileStats.activeTitle.name}
+            </span>
+          )}
         </div>
-      </main>
+
+        <p className="text-[11px] sm:text-xs lg:text-sm text-blue-200/90 mt-1.5 leading-relaxed">
+          Siap belajar hari ini? Kumpulkan EXP dan raih prestasi!
+        </p>
+      </div>
+    </div>
+
+    {/* Garis Pemisah Mobile */}
+    <div className="w-full h-px bg-blue-400/20 sm:hidden" />
+
+    
+{/* Bagian Progres Level */}
+<div className="w-full sm:w-auto sm:min-w-[240px] lg:min-w-[280px] sm:flex-shrink-0">
+
+  {/* Label Progres */}
+  <div className="flex items-center justify-between gap-3 mb-2">
+    <span className="text-[11px] sm:text-xs font-semibold text-blue-200 whitespace-nowrap">
+      Progres Level
+    </span>
+
+    <span className="text-[10px] sm:text-xs text-blue-300 font-medium whitespace-nowrap">
+      {profileStats.progressPercent}% selesai
+    </span>
+  </div>
+
+  <div className="flex items-center gap-3 px-3.5 py-3 rounded-xl bg-[#0F2042] border border-blue-500/30 shadow-inner">
+
+    {/* Level */}
+    <div className="flex flex-col items-center justify-center min-w-[38px] flex-shrink-0">
+      <span className="text-[9px] uppercase tracking-wider text-blue-300 font-semibold">
+        Level
+      </span>
+      <span className="text-base sm:text-lg font-extrabold text-blue-400 leading-tight">
+        {profileStats.level}
+      </span>
+    </div>
+
+    {/* Progress Bar */}
+    <div className="flex-1 min-w-0">
+      <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+        <div
+          className="bg-gradient-to-r from-blue-500 to-cyan-400 h-full rounded-full transition-all duration-500"
+          style={{
+            width: `${Math.min(100, Math.max(0, profileStats.progressPercent))}%`
+          }}
+        />
+      </div>
+
+      <p className="text-[9px] sm:text-[10px] text-blue-300/80 mt-1.5">
+        Terus tingkatkan kemampuanmu!
+      </p>
+    </div>
+
+  </div>
+</div>
+
+
+  </div>
+</div>
+
+
+    {/* Area Menu dan Karakter */}
+    <div className="grid grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:grid-cols-2 gap-2 sm:gap-5 lg:gap-8 items-center">
+
+      {/* Kolom Menu */}
+      <section className="min-w-0 flex flex-col justify-center gap-2 sm:gap-3 lg:gap-4">
+        <PillMenuButton
+          label="Materi"
+          icon={BookOpen}
+          accentColor="blue"
+          onClick={() => navigate('/materi')}
+        />
+
+        <PillMenuButton
+          label="Latihan Soal"
+          icon={ClipboardCheck}
+          accentColor="emerald"
+          onClick={() => navigate('/latihan')}
+        />
+
+        <PillMenuButton
+          label="Tryout"
+          icon={Trophy}
+          accentColor="amber"
+          onClick={() => navigate('/tryout')}
+        />
+
+        <PillMenuButton
+          label="Rapor"
+          icon={BarChart3}
+          accentColor="purple"
+          onClick={() => navigate('/rapor')}
+        />
+
+        <PillMenuButton
+          label="Leaderboard"
+          icon={Crown}
+          accentColor="yellow"
+          badgeText={`Lv. ${profileStats.level}`}
+          onClick={() => setIsLeaderboardOpen(true)}
+        />
+      </section>
+
+      {/* Kolom Ilustrasi Karakter */}
+      <section className="min-w-0 w-full flex items-center justify-center">
+        <div className="w-full max-w-[180px] sm:max-w-[260px] md:max-w-[320px] lg:max-w-[400px]">
+          <CharacterIllustration />
+        </div>
+      </section>
+
+    </div>
+  </div>
+</main>
 
       {/* Modal Leaderboard Papan Peringkat */}
       <LeaderboardModal

@@ -62,7 +62,7 @@ const Navbar = () => {
             <div className="flex items-center space-x-1.5 sm:space-x-3">
               {/* 1. Indikator Streak Belajar (Dominan Navy) */}
               <div
-                className={`inline-flex items-center space-x-1 sm:space-x-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-semibold select-none border transition-all duration-300 shadow-sm bg-[#162E5B] border-[#1E3A8A] flex-shrink-0 ${
+                className={`inline-flex h-10 box-border items-center space-x-1 sm:space-x-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-semibold select-none border transition-all duration-300 shadow-sm bg-[#162E5B] border-[#1E3A8A] flex-shrink-0 ${
                   profileStats.streak.activeToday
                     ? 'text-amber-300'
                     : 'text-slate-300'
@@ -91,7 +91,7 @@ const Navbar = () => {
               {/* 2. Tombol Profil Pengguna (Dominan Navy) */}
               <button
                 onClick={() => setIsProfileModalOpen(true)}
-                className="flex items-center space-x-1.5 sm:space-x-2 text-xs text-white bg-[#162E5B] hover:bg-[#1B386C] px-2 sm:px-3 py-1.5 rounded-lg border border-[#1E3A8A] transition-all cursor-pointer shadow-sm active:scale-95 group"
+                className="flex h-10 box-border items-center space-x-1.5 sm:space-x-2 text-xs text-white bg-[#162E5B] hover:bg-[#1B386C] px-2 sm:px-3 py-1.5 rounded-lg border border-[#1E3A8A] transition-all cursor-pointer shadow-sm active:scale-95 group"
                 title="Buka detail profil, level, dan gelar"
               >
                 <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white border border-blue-400/80 flex items-center justify-center flex-shrink-0 overflow-hidden shadow-xs group-hover:border-blue-300">
@@ -113,7 +113,7 @@ const Navbar = () => {
               {/* 3. Tombol Keluar (Logout - Dominan Navy) */}
               <button
                 onClick={handleLogout}
-                className="inline-flex items-center space-x-1 sm:space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-[#162E5B] hover:bg-[#1E3A8A] border border-[#1E3A8A] transition-all cursor-pointer shadow-sm active:scale-95"
+                className="inline-flex h-10 box-border items-center space-x-1 sm:space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-[#162E5B] hover:bg-[#1E3A8A] border border-[#1E3A8A] transition-all cursor-pointer shadow-sm active:scale-95"
                 title="Keluar dari akun"
               >
                 <LogOut className="w-3.5 h-3.5 text-blue-200" />
