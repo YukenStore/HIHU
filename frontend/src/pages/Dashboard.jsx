@@ -41,7 +41,6 @@ const Dashboard = () => {
       <Navbar />
 
       {/* 2. Area Utama di Bawah Navbar */}
-      {/* 2. Area Utama di Bawah Navbar */}
       <main className="flex-1 flex flex-col justify-center items-center px-3 sm:px-6 lg:px-12 py-3 xs:py-4 sm:py-10">
         <div className="max-w-6xl w-full mx-auto flex flex-col justify-center">
           {/* Bagian Profil Siswa di Dashboard - Dominan Navy Solid (Tanpa Gradient) */}
