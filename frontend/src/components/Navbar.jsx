@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { GraduationCap, LogOut, User, Flame, Award, ChevronDown } from 'lucide-react';
+import { GraduationCap, LogOut, User, Flame, Award, ChevronDown, ShieldCheck } from 'lucide-react';
 import { getUserProfileStats } from '../utils/activityTracker';
 import { getCharacterAvatar } from '../utils/characterAvatars';
+import { isAdminUser } from '../config/adminConfig';
 import ProfileModal from './ProfileModal';
 
 /**
@@ -60,6 +61,18 @@ const Navbar = () => {
 
             {/* Bagian Kanan: Indikator Gamifikasi & Profil */}
             <div className="flex items-center space-x-1.5 sm:space-x-3">
+              {/* Tombol Khusus Admin (Tersembunyi sepenuhnya dari user biasa) */}
+              {isAdminUser(user) && (
+                <button
+                  onClick={() => navigate('/admin')}
+                  className="inline-flex items-center space-x-1 sm:space-x-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-bold text-amber-300 bg-[#162E5B] hover:bg-[#1E3A8A] border border-amber-400/60 transition-all cursor-pointer shadow-sm active:scale-95"
+                  title="Buka Admin Panel (Kelola Materi & Latihan Soal)"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />
+                  <span className="hidden md:inline">Admin Panel</span>
+                </button>
+              )}
+
               {/* 1. Indikator Streak Belajar (Dominan Navy) */}
               <div
                 className={`inline-flex h-10 box-border items-center space-x-1 sm:space-x-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-semibold select-none border transition-all duration-300 shadow-sm bg-[#162E5B] border-[#1E3A8A] flex-shrink-0 ${

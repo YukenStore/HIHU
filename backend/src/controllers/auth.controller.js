@@ -11,6 +11,7 @@ import {
   deleteUnverifiedUserByEmail,
   deleteUnverifiedUserByUsername,
   updateUserPassword,
+  updateUsernameById,
 } from '../models/user.model.js';
 import { generateToken } from '../utils/token.js';
 import { isValidEmail, isValidUsername, isValidPassword, isValidOtp } from '../utils/validator.js';
@@ -536,6 +537,93 @@ export const resetPassword = async (req, res, next) => {
     return res.status(200).json({
       success: true,
       message: 'Password berhasil diperbarui! Silakan masuk dengan password baru Anda.',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+/**
+ * Controller untuk mengganti username pengguna yang sedang login
+ * PUT /api/update-username atau POST /api/update-username
+ */
+export const updateUsername = async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const { username } = req.body;
+
+    if (!username || !username.trim()) {
+      return res.status(400).json({
+        success: false,
+        field: 'username',
+        message: 'Username baru wajib diisi.',
+      });
+    }
+
+    const cleanUsername = username.trim();
+
+    if (!isValidUsername(cleanUsername)) {
+      return res.status(400).json({
+        success: false,
+        field: 'username',
+        message: 'Username harus 3-20 karakter (huruf, angka, titik, atau underscore tanpa spasi).',
+      });
+    }
+
+    const currentUser = await findUserById(userId);
+    if (!currentUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'Data akun pengguna tidak ditemukan.',
+      });
+    }
+
+    // Jika username tidak berubah (sama persis)
+    if (currentUser.username === cleanUsername) {
+      return res.status(200).json({
+        success: true,
+        message: 'Username berhasil disimpan.',
+        user: {
+          id: currentUser.id,
+          username: cleanUsername,
+          email: currentUser.email,
+          createdAt: currentUser.created_at,
+        },
+      });
+    }
+
+    // Periksa apakah username sudah dipakai oleh akun lain
+    const existingUsername = await findUserByUsername(cleanUsername);
+    if (existingUsername && Number(existingUsername.id) !== Number(userId)) {
+      if (existingUsername.is_verified === 1) {
+        return res.status(409).json({
+          success: false,
+          field: 'username',
+          message: 'Username tersebut sudah digunakan. Silakan pilih username lain.',
+        });
+      }
+      // Hapus akun lama yang belum diverifikasi jika memakai username tersebut
+      await deleteUnverifiedUserByUsername(cleanUsername);
+    }
+
+    await updateUsernameById(userId, cleanUsername);
+
+    const token = generateToken({
+      id: currentUser.id,
+      username: cleanUsername,
+      email: currentUser.email,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Username berhasil diperbarui!',
+      token,
+      user: {
+        id: currentUser.id,
+        username: cleanUsername,
+        email: currentUser.email,
+        createdAt: currentUser.created_at,
+      },
     });
   } catch (error) {
     next(error);

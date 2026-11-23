@@ -129,5 +129,18 @@ export const authService = {
       throw new Error(extractErrorMessage(error, 'Gagal mengambil data profil pengguna.'));
     }
   },
+
+  /**
+   * Memperbarui username pengguna yang sedang login
+   * @param {string} username
+   */
+  async updateUsername(username) {
+    try {
+      const response = await api.put('/update-username', { username });
+      return response.data;
+    } catch (error) {
+      throw new Error(extractErrorMessage(error, 'Gagal memperbarui username.'));
+    }
+  },
 };
 

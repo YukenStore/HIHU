@@ -101,24 +101,6 @@ const MateriView = ({ isOpen, onClose }) => {
         {/* 1. Header Bar */}
         <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50/80">
           <div className="flex items-center space-x-3">
-            {activeBab ? (
-              <button
-                onClick={() => setActiveBab(null)}
-                className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 transition-colors"
-                title="Kembali ke Persebaran Materi"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </button>
-            ) : selectedSubject ? (
-              <button
-                onClick={() => setSelectedSubject(null)}
-                className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 transition-colors"
-                title="Pilih Mata Pelajaran Lain"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </button>
-            ) : null}
-
             <div>
               <h2 className="text-base sm:text-lg font-bold text-slate-900 flex items-center space-x-2">
                 <span>📚 Modul Materi Pembelajaran TKA SD</span>

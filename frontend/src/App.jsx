@@ -11,6 +11,7 @@ import Materi from './pages/Materi';
 import LatihanSoal from './pages/LatihanSoal';
 import Tryout from './pages/Tryout';
 import Rapor from './pages/Rapor';
+import AdminPanel from './pages/AdminPanel';
 import NavyBackground from './components/NavyBackground';
 import RewardModal from './components/RewardModal';
 import FantasyGachaModal from './components/FantasyGachaModal';
@@ -45,6 +46,7 @@ function App() {
             <Route path="/latihan" element={<LatihanSoal />} />
             <Route path="/tryout" element={<Tryout />} />
             <Route path="/rapor" element={<Rapor />} />
+            <Route path="/admin" element={<AdminPanel />} />
           </Route>
 
           {/* Fallback ke halaman utama jika path tidak ditemukan */}

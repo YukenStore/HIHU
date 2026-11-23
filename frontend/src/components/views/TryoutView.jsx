@@ -30,7 +30,8 @@ import {
  * - Format: Sebagian besar Pilihan Ganda (PG) dan beberapa soal Isian Singkat
  * - Timer hitung mundur, lembar navigasi nomor, skor & pembahasan
  */
-const TryoutView = ({ isOpen, onClose }) => {
+const TryoutView = ({ isOpen, onClose }) => 
+{
   const [selectedSubject, setSelectedSubject] = useState(null); // 'bahasa_indonesia' | 'matematika'
   const [activePackage, setActivePackage] = useState(null); // Object paket tryout
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -161,28 +162,6 @@ const TryoutView = ({ isOpen, onClose }) => {
             : 'bg-slate-50/80 border-slate-200'
         }`}>
           <div className="flex items-center space-x-3">
-            {activePackage && !isExamRunning ? (
-              <button
-                onClick={() => {
-                  setActivePackage(null);
-                  setIsFinished(false);
-                  setIsReviewMode(false);
-                }}
-                className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
-                title="Pilih Paket Lain"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </button>
-            ) : selectedSubject && !isExamRunning ? (
-              <button
-                onClick={() => setSelectedSubject(null)}
-                className="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
-                title="Pilih Mapel Lain"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </button>
-            ) : null}
-
             <div>
               <h2 className="text-base sm:text-lg font-bold text-slate-900 flex items-center space-x-2">
                 <span>🏆 Simulasi Tryout Akbar TKA SD</span>
@@ -277,7 +256,7 @@ const TryoutView = ({ isOpen, onClose }) => {
           )}
 
           {/* TAHAP 2: Pilih dari 5 Paket Tryout */}
-          {selectedSubject && !activePackage && (
+          {selectedSubject && !activePackage && 
             <div className="space-y-6">
               <div className="flex items-center justify-between bg-slate-50 p-4 rounded-2xl border border-slate-200">
                 <div>
@@ -286,8 +265,10 @@ const TryoutView = ({ isOpen, onClose }) => {
                   </h3>
                   <p className="text-xs text-slate-500 mt-0.5">
                     Standar TKA SD Nasional: 30 Soal (PG + Isian), 60 Menit.
+                  </p>
                 </div>
-              </div>              {/* Grid 5 Paket Tryout */}
+              </div>
+              {/* Grid 5 Paket Tryout */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {PUSMENDIK_TRYOUT[selectedSubject].paket.map((pkg) => {
                   const isMath = selectedSubject === 'matematika';
@@ -341,7 +322,7 @@ const TryoutView = ({ isOpen, onClose }) => {
                 })}
               </div>
             </div>
-          )}
+          }
 
           {/* TAHAP 3: Ruang Ujian Tryout (Timer 60 Menit, PG + Isian Singkat) */}
           {activePackage && isExamRunning && !isFinished && (() => {

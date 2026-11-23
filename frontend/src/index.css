@@ -252,6 +252,28 @@ input[type="password"]::-ms-clear {
     background: #A94D2B;
   }
 
+  /* Scrollbar bertema Navy gelap untuk Modal Profil & Karakter */
+  .navy-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #2563EB #0F2042;
+  }
+  .navy-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .navy-scrollbar::-webkit-scrollbar-track {
+    background: #0F2042;
+    border-radius: 9999px;
+  }
+  .navy-scrollbar::-webkit-scrollbar-thumb {
+    background: #2563EB;
+    border-radius: 9999px;
+    border: 2px solid #0F2042;
+  }
+  .navy-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #3B82F6;
+  }
+
   /* Safe Area Inset untuk smartphone berlayar notch/poni */
   .pt-safe {
     padding-top: env(safe-area-inset-top, 0px);

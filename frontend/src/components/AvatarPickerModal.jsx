@@ -247,7 +247,7 @@ const AvatarPickerModal = ({
         </div>
 
         {/* Grid Karakter (Scrollable) */}
-        <div className="p-3 sm:p-5 overflow-y-auto flex-1 bg-[#162E5B] min-h-[220px]">
+        <div className="p-3 sm:p-5 overflow-y-auto navy-scrollbar flex-1 bg-[#162E5B] min-h-[220px]">
           {filteredCharacters.length === 0 ? (
             <div className="text-center py-10 space-y-2">
               <p className="text-3xl">🔍</p>

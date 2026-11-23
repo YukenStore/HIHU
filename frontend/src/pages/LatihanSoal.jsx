@@ -1,7 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { PUSMENDIK_LATIHAN } from '../data/latihanData';
+import { syncCustomContentFromServer } from '../services/contentService';
 import {
   getActivityData,
   markLatihanComplete,
@@ -57,15 +58,21 @@ const SUBJECTS_CONFIG = {
   bahasa_indonesia: {
     key: 'bahasa_indonesia',
     title: 'Bahasa Indonesia',
-    tagline: '10 Tingkat Latihan Soal Standar Pusmendik',
+    get totalLevels() {
+      return this.levels.length;
+    },
+    get tagline() {
+      return `${this.levels.length} Tingkat Latihan Soal Standar Pusmendik`;
+    },
     deskripsi: 'Fondasi kosakata, kalimat efektif, struktur paragraf, teks fiksi, hingga penalaran HOTS literasi.',
     icon: BookOpen,
-    totalLevels: 10,
-    levels: PUSMENDIK_LATIHAN.bahasa_indonesia.levels.map((lvl) => ({
-      ...lvl,
-      id: `bi_lat_${lvl.level}`,
-      no: lvl.level,
-    })),
+    get levels() {
+      return PUSMENDIK_LATIHAN.bahasa_indonesia.levels.map((lvl) => ({
+        ...lvl,
+        id: lvl.id || `bi_lat_${lvl.level}`,
+        no: lvl.level,
+      }));
+    },
     theme: {
       gradient: 'from-slate-900 to-slate-900',
       border: 'border-[#33261D]',
@@ -102,15 +109,21 @@ const SUBJECTS_CONFIG = {
   matematika: {
     key: 'matematika',
     title: 'Matematika',
-    tagline: '10 Tingkat Latihan Soal Standar Pusmendik',
+    get totalLevels() {
+      return this.levels.length;
+    },
+    get tagline() {
+      return `${this.levels.length} Tingkat Latihan Soal Standar Pusmendik`;
+    },
     deskripsi: 'Operasi hitung campuran, pecahan, KPK/FPB, bangun datar/ruang, pengukuran, dan penalaran data.',
     icon: Calculator,
-    totalLevels: 10,
-    levels: PUSMENDIK_LATIHAN.matematika.levels.map((lvl) => ({
-      ...lvl,
-      id: `mtk_lat_${lvl.level}`,
-      no: lvl.level,
-    })),
+    get levels() {
+      return PUSMENDIK_LATIHAN.matematika.levels.map((lvl) => ({
+        ...lvl,
+        id: lvl.id || `mtk_lat_${lvl.level}`,
+        no: lvl.level,
+      }));
+    },
     theme: {
       gradient: 'from-slate-900 to-slate-900',
       border: 'border-[#33261D]',
@@ -179,6 +192,14 @@ const LatihanSoal = () => {
 
   // State Aktivitas Pengguna (Tersimpan di localStorage)
   const [activity, setActivity] = useState(() => getActivityData());
+  const [, setContentVersion] = useState(0);
+
+  useEffect(() => {
+    const handleContentUpdate = () => setContentVersion((v) => v + 1);
+    window.addEventListener('tka_content_updated', handleContentUpdate);
+    syncCustomContentFromServer();
+    return () => window.removeEventListener('tka_content_updated', handleContentUpdate);
+  }, []);
   const completedLatihanIds = activity?.latihanCompleted || [];
   const unlockedLatihanIds = activity?.unlockedLatihan || ['mtk_lat_1', 'bi_lat_1'];
   const latihanStars = activity?.latihanStars || {};
@@ -796,24 +817,6 @@ const LatihanSoal = () => {
             {/* Header Pengerjaan Latihan */}
             <div className="flex items-center justify-between pb-4 border-b border-[#E6DFD5] mb-6">
               <div className="flex items-center space-x-3">
-                <button
-                  onClick={() => {
-                    if (
-                      !isFinished &&
-                      Object.keys(userAnswers).length > 0 &&
-                      !window.confirm('Yakin ingin kembali? Lembar jawaban belum dikumpulkan.')
-                    ) {
-                      return;
-                    }
-                    setActiveLatihan(null);
-                    refreshActivity();
-                  }}
-                  className="w-8 h-8 rounded-lg bg-[#F2ECE4] hover:bg-[#E6DFD5] text-[#261C14] flex items-center justify-center transition-colors cursor-pointer"
-                  title="Kembali ke Peta Latihan"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                </button>
-
                 <div>
                   <div className="flex items-center space-x-2">
                     <span

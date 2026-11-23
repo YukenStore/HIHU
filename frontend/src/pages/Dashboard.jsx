@@ -4,9 +4,10 @@ import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import CharacterIllustration from '../components/CharacterIllustration';
 import PillMenuButton from '../components/PillMenuButton';
-import { BookOpen, ClipboardCheck, Trophy, BarChart3, Crown } from 'lucide-react';
+import { BookOpen, ClipboardCheck, Trophy, BarChart3, Crown, ShieldCheck } from 'lucide-react';
 import { getUserProfileStats, getTitleBadgeClass } from '../utils/activityTracker';
 import { getCharacterAvatar } from '../utils/characterAvatars';
+import { isAdminUser } from '../config/adminConfig';
 import LeaderboardModal from '../components/LeaderboardModal';
 import ProfileModal from '../components/ProfileModal';
 
@@ -41,35 +42,25 @@ const Dashboard = () => {
       <Navbar />
 
       {/* 2. Area Utama di Bawah Navbar */}
-      
-{/* 2. Area Utama Dashboard */}
-<main className="flex-1 w-full px-3 py-4 sm:px-6 sm:py-6 lg:px-10 lg:py-8 flex flex-col justify-start lg:justify-center">
-  <div className="w-full max-w-6xl mx-auto flex flex-col gap-4 sm:gap-6">
-
-    
-{/* Profil Siswa */}
-<div className="w-full relative overflow-hidden p-3.5 sm:p-5 lg:px-6 rounded-2xl bg-[#162E5B] border border-blue-500/40 shadow-lg text-white">
-
-  {/* Identitas dan Progres */}
-  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-5">
-
-    {/* Bagian Identitas Siswa */}
-    <div className="flex items-center gap-3 sm:gap-4 min-w-0 flex-1">
-
-      {/* Avatar dan Gelar */}
-      <div className="relative flex-shrink-0">
-        <button
-          type="button"
-          onClick={() => setIsProfileModalOpen(true)}
-          className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-2xl bg-white border-2 border-blue-400 hover:border-blue-300 flex items-center justify-center shadow-md cursor-pointer transition-all duration-200 active:scale-95 group overflow-hidden"
-          title="Buka profil & ganti karakter"
-        >
-          <img
-            src={getCharacterAvatar(profileStats?.avatar).image}
-            alt={getCharacterAvatar(profileStats?.avatar).name}
-            className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
-          />
-        </button>
+      {/* 2. Area Utama di Bawah Navbar */}
+      <main className="flex-1 flex flex-col justify-center items-center px-3 sm:px-6 lg:px-12 py-3 xs:py-4 sm:py-10">
+        <div className="max-w-6xl w-full mx-auto flex flex-col justify-center">
+          {/* Bagian Profil Siswa di Dashboard - Dominan Navy Solid (Tanpa Gradient) */}
+          <div className="mb-4 sm:mb-8 p-3.5 sm:p-5 rounded-2xl bg-[#162E5B] border-2 border-blue-500/40 shadow-lg text-white flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center space-x-3 sm:space-x-4">
+              {/* Foto Profil dengan Badge Gelar di Luar Container */}
+              <div className="relative flex-shrink-0">
+                <div
+                  onClick={() => setIsProfileModalOpen(true)}
+                  className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white hover:border-blue-300 border-2 border-blue-400 flex items-center justify-center shadow-md cursor-pointer transition-all active:scale-95 group overflow-hidden"
+                  title="Buka profil & ganti karakter"
+                >
+                  <img
+                    src={getCharacterAvatar(profileStats?.avatar).image}
+                    alt={getCharacterAvatar(profileStats?.avatar).name}
+                    className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                  />
+                </div>
 
         {profileStats?.activeTitle?.icon && (
           <span
@@ -102,54 +93,23 @@ const Dashboard = () => {
       </div>
     </div>
 
-    {/* Garis Pemisah Mobile */}
-    <div className="w-full h-px bg-blue-400/20 sm:hidden" />
-
-    
-{/* Bagian Progres Level */}
-<div className="w-full sm:w-auto sm:min-w-[240px] lg:min-w-[280px] sm:flex-shrink-0">
-
-  {/* Label Progres */}
-  <div className="flex items-center justify-between gap-3 mb-2">
-    <span className="text-[11px] sm:text-xs font-semibold text-blue-200 whitespace-nowrap">
-      Progres Level
-    </span>
-
-    <span className="text-[10px] sm:text-xs text-blue-300 font-medium whitespace-nowrap">
-      {profileStats.progressPercent}% selesai
-    </span>
-  </div>
-
-  <div className="flex items-center gap-3 px-3.5 py-3 rounded-xl bg-[#0F2042] border border-blue-500/30 shadow-inner">
-
-    {/* Level */}
-    <div className="flex flex-col items-center justify-center min-w-[38px] flex-shrink-0">
-      <span className="text-[9px] uppercase tracking-wider text-blue-300 font-semibold">
-        Level
-      </span>
-      <span className="text-base sm:text-lg font-extrabold text-blue-400 leading-tight">
-        {profileStats.level}
-      </span>
-    </div>
-
-    {/* Progress Bar */}
-    <div className="flex-1 min-w-0">
-      <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
-        <div
-          className="bg-gradient-to-r from-blue-500 to-cyan-400 h-full rounded-full transition-all duration-500"
-          style={{
-            width: `${Math.min(100, Math.max(0, profileStats.progressPercent))}%`
-          }}
-        />
-      </div>
-
-      <p className="text-[9px] sm:text-[10px] text-blue-300/80 mt-1.5">
-        Terus tingkatkan kemampuanmu!
-      </p>
-    </div>
-
-  </div>
-</div>
+            {/* Quick Stats: Level & EXP (Display Only) */}
+            <div className="flex items-center self-stretch md:self-auto justify-between md:justify-end border-t border-[#1E3A8A] md:border-t-0 pt-2.5 md:pt-0">
+              <span className="text-[11px] text-blue-300 md:hidden font-medium">Progres EXP</span>
+              <div
+                className="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-[#0F2042] border-2 border-blue-500/40 shadow-xs select-none"
+              >
+                <span className="text-xs font-bold text-blue-400">Lv.{profileStats.level}</span>
+                <div className="w-16 sm:w-20 bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div
+                    className="bg-blue-500 h-full rounded-full transition-all duration-300"
+                    style={{ width: `${profileStats.progressPercent}%` }}
+                  />
+                </div>
+                <span className="text-[10px] text-blue-200 font-semibold">{profileStats.progressPercent}%</span>
+              </div>
+            </div>
+          </div>
 
 
   </div>

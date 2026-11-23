@@ -123,4 +123,15 @@ export const updateUserPassword = async (email, newHashedPassword) => {
   return await query(sql, [newHashedPassword, email.toLowerCase().trim()]);
 };
 
+/**
+ * Memperbarui username pengguna berdasarkan ID
+ * @param {number|string} userId
+ * @param {string} newUsername
+ */
+export const updateUsernameById = async (userId, newUsername) => {
+  const cleanUsername = newUsername.trim();
+  const sql = 'UPDATE users SET username = ? WHERE id = ?';
+  return await query(sql, [cleanUsername, userId]);
+};
+
 
