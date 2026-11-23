@@ -99,6 +99,26 @@ export const AuthProvider = ({ children }) => {
   };
 
   /**
+   * Fungsi Ganti Username
+   */
+  const updateUsername = async (newUsername) => {
+    const data = await authService.updateUsername(newUsername);
+    if (data && data.user) {
+      setUser(data.user);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      if (data.token) {
+        setToken(data.token);
+        localStorage.setItem('token', data.token);
+      }
+      syncLeaderboardUser(data.user);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('tka_profile_updated'));
+      }
+    }
+    return data;
+  };
+
+  /**
    * Fungsi Logout
    */
   const logout = () => {
@@ -124,6 +144,7 @@ export const AuthProvider = ({ children }) => {
     forgotPassword,
     verifyResetOtp,
     resetPassword,
+    updateUsername,
     logout,
   };
 

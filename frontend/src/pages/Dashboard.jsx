@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import Navbar from '../components/Navbar';
 import CharacterIllustration from '../components/CharacterIllustration';
 import PillMenuButton from '../components/PillMenuButton';
-import { BookOpen, ClipboardCheck, Trophy, BarChart3, Crown } from 'lucide-react';
+import { BookOpen, ClipboardCheck, Trophy, BarChart3, Crown, Pencil } from 'lucide-react';
 import { getUserProfileStats, getTitleBadgeClass } from '../utils/activityTracker';
 import { getCharacterAvatar } from '../utils/characterAvatars';
 import LeaderboardModal from '../components/LeaderboardModal';
@@ -19,6 +19,7 @@ const Dashboard = () => {
   const [profileStats, setProfileStats] = useState(() => getUserProfileStats());
   const [isLeaderboardOpen, setIsLeaderboardOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [openWithEditUsername, setOpenWithEditUsername] = useState(false);
 
   const refreshStats = () => {
     setProfileStats(getUserProfileStats());
@@ -76,6 +77,18 @@ const Dashboard = () => {
                   <h1 className="text-lg sm:text-2xl font-bold text-white tracking-tight truncate">
                     Halo, {user?.username || user?.email?.split('@')[0] || 'Siswa'}!
                   </h1>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpenWithEditUsername(true);
+                      setIsProfileModalOpen(true);
+                    }}
+                    className="inline-flex items-center space-x-1 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg bg-[#0F2042] hover:bg-[#1E3A8A] text-blue-200 hover:text-white border border-blue-400/50 hover:border-blue-300 text-[10px] sm:text-xs font-semibold transition-all cursor-pointer shadow-2xs active:scale-95 group"
+                    title="Ganti Username"
+                  >
+                    <Pencil className="w-3 h-3 text-blue-300 group-hover:text-white transition-transform group-hover:rotate-12" />
+                    <span>Ganti Username</span>
+                  </button>
                   {profileStats?.activeTitle && (
                     <span className="px-2 sm:px-2.5 py-0.5 rounded-full text-[9px] sm:text-xs font-bold bg-blue-600 text-white border border-blue-400 shadow-2xs">
                       {profileStats.activeTitle.name}
@@ -171,10 +184,14 @@ const Dashboard = () => {
       {/* Modal Detail Profil Siswa (Dominan Navy) */}
       <ProfileModal
         isOpen={isProfileModalOpen}
-        onClose={() => setIsProfileModalOpen(false)}
+        onClose={() => {
+          setIsProfileModalOpen(false);
+          setOpenWithEditUsername(false);
+        }}
         user={user}
         profileStats={profileStats}
         onProfileUpdated={refreshStats}
+        initialEditUsername={openWithEditUsername}
       />
     </div>
   );

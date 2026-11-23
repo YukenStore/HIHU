@@ -359,16 +359,6 @@ const LeaderboardModal = ({ isOpen, onClose, user, profileStats }) => {
             </div>
           </div>
         </div>
-
-        {/* Footer Modal */}
-        <div className="p-3.5 bg-[#FAF7F2] border-t-2 border-slate-300 flex justify-end">
-          <button
-            onClick={onClose}
-            className="w-full sm:w-auto px-4 py-2 rounded-lg bg-[#261C14] hover:bg-[#3D2E22] text-white text-xs font-semibold transition-colors cursor-pointer shadow-xs"
-          >
-            Tutup
-          </button>
-        </div>
       </div>
     </div>
   );

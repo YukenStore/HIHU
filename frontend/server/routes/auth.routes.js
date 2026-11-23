@@ -8,6 +8,7 @@ import {
   forgotPassword,
   verifyResetOtp,
   resetPassword,
+  updateUsername,
 } from '../controllers/auth.controller.js';
 import { authenticate } from '../middlewares/auth.middleware.js';
 
@@ -36,6 +37,10 @@ router.post('/login', login);
 
 // Endpoint Profil Pengguna (Terlindungi)
 router.get('/me', authenticate, getMe);
+
+// Endpoint Ganti Username (Terlindungi)
+router.put('/update-username', authenticate, updateUsername);
+router.post('/update-username', authenticate, updateUsername);
 
 export default router;
 

@@ -578,28 +578,6 @@ const Tryout = () => {
               : 'bg-slate-50 border-slate-300'
           }`}>
             <div className="flex items-center space-x-3">
-              {activePackage && !isExamRunning ? (
-                <button
-                  onClick={() => {
-                    setActivePackage(null);
-                    setIsFinished(false);
-                    setIsReviewMode(false);
-                  }}
-                  className="w-7 h-7 rounded-md bg-white hover:bg-[#F2ECE4] border border-[#E6DFD5] flex items-center justify-center text-[#261C14] transition-colors cursor-pointer"
-                  title="Pilih Paket Lain"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                </button>
-              ) : selectedSubject && !isExamRunning ? (
-                <button
-                  onClick={() => setSelectedSubject(null)}
-                  className="w-7 h-7 rounded-md bg-white hover:bg-[#F2ECE4] border border-[#E6DFD5] flex items-center justify-center text-[#261C14] transition-colors cursor-pointer"
-                  title="Pilih Mapel Lain"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5" />
-                </button>
-              ) : null}
-
               <div>
                 <h2 className="text-base font-semibold text-[#261C14] flex items-center space-x-2">
                   <span>Simulasi Tryout TKA SD</span>
