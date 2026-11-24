@@ -2418,10 +2418,7 @@ const AdminPanel = () => {
                         : ''
                     }`}
                   >
-                    <span>Mapel Pilihan</span>
-                    <span className="text-[10px] font-normal opacity-80 mt-0.5">
-                      Tampil di bagian bawah
-                    </span>
+                    <span className='teks-[20px] font-bold mt-1'>Mapel Pilihan</span>
                   </button>
 
                   <button
@@ -2435,10 +2432,7 @@ const AdminPanel = () => {
                         : 'bg-[#0F2042] border-blue-500/30 text-blue-200 hover:text-white'
                     }`}
                   >
-                    <span>Mapel Wajib</span>
-                    <span className="text-[10px] font-normal opacity-80 mt-0.5">
-                      Tampil di bagian atas
-                    </span>
+                    <span className='teks-[20px] font-bold mt-1'>Mapel Wajib</span>
                   </button>
                 </div>
               </div>
@@ -2511,9 +2505,6 @@ const AdminPanel = () => {
                   <div className="text-xs">
                     <span className="font-bold text-white block">
                       Buat otomatis Materi 1 & Latihan Level 1 awal
-                    </span>
-                    <span className="text-[11px] text-blue-300">
-                      Memudahkan Anda langsung mengedit isi materi dan soal pertama.
                     </span>
                   </div>
                 </label>

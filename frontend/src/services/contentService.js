@@ -16,7 +16,7 @@ export const DEFAULT_SUBJECT_KEYS = ['bahasa_indonesia', 'matematika'];
 export const SUBJECT_COLOR_THEMES = {
   emerald: {
     id: 'emerald',
-    label: 'Hijau Emerald',
+    label: 'Hijau',
     primaryHex: '#047857',
     hoverHex: '#065F46',
     darkHex: '#064E3B',
@@ -27,7 +27,7 @@ export const SUBJECT_COLOR_THEMES = {
   },
   rose: {
     id: 'rose',
-    label: 'Merah Burgundy',
+    label: 'Merah',
     primaryHex: '#881337',
     hoverHex: '#700D2B',
     darkHex: '#4C0519',
@@ -38,7 +38,7 @@ export const SUBJECT_COLOR_THEMES = {
   },
   blue: {
     id: 'blue',
-    label: 'Biru Royal',
+    label: 'Biru',
     primaryHex: '#1D4ED8',
     hoverHex: '#1E40AF',
     darkHex: '#1E3A8A',
@@ -49,7 +49,7 @@ export const SUBJECT_COLOR_THEMES = {
   },
   purple: {
     id: 'purple',
-    label: 'Ungu Violet',
+    label: 'Ungu',
     primaryHex: '#6D28D9',
     hoverHex: '#5B21B6',
     darkHex: '#4C1D95',
@@ -60,7 +60,7 @@ export const SUBJECT_COLOR_THEMES = {
   },
   amber: {
     id: 'amber',
-    label: 'Oranye Amber',
+    label: 'Oranye',
     primaryHex: '#B45309',
     hoverHex: '#92400E',
     darkHex: '#78350F',
@@ -71,10 +71,10 @@ export const SUBJECT_COLOR_THEMES = {
   },
   teal: {
     id: 'teal',
-    label: 'Biru Toska',
-    primaryHex: '#0F766E',
-    hoverHex: '#115E59',
-    darkHex: '#134E4A',
+    label: 'Merah Muda',
+    primaryHex: '#e21393ff',
+    hoverHex: '#e21393ff',
+    darkHex: '#e21393ff',
     softBgHex: '#F0FDFA',
     softBorderHex: '#99F6E4',
     accentRgba: 'rgba(15, 118, 110, 0.1)',

@@ -55,7 +55,7 @@ const Navbar = () => {
                 className="h-8 sm:h-9 w-auto object-contain rounded-md"
               />
               <span className="font-bold text-sm sm:text-base text-slate-800 tracking-tight">
-                TKA SD
+              MyAkademika
               </span>
             </div>
 
