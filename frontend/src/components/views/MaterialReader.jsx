@@ -169,235 +169,42 @@ const InteractiveDropdownList = ({ items, defaultOpenAll = null }) => {
  * - Mengelompokkan sifat/aturan yang banyak menjadi Tulisan Dropdown (Accordion) yang rapi
  * - Memformat rumus matematika dengan KaTeX
  */
+/**
+ * Renderer Konten Materi:
+ * Menampilkan teks materi sesuai dengan baris baru (newline) yang diketik di Admin Panel,
+ * menghapus tag [H], serta memformat rumus matematika dengan KaTeX.
+ */
 const EnhancedContentRenderer = ({ content }) => {
   if (!content) return null;
 
-  const rawLines = content.split('\n');
-  const sections = [];
-  let pendingDropdownItems = [];
-  let pendingBulletItems = [];
+  const cleanedContent = String(content)
+    .replace(/\[h(?:orizontal)?\]\s*/gi, '')
+    .replace(/\r\n/g, '\n');
 
-  const flushDropdownItems = () => {
-    if (pendingDropdownItems.length > 0) {
-      sections.push({
-        type: 'dropdown-group',
-        items: [...pendingDropdownItems],
-        key: `dropdown-group-${sections.length}`,
-      });
-      pendingDropdownItems = [];
-    }
-  };
-
-  const flushBulletItems = () => {
-    if (pendingBulletItems.length > 0) {
-      if (pendingBulletItems.length >= 2) {
-        sections.push({
-          type: 'bullet-group',
-          items: [...pendingBulletItems],
-          key: `bullet-group-${sections.length}`,
-        });
-      } else {
-        sections.push({
-          type: 'callout-rule',
-          text: pendingBulletItems[0],
-          key: `rule-${sections.length}`,
-        });
-      }
-      pendingBulletItems = [];
-    }
-  };
-
-  rawLines.forEach((rawLine, lineIndex) => {
-    const line = rawLine.trim();
-    if (!line) return;
-
-    // 1. Cek apakah baris merupakan Alur Langkah / List Horizontal (-> [H] atau [H])
-    const isHorizontalMatch = line.match(/^(?:->|→)?\s*\[h(?:orizontal)?\]\s*(.*)$/i);
-    if (isHorizontalMatch) {
-      flushDropdownItems();
-      flushBulletItems();
-
-      let title = null;
-      let rawItems = isHorizontalMatch[1].trim();
-      const colonIndex = rawItems.indexOf(':');
-      if (colonIndex !== -1 && colonIndex < 70) {
-        title = rawItems.substring(0, colonIndex).trim();
-        rawItems = rawItems.substring(colonIndex + 1).trim();
-      }
-
-      const delimiter = rawItems.includes('|') ? '|' : ',';
-      const items = rawItems
-        .split(delimiter)
-        .map((s) => s.trim().replace(/\.$/, ''))
-        .filter(Boolean);
-
-      if (items.length > 0) {
-        sections.push({
-          type: 'sequence-flow',
-          title,
-          items,
-          key: `seq-${lineIndex}`,
-        });
-        return;
-      }
-    }
-
-    // 2. Cek baris berpola Sifat / Rumus / Aturan dengan tanda titik dua ':' (misal: "-> Komutatif (pertukaran): a + b = b + a")
-    const cleanedLine = line.replace(/^(?:->|→|•|-|\d+[\.\)])\s*/, '');
-    const colonIdx = cleanedLine.indexOf(':');
-
-    if (colonIdx !== -1 && colonIdx < 65) {
-      flushBulletItems();
-      const label = cleanedLine.substring(0, colonIdx).trim();
-      const value = cleanedLine.substring(colonIdx + 1).trim();
-
-      // Masukkan ke dalam kumpulan dropdown
-      pendingDropdownItems.push({
-        title: label,
-        value: value,
-      });
-      return;
-    }
-
-    // 3. Cek baris bullet point / checklist tanpa tanda titik dua
-    const isBulletPoint =
-      line.startsWith('•') ||
-      line.startsWith('-') ||
-      /^\d+[\.\)]\s+/.test(line);
-
-    if (isBulletPoint) {
-      flushDropdownItems();
-      pendingBulletItems.push(cleanedLine);
-      return;
-    }
-
-    // 4. Jika baris berupa aturan / catatan / penegasan penting
-    flushDropdownItems();
-    flushBulletItems();
-
-    const isRuleCallout =
-      line.startsWith('->') ||
-      line.startsWith('→') ||
-      line.toLowerCase().includes('perhatikan') ||
-      line.toLowerCase().includes('ingat');
-
-    if (isRuleCallout) {
-      sections.push({
-        type: 'callout-rule',
-        text: cleanedLine,
-        key: `rule-${lineIndex}`,
-      });
-    } else {
-      sections.push({
-        type: 'paragraph',
-        text: line,
-        key: `p-${lineIndex}`,
-      });
-    }
-  });
-
-  flushDropdownItems();
-  flushBulletItems();
+  const rawLines = cleanedContent.split('\n');
 
   return (
-    <div className="space-y-3">
-      {sections.map((sec) => {
-        // Tipe 1: Alur Langkah Berurutan / Pipeline (misal KABATAKU: Kurung -> Kali/Bagi -> Tambah/Kurang)
-        if (sec.type === 'sequence-flow') {
-          return (
-            <div
-              key={sec.key}
-              className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/90 space-y-3 my-2 shadow-2xs"
-            >
-              {sec.title && (
-                <div className="flex items-center space-x-2">
-                  <span className="w-2 h-2 rounded-full bg-blue-600" />
-                  <strong className="text-xs sm:text-sm font-bold text-slate-900 tracking-tight">
-                    {sec.title}
-                  </strong>
-                </div>
-              )}
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                {sec.items.map((it, i) => (
-                  <div
-                    key={i}
-                    className="p-2.5 rounded-lg bg-white border border-slate-200 shadow-2xs flex items-center space-x-2 text-xs font-semibold text-slate-800"
-                  >
-                    <span className="w-5 h-5 rounded-md bg-blue-50 text-blue-700 border border-blue-200/60 text-[11px] font-bold flex items-center justify-center flex-shrink-0">
-                      {i + 1}
-                    </span>
-                    <span
-                      className="break-words leading-snug flex-1"
-                      dangerouslySetInnerHTML={{
-                        __html: formatMath(it.replace(/^\d+[\.\)]\s*/, '')),
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
+    <div className="space-y-1.5">
+      {rawLines.map((rawLine, lineIndex) => {
+        const trimmed = rawLine.trim();
+        if (!trimmed) {
+          return <div key={`empty-${lineIndex}`} className="h-2" />;
         }
 
-        // Tipe 2: Kelompok Tulisan Dropdown (Accordion)
-        if (sec.type === 'dropdown-group') {
-          return <InteractiveDropdownList key={sec.key} items={sec.items} />;
-        }
+        const isArrowOrBullet =
+          trimmed.startsWith('->') ||
+          trimmed.startsWith('→') ||
+          trimmed.startsWith('•');
 
-        // Tipe 3: Kelompok Poin Berurutan / Checklist Rapi
-        if (sec.type === 'bullet-group') {
-          return (
-            <div
-              key={sec.key}
-              className="p-3.5 sm:p-4 rounded-xl bg-slate-50 border border-slate-200/90 space-y-2 shadow-2xs my-2"
-            >
-              <div className="text-[11px] font-bold text-slate-600 uppercase tracking-wider flex items-center space-x-1.5 pb-1 border-b border-slate-200/60">
-                <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />
-                <span>Poin Penjelasan Penting:</span>
-              </div>
-              <div className="space-y-1.5 pt-1">
-                {sec.items.map((it, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-start space-x-2 text-xs sm:text-sm text-slate-700 bg-white p-2.5 rounded-lg border border-slate-200/80"
-                  >
-                    <span className="w-5 h-5 rounded bg-blue-50 text-blue-700 font-bold text-xs flex items-center justify-center flex-shrink-0 mt-0.5 border border-blue-200/60">
-                      {idx + 1}
-                    </span>
-                    <span
-                      className="leading-relaxed font-medium flex-1"
-                      dangerouslySetInnerHTML={{ __html: formatMath(it) }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        }
-
-        // Tipe 4: Kotak Kaidah / Catatan Penting
-        if (sec.type === 'callout-rule') {
-          return (
-            <div
-              key={sec.key}
-              className="p-3 sm:p-3.5 rounded-xl bg-blue-50/60 border border-blue-200/80 text-xs sm:text-sm text-slate-800 flex items-start space-x-2.5 shadow-2xs"
-            >
-              <CheckCircle2 className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
-              <div
-                className="leading-relaxed font-medium"
-                dangerouslySetInnerHTML={{ __html: formatMath(sec.text) }}
-              />
-            </div>
-          );
-        }
-
-        // Tipe 5: Paragraf Biasa
         return (
-          <p
-            key={sec.key}
-            className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal"
-            dangerouslySetInnerHTML={{ __html: formatMath(sec.text) }}
+          <div
+            key={`line-${lineIndex}`}
+            className={`text-xs sm:text-sm leading-relaxed whitespace-pre-line ${
+              isArrowOrBullet
+                ? 'p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 text-slate-800 font-medium'
+                : 'text-slate-700 font-normal'
+            }`}
+            dangerouslySetInnerHTML={{ __html: formatMath(rawLine) }}
           />
         );
       })}
@@ -719,7 +526,7 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
           <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
             {bab.judul}
           </h3>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed whitespace-pre-line">
             {bab.ringkasan || 'Mari kita pelajari materi ini bersama langkah demi langkah dengan penjelasan yang mudah dan menyenangkan!'}
           </p>
         </div>
@@ -734,7 +541,7 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
               <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 block">
                 Misi Pembelajaran Hari Ini:
               </span>
-              <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed whitespace-pre-line">
                 {bab.tujuan}
               </p>
             </div>
@@ -954,7 +761,7 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
             Perhatikan daftar kata berikut! Kata di sebelah kiri adalah kata <strong>Baku</strong> (sesuai kaidah KBBI), sedangkan kata di sebelah kanan adalah kata <strong>Tidak Baku</strong> yang sering keliru digunakan.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[360px] overflow-y-auto pr-1">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[360px] overflow-y-auto slate-scrollbar pr-1">
             {filteredBaku.length > 0 ? (
               filteredBaku.map((item, idx) => (
                 <div

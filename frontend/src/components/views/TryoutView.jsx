@@ -197,7 +197,7 @@ const TryoutView = ({ isOpen, onClose }) =>
         </div>
 
         {/* 2. Body Content */}
-        <div className="flex-1 p-4 sm:p-6 overflow-y-auto">
+        <div className="flex-1 p-4 sm:p-6 overflow-y-auto slate-scrollbar">
           {/* TAHAP 1: Pilih Mata Pelajaran (BI / MTK) */}
           {!selectedSubject && (
             <div className="max-w-2xl mx-auto py-6">

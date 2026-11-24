@@ -220,7 +220,7 @@ const AvatarPickerModal = ({
           </div>
 
           {/* Filter Pills Kategori */}
-          <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex items-center space-x-1.5 overflow-x-auto pb-1 no-scrollbar">
             {categories.map((cat) => {
               const active = selectedCategory === cat;
               const isFantasy = cat === 'Fantasi';

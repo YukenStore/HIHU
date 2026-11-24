@@ -11,6 +11,12 @@ import {
   resetAdminContentItem,
   isDefaultContentItem,
   hasCustomOverride,
+  getAllSubjects,
+  getSubjectByKey,
+  saveAdminSubject,
+  deleteAdminSubject,
+  SUBJECT_COLOR_THEMES,
+  DEFAULT_SUBJECT_KEYS,
 } from '../services/contentService';
 import {
   ShieldCheck,
@@ -31,6 +37,9 @@ import {
   Sparkles,
   FileText,
   HelpCircle,
+  Pencil,
+  Layers,
+  X,
 } from 'lucide-react';
 
 /**
@@ -61,6 +70,17 @@ const AdminPanel = () => {
   const [toastMessage, setToastMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
 
+  // State Modal Tambah / Edit Mata Pelajaran
+  const [isSubjectModalOpen, setIsSubjectModalOpen] = useState(false);
+  const [editingSubjectKey, setEditingSubjectKey] = useState(null);
+  const [subjectForm, setSubjectForm] = useState({
+    title: '',
+    category: 'pilihan',
+    deskripsi: '',
+    colorTheme: 'blue',
+    seedStarterContent: true,
+  });
+
   // Muat data kustom terbaru dari database saat halaman dibuka
   useEffect(() => {
     syncCustomContentFromServer().then(() => {
@@ -80,12 +100,222 @@ const AdminPanel = () => {
     }, 3500);
   };
 
+  // Ambil daftar seluruh Mata Pelajaran (Wajib & Pilihan)
+  const allSubjects = getAllSubjects();
+  const wajibSubjects = allSubjects.filter((s) => s.category === 'wajib');
+  const pilihanSubjects = allSubjects.filter((s) => s.category !== 'wajib');
+  const activeSubjectMeta =
+    getSubjectByKey(selectedSubject) || allSubjects[0] || null;
+
   // Ambil daftar Materi untuk mapel terpilih
   const materiList =
     PUSMENDIK_MATERI[selectedSubject]?.elemen?.flatMap((e) => e.bab) || [];
 
   // Ambil daftar Level Latihan untuk mapel terpilih
   const latihanList = PUSMENDIK_LATIHAN[selectedSubject]?.levels || [];
+
+  // Buka Modal Tambah Mapel Baru
+  const handleOpenCreateSubject = (defaultCategory = 'pilihan') => {
+    setErrorMessage('');
+    setEditingSubjectKey(null);
+    setSubjectForm({
+      title: '',
+      category: defaultCategory,
+      deskripsi: '',
+      colorTheme: defaultCategory === 'wajib' ? 'emerald' : 'blue',
+      seedStarterContent: true,
+    });
+    setIsSubjectModalOpen(true);
+  };
+
+  // Buka Modal Edit Mapel Kustom
+  const handleOpenEditSubject = (subj) => {
+    if (!subj) return;
+    setErrorMessage('');
+    setEditingSubjectKey(subj.key);
+    setSubjectForm({
+      title: subj.title || '',
+      category: subj.category || 'pilihan',
+      deskripsi: subj.deskripsi || '',
+      colorTheme: subj.colorTheme || 'blue',
+      seedStarterContent: false,
+    });
+    setIsSubjectModalOpen(true);
+  };
+
+  // Simpan Mapel Baru / Perubahan Mapel ke Database
+  const handleSaveSubject = async (e) => {
+    if (e) e.preventDefault();
+    if (!subjectForm.title.trim()) {
+      setErrorMessage('Nama mata pelajaran wajib diisi.');
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+      setErrorMessage('');
+      const savedMeta = await saveAdminSubject({
+        key: editingSubjectKey || undefined,
+        title: subjectForm.title.trim(),
+        category: subjectForm.category,
+        deskripsi: subjectForm.deskripsi.trim(),
+        colorTheme: subjectForm.colorTheme,
+      });
+
+      const subjKey = savedMeta.key;
+
+      // Jika mapel baru dan opsi buat contoh Materi 1 & Latihan 1 dicentang
+      if (!editingSubjectKey && subjectForm.seedStarterContent) {
+        const currentMat =
+          PUSMENDIK_MATERI[subjKey]?.elemen?.flatMap((el) => el.bab) || [];
+        const currentLat = PUSMENDIK_LATIHAN[subjKey]?.levels || [];
+
+        if (currentMat.length === 0) {
+          const firstMateriId = `${subjKey}_1`;
+          await saveAdminContentItem({
+            contentType: 'materi',
+            subject: subjKey,
+            itemId: firstMateriId,
+            action: 'upsert',
+            payload: {
+              id: firstMateriId,
+              no: 1,
+              judul: `Pengenalan & Konsep Dasar ${savedMeta.title}`,
+              ringkasan: `Materi dasar dan konsep pengantar untuk mata pelajaran ${savedMeta.title}.`,
+              tujuan: `Murid mampu memahami konsep dasar pada mata pelajaran ${savedMeta.title}.`,
+              konsepKunci: `-> Konsep dasar ${savedMeta.title} bagian 1\n-> Konsep dasar ${savedMeta.title} bagian 2`,
+              uraianMateri: [
+                {
+                  subjudul: `Pengantar ${savedMeta.title}`,
+                  konten: `Tulis penjelasan materi ${savedMeta.title} di sini.\n-> Poin penting 1\n-> Poin penting 2`,
+                  rumus: '',
+                  contoh: 'Contoh penerapan singkat...',
+                },
+              ],
+              contohSoal: {
+                soal: `Contoh soal pemahaman ${savedMeta.title}...`,
+                penjelasan: 'Langkah penyelesaian contoh soal...',
+              },
+              tipsJuara: `Pahami konsep kunci ${savedMeta.title} dengan teliti!`,
+              soalLatihan: [
+                {
+                  id: 1,
+                  pertanyaan: `Pertanyaan kuis pemahaman 1 ${savedMeta.title}...`,
+                  pilihan: ['Pilihan A', 'Pilihan B', 'Pilihan C', 'Pilihan D'],
+                  jawabanBenar: 0,
+                  hint: 'Petunjuk untuk membantu siswa menjawab soal 1.',
+                },
+                {
+                  id: 2,
+                  pertanyaan: `Pertanyaan kuis pemahaman 2 ${savedMeta.title}...`,
+                  pilihan: ['Pilihan A', 'Pilihan B', 'Pilihan C', 'Pilihan D'],
+                  jawabanBenar: 0,
+                  hint: 'Petunjuk untuk membantu siswa menjawab soal 2.',
+                },
+                {
+                  id: 3,
+                  pertanyaan: `Pertanyaan kuis pemahaman 3 ${savedMeta.title}...`,
+                  pilihan: ['Pilihan A', 'Pilihan B', 'Pilihan C', 'Pilihan D'],
+                  jawabanBenar: 0,
+                  hint: 'Petunjuk untuk membantu siswa menjawab soal 3.',
+                },
+              ],
+            },
+          });
+        }
+
+        if (currentLat.length === 0) {
+          await saveAdminContentItem({
+            contentType: 'latihan',
+            subject: subjKey,
+            itemId: '1',
+            action: 'upsert',
+            payload: {
+              level: 1,
+              namaLevel: 'Level 1',
+              subjudul: `Fondasi Dasar ${savedMeta.title}`,
+              deskripsi: `Latihan soal tingkat dasar untuk mata pelajaran ${savedMeta.title}.`,
+              targetSoal: 1,
+              soal: [
+                {
+                  id: `${subjKey}_lvl1_q1_${Date.now()}`,
+                  type: 'mcq',
+                  level: 1,
+                  kesulitan: 'Mudah',
+                  pertanyaan: `Pertanyaan latihan soal 1 ${savedMeta.title}...`,
+                  stimulus: '',
+                  indicator: `Memahami konsep dasar ${savedMeta.title}`,
+                  pilihan: ['Pilihan A', 'Pilihan B', 'Pilihan C', 'Pilihan D'],
+                  jawabanBenar: 'Pilihan A',
+                  answerIndex: 0,
+                  statements: [],
+                  penjelasan: 'Pembahasan lengkap soal 1...',
+                  nomor: 1,
+                },
+              ],
+            },
+          });
+        }
+      }
+
+      setRefreshTick((t) => t + 1);
+      setSelectedSubject(subjKey);
+      setSelectedMateriId(null);
+      setMateriForm(null);
+      setSelectedLatihanLevel(null);
+      setLatihanForm(null);
+      setIsSubjectModalOpen(false);
+      showToast(
+        editingSubjectKey
+          ? `Mata pelajaran "${savedMeta.title}" berhasil diperbarui!`
+          : `Mata pelajaran "${savedMeta.title}" (${
+              savedMeta.category === 'wajib' ? 'Mapel Wajib' : 'Mapel Pilihan'
+            }) berhasil ditambahkan!`
+      );
+    } catch (err) {
+      setErrorMessage(
+        err.response?.data?.message ||
+          err.message ||
+          'Gagal menyimpan mata pelajaran.'
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Hapus Mapel Kustom
+  const handleDeleteCustomSubject = async (subj) => {
+    if (!subj || subj.isDefault) return;
+    if (
+      !window.confirm(
+        `Hapus mata pelajaran "${subj.title}" dari daftar ${
+          subj.category === 'wajib' ? 'Mapel Wajib' : 'Mapel Pilihan'
+        }?`
+      )
+    ) {
+      return;
+    }
+
+    try {
+      setIsSaving(true);
+      await deleteAdminSubject(subj.key);
+      setRefreshTick((t) => t + 1);
+      setSelectedSubject('matematika');
+      setSelectedMateriId(null);
+      setMateriForm(null);
+      setSelectedLatihanLevel(null);
+      setLatihanForm(null);
+      showToast(`Mata pelajaran "${subj.title}" berhasil dihapus.`);
+    } catch (err) {
+      setErrorMessage(
+        err.response?.data?.message ||
+          err.message ||
+          'Gagal menghapus mata pelajaran.'
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   // Pilih Materi untuk diedit
   const handleSelectMateri = (bab) => {
@@ -124,7 +354,12 @@ const AdminPanel = () => {
 
   // Buat Materi Baru
   const handleCreateNewMateri = () => {
-    const prefix = selectedSubject === 'matematika' ? 'mtk' : 'bi';
+    const prefix =
+      selectedSubject === 'matematika'
+        ? 'mtk'
+        : selectedSubject === 'bahasa_indonesia'
+        ? 'bi'
+        : selectedSubject;
     const nextNo = materiList.length + 1;
     const newId = `${prefix}_${Date.now()}`;
     const newBab = {
@@ -266,7 +501,12 @@ const AdminPanel = () => {
       0
     );
     const nextLevel = maxLevel + 1;
-    const prefix = selectedSubject === 'matematika' ? 'mtk' : 'bi';
+    const prefix =
+      selectedSubject === 'matematika'
+        ? 'mtk'
+        : selectedSubject === 'bahasa_indonesia'
+        ? 'bi'
+        : selectedSubject;
     const newLvl = {
       level: nextLevel,
       namaLevel: `Level ${nextLevel}`,
@@ -297,7 +537,12 @@ const AdminPanel = () => {
   // Tambah Soal Baru di Level Latihan yang sedang dibuka
   const handleAddLatihanQuestion = () => {
     if (!latihanForm) return;
-    const prefix = selectedSubject === 'matematika' ? 'mtk' : 'bi';
+    const prefix =
+      selectedSubject === 'matematika'
+        ? 'mtk'
+        : selectedSubject === 'bahasa_indonesia'
+        ? 'bi'
+        : selectedSubject;
     const nextNo = latihanForm.soal.length + 1;
     const newQuestion = {
       id: `${prefix}_lvl${latihanForm.level}_q${nextNo}_${Date.now()}`,
@@ -506,13 +751,6 @@ const AdminPanel = () => {
             <h1 className="text-lg sm:text-2xl font-bold text-white tracking-tight">
               Admin Panel Materi & Latihan Soal
             </h1>
-            <p className="text-xs text-blue-200">
-              Buat atau edit materi pelajaran beserta latihan soal langsung dari web. Daftar admin diatur di{' '}
-              <code className="px-1.5 py-0.5 rounded bg-[#0F2042] text-amber-300 font-mono text-[11px]">
-                frontend/src/config/adminConfig.js
-              </code>{' '}
-              ({ADMIN_EMAILS.length} email terdaftar).
-            </p>
           </div>
 
           {/* Tab Switcher: Materi vs Latihan Soal */}
@@ -552,46 +790,178 @@ const AdminPanel = () => {
 
         {/* Layout 2 Kolom: Sidebar Daftar Item (Kiri) & Form Editor (Kanan) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-          {/* KOLOM KIRI: Pilihan Mapel & Daftar Materi/Level */}
+          {/* KOLOM KIRI: Pilihan Mapel (Wajib & Pilihan) & Daftar Materi/Level */}
           <div className="lg:col-span-4 bg-[#162E5B] border-2 border-blue-500/40 rounded-2xl p-4 text-white space-y-4 shadow-lg">
-            {/* Pilihan Mata Pelajaran */}
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedSubject('matematika');
-                  setSelectedMateriId(null);
-                  setMateriForm(null);
-                  setSelectedLatihanLevel(null);
-                  setLatihanForm(null);
-                }}
-                className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center space-x-1.5 transition-all cursor-pointer ${
-                  selectedSubject === 'matematika'
-                    ? 'bg-[#881337] border-rose-400 text-white shadow-sm'
-                    : 'bg-[#0F2042] border-blue-500/30 text-blue-200 hover:text-white'
-                }`}
-              >
-                <Calculator className="w-3.5 h-3.5" />
-                <span>Matematika</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setSelectedSubject('bahasa_indonesia');
-                  setSelectedMateriId(null);
-                  setMateriForm(null);
-                  setSelectedLatihanLevel(null);
-                  setLatihanForm(null);
-                }}
-                className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center space-x-1.5 transition-all cursor-pointer ${
-                  selectedSubject === 'bahasa_indonesia'
-                    ? 'bg-[#047857] border-emerald-400 text-white shadow-sm'
-                    : 'bg-[#0F2042] border-blue-500/30 text-blue-200 hover:text-white'
-                }`}
-              >
-                <BookOpen className="w-3.5 h-3.5" />
-                <span>B. Indonesia</span>
-              </button>
+            {/* Header Kelola Mata Pelajaran + Tombol Tambah Mapel */}
+            <div className="space-y-3 pb-3 border-b border-blue-800/60">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-blue-200 flex items-center space-x-1.5">
+                  <Layers className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Pilih Mata Pelajaran</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => handleOpenCreateSubject('pilihan')}
+                  className="px-2.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 text-[11px] font-extrabold flex items-center space-x-1 transition-all cursor-pointer shadow-xs active:scale-95"
+                >
+                  <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
+                  <span>Tambah Mapel</span>
+                </button>
+              </div>
+
+              {/* Kelompok 1: Mapel Wajib */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300/90">
+                    Mapel Wajib ({wajibSubjects.length})
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {wajibSubjects.map((subj) => {
+                    const isSelected = selectedSubject === subj.key;
+                    const IconComp =
+                      subj.key === 'matematika' ? Calculator : BookOpen;
+                    return (
+                      <button
+                        key={subj.key}
+                        type="button"
+                        onClick={() => {
+                          setSelectedSubject(subj.key);
+                          setSelectedMateriId(null);
+                          setMateriForm(null);
+                          setSelectedLatihanLevel(null);
+                          setLatihanForm(null);
+                        }}
+                        style={
+                          isSelected
+                            ? {
+                                backgroundColor: subj.theme.primaryHex,
+                                borderColor: subj.theme.softBorderHex,
+                              }
+                            : undefined
+                        }
+                        className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center space-x-1.5 transition-all cursor-pointer ${
+                          isSelected
+                            ? 'text-white shadow-sm'
+                            : 'bg-[#0F2042] border-blue-500/30 text-blue-200 hover:text-white hover:border-blue-400/60'
+                        }`}
+                      >
+                        <IconComp className="w-3.5 h-3.5 flex-shrink-0" />
+                        <span className="truncate">
+                          {subj.key === 'bahasa_indonesia'
+                            ? 'B. Indonesia'
+                            : subj.title}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Kelompok 2: Mapel Pilihan */}
+              <div className="space-y-1.5 pt-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-300/90">
+                    Mapel Pilihan ({pilihanSubjects.length})
+                  </span>
+                </div>
+
+                {pilihanSubjects.length === 0 ? (
+                  <div className="p-2.5 rounded-xl bg-[#0F2042]/70 border border-dashed border-blue-500/30 text-[11px] text-blue-300 text-center">
+                    Belum ada Mapel Pilihan. Klik{' '}
+                    <button
+                      type="button"
+                      onClick={() => handleOpenCreateSubject('pilihan')}
+                      className="text-amber-300 font-bold underline cursor-pointer hover:text-amber-200"
+                    >
+                      + Tambah Mapel
+                    </button>{' '}
+                    untuk menambahkan mapel pilihan baru.
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    {pilihanSubjects.map((subj) => {
+                      const isSelected = selectedSubject === subj.key;
+                      return (
+                        <button
+                          key={subj.key}
+                          type="button"
+                          onClick={() => {
+                            setSelectedSubject(subj.key);
+                            setSelectedMateriId(null);
+                            setMateriForm(null);
+                            setSelectedLatihanLevel(null);
+                            setLatihanForm(null);
+                          }}
+                          style={
+                            isSelected
+                              ? {
+                                  backgroundColor: subj.theme.primaryHex,
+                                  borderColor: subj.theme.softBorderHex,
+                                }
+                              : undefined
+                          }
+                          className={`p-2.5 rounded-xl border text-xs font-bold flex items-center justify-center space-x-1.5 transition-all cursor-pointer ${
+                            isSelected
+                              ? 'text-white shadow-sm'
+                              : 'bg-[#0F2042] border-blue-500/30 text-blue-200 hover:text-white hover:border-blue-400/60'
+                          }`}
+                        >
+                          <BookOpen className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span className="truncate">{subj.title}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Info Mapel Aktif & Aksi Edit/Hapus jika Mapel Kustom */}
+              {activeSubjectMeta && (
+                <div className="p-2.5 rounded-xl bg-[#0F2042] border border-blue-500/30 flex items-center justify-between gap-2 text-xs">
+                  <div className="min-w-0">
+                    <div className="flex items-center space-x-1.5">
+                      <span
+                        className={`px-1.5 py-0.2 rounded text-[9px] font-bold uppercase ${
+                          activeSubjectMeta.category === 'wajib'
+                            ? 'bg-amber-500/20 text-amber-300 border border-amber-400/40'
+                            : 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/40'
+                        }`}
+                      >
+                        {activeSubjectMeta.category === 'wajib'
+                          ? 'Mapel Wajib'
+                          : 'Mapel Pilihan'}
+                      </span>
+                      <span className="font-bold text-white truncate">
+                        {activeSubjectMeta.title}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-1 flex-shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenEditSubject(activeSubjectMeta)}
+                      className="p-1.5 rounded-lg bg-[#162E5B] hover:bg-blue-700 text-blue-200 hover:text-white border border-blue-500/30 cursor-pointer transition-colors"
+                      title="Edit Informasi Mapel"
+                    >
+                      <Pencil className="w-3 h-3" />
+                    </button>
+                    {!activeSubjectMeta.isDefault && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleDeleteCustomSubject(activeSubjectMeta)
+                        }
+                        className="p-1.5 rounded-lg bg-rose-950/80 hover:bg-rose-800 text-rose-300 hover:text-white border border-rose-500/40 cursor-pointer transition-colors"
+                        title="Hapus Mapel Ini"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Pencarian & Tombol Tambah Baru */}
@@ -771,10 +1141,11 @@ const AdminPanel = () => {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-blue-800/60">
                       <div>
                         <span className="text-[11px] font-bold uppercase tracking-wider text-blue-300">
-                          Editor Materi •{' '}
-                          {selectedSubject === 'matematika'
-                            ? 'Matematika'
-                            : 'Bahasa Indonesia'}
+                          Editor Materi • {activeSubjectMeta?.title || selectedSubject} (
+                          {activeSubjectMeta?.category === 'wajib'
+                            ? 'Mapel Wajib'
+                            : 'Mapel Pilihan'}
+                          )
                         </span>
                         <h2 className="text-base sm:text-xl font-bold text-white">
                           Materi {materiForm.no}: {materiForm.judul}
@@ -866,7 +1237,7 @@ const AdminPanel = () => {
                               ringkasan: e.target.value,
                             })
                           }
-                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs focus:outline-none focus:border-blue-300"
+                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs focus:outline-none focus:border-blue-300 navy-scrollbar"
                         />
                       </div>
 
@@ -880,7 +1251,7 @@ const AdminPanel = () => {
                           onChange={(e) =>
                             setMateriForm({ ...materiForm, tujuan: e.target.value })
                           }
-                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs focus:outline-none focus:border-blue-300"
+                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs focus:outline-none focus:border-blue-300 navy-scrollbar"
                         />
                       </div>
 
@@ -897,7 +1268,7 @@ const AdminPanel = () => {
                               konsepKunci: e.target.value,
                             })
                           }
-                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs font-mono focus:outline-none focus:border-blue-300"
+                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs font-mono focus:outline-none focus:border-blue-300 navy-scrollbar"
                         />
                       </div>
 
@@ -905,8 +1276,8 @@ const AdminPanel = () => {
                         <label className="block text-xs font-semibold text-blue-200 mb-1">
                           Tips Juara
                         </label>
-                        <input
-                          type="text"
+                        <textarea
+                          rows={2}
                           value={materiForm.tipsJuara}
                           onChange={(e) =>
                             setMateriForm({
@@ -914,7 +1285,7 @@ const AdminPanel = () => {
                               tipsJuara: e.target.value,
                             })
                           }
-                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs focus:outline-none focus:border-blue-300"
+                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs focus:outline-none focus:border-blue-300 navy-scrollbar"
                         />
                       </div>
                     </div>
@@ -1018,7 +1389,7 @@ const AdminPanel = () => {
                                     uraianMateri: next,
                                   });
                                 }}
-                                className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs"
+                                className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs navy-scrollbar"
                               />
                             </div>
 
@@ -1027,8 +1398,8 @@ const AdminPanel = () => {
                                 <label className="block text-[11px] font-semibold text-blue-200 mb-1">
                                   Kotak Rumus / Pola (Opsional)
                                 </label>
-                                <input
-                                  type="text"
+                                <textarea
+                                  rows={2}
                                   value={bagian.rumus || ''}
                                   onChange={(e) => {
                                     const next = [...materiForm.uraianMateri];
@@ -1041,15 +1412,15 @@ const AdminPanel = () => {
                                       uraianMateri: next,
                                     });
                                   }}
-                                  className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs"
+                                  className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs navy-scrollbar"
                                 />
                               </div>
                               <div>
                                 <label className="block text-[11px] font-semibold text-blue-200 mb-1">
                                   Contoh Penerapan (Opsional)
                                 </label>
-                                <input
-                                  type="text"
+                                <textarea
+                                  rows={2}
                                   value={bagian.contoh || ''}
                                   onChange={(e) => {
                                     const next = [...materiForm.uraianMateri];
@@ -1062,7 +1433,7 @@ const AdminPanel = () => {
                                       uraianMateri: next,
                                     });
                                   }}
-                                  className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs"
+                                  className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs navy-scrollbar"
                                 />
                               </div>
                             </div>
@@ -1092,7 +1463,7 @@ const AdminPanel = () => {
                               },
                             })
                           }
-                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs"
+                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs navy-scrollbar"
                         />
                       </div>
                       <div>
@@ -1111,7 +1482,7 @@ const AdminPanel = () => {
                               },
                             })
                           }
-                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs"
+                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs navy-scrollbar"
                         />
                       </div>
                     </div>
@@ -1197,7 +1568,7 @@ const AdminPanel = () => {
                                     soalLatihan: next,
                                   });
                                 }}
-                                className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs"
+                                className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs navy-scrollbar"
                               />
                             </div>
 
@@ -1304,10 +1675,11 @@ const AdminPanel = () => {
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-blue-800/60">
                       <div>
                         <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-300">
-                          Editor Latihan Soal •{' '}
-                          {selectedSubject === 'matematika'
-                            ? 'Matematika'
-                            : 'Bahasa Indonesia'}
+                          Editor Latihan Soal • {activeSubjectMeta?.title || selectedSubject} (
+                          {activeSubjectMeta?.category === 'wajib'
+                            ? 'Mapel Wajib'
+                            : 'Mapel Pilihan'}
+                          )
                         </span>
                         <h2 className="text-base sm:text-xl font-bold text-white">
                           {latihanForm.namaLevel}: {latihanForm.subjudul}
@@ -1615,7 +1987,7 @@ const AdminPanel = () => {
                                           soal: next,
                                         });
                                       }}
-                                      className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs"
+                                      className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs navy-scrollbar"
                                     />
                                   </div>
 
@@ -1637,7 +2009,7 @@ const AdminPanel = () => {
                                           soal: next,
                                         });
                                       }}
-                                      className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs"
+                                      className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs navy-scrollbar"
                                     />
                                   </div>
 
@@ -1960,7 +2332,7 @@ const AdminPanel = () => {
                                           soal: next,
                                         });
                                       }}
-                                      className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs"
+                                      className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs navy-scrollbar"
                                     />
                                   </div>
                                 </div>
@@ -1977,6 +2349,208 @@ const AdminPanel = () => {
           </div>
         </div>
       </main>
+
+      {/* MODAL TAMBAH / EDIT MATA PELAJARAN (MAPEL WAJIB / MAPEL PILIHAN) */}
+      {isSubjectModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm overflow-y-auto navy-scrollbar animate-fade-in">
+          <div className="bg-[#162E5B] text-white rounded-2xl border-2 border-blue-400 shadow-2xl max-w-md w-full overflow-hidden relative my-auto">
+            <div className="p-4 sm:p-5 border-b border-blue-800/70 flex items-center justify-between bg-[#0F2042]">
+              <div className="flex items-center space-x-2.5">
+                <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-400/50 text-amber-300 flex items-center justify-center">
+                  <Layers className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">
+                    {editingSubjectKey
+                      ? 'Edit Mata Pelajaran'
+                      : 'Tambah Mata Pelajaran Baru'}
+                  </h3>
+                  <p className="text-[11px] text-blue-200">
+                    Atur nama, kategori (Wajib / Pilihan), dan tema warna mapel
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsSubjectModalOpen(false)}
+                className="w-8 h-8 rounded-lg bg-[#162E5B] hover:bg-blue-800 text-blue-200 hover:text-white border border-blue-500/40 flex items-center justify-center cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveSubject} className="p-5 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-blue-200 mb-1">
+                  Nama Mata Pelajaran *
+                </label>
+                <input
+                  type="text"
+                  value={subjectForm.title}
+                  onChange={(e) =>
+                    setSubjectForm({ ...subjectForm, title: e.target.value })
+                  }
+                  placeholder="Contoh: IPA (Sains), IPS, Bahasa Inggris, PPKn..."
+                  className="w-full px-3 py-2 rounded-xl bg-[#0F2042] border border-blue-500/50 text-white text-xs sm:text-sm font-semibold placeholder-blue-300/40 focus:outline-none focus:border-blue-300"
+                  required
+                  autoFocus
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-blue-200 mb-1.5">
+                  Kategori Mata Pelajaran *
+                </label>
+                <div className="grid grid-cols-2 gap-2.5">
+                  <button
+                    type="button"
+                    disabled={DEFAULT_SUBJECT_KEYS.includes(editingSubjectKey)}
+                    onClick={() =>
+                      setSubjectForm({ ...subjectForm, category: 'pilihan' })
+                    }
+                    className={`p-2.5 rounded-xl border text-xs font-bold flex flex-col items-center text-center transition-all cursor-pointer ${
+                      subjectForm.category === 'pilihan'
+                        ? 'bg-emerald-700 border-emerald-300 text-white shadow-sm'
+                        : 'bg-[#0F2042] border-blue-500/30 text-blue-200 hover:text-white'
+                    } ${
+                      DEFAULT_SUBJECT_KEYS.includes(editingSubjectKey)
+                        ? 'opacity-50 cursor-not-allowed'
+                        : ''
+                    }`}
+                  >
+                    <span>Mapel Pilihan</span>
+                    <span className="text-[10px] font-normal opacity-80 mt-0.5">
+                      Tampil di bagian bawah
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setSubjectForm({ ...subjectForm, category: 'wajib' })
+                    }
+                    className={`p-2.5 rounded-xl border text-xs font-bold flex flex-col items-center text-center transition-all cursor-pointer ${
+                      subjectForm.category === 'wajib'
+                        ? 'bg-amber-600 border-amber-300 text-white shadow-sm'
+                        : 'bg-[#0F2042] border-blue-500/30 text-blue-200 hover:text-white'
+                    }`}
+                  >
+                    <span>Mapel Wajib</span>
+                    <span className="text-[10px] font-normal opacity-80 mt-0.5">
+                      Tampil di bagian atas
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-blue-200 mb-1.5">
+                  Tema Warna Kartu Mapel
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {Object.values(SUBJECT_COLOR_THEMES).map((themeItem) => {
+                    const isSelected = subjectForm.colorTheme === themeItem.id;
+                    return (
+                      <button
+                        key={themeItem.id}
+                        type="button"
+                        onClick={() =>
+                          setSubjectForm({
+                            ...subjectForm,
+                            colorTheme: themeItem.id,
+                          })
+                        }
+                        className={`p-2 rounded-xl border text-[11px] font-bold flex items-center space-x-2 transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#1E3A8A] border-white text-white ring-2 ring-blue-300/40'
+                            : 'bg-[#0F2042] border-blue-500/30 text-blue-200 hover:text-white'
+                        }`}
+                      >
+                        <span
+                          className="w-3.5 h-3.5 rounded-full flex-shrink-0 border border-white/60"
+                          style={{ backgroundColor: themeItem.primaryHex }}
+                        />
+                        <span className="truncate">{themeItem.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-blue-200 mb-1">
+                  Deskripsi Singkat Mata Pelajaran
+                </label>
+                <textarea
+                  rows={2}
+                  value={subjectForm.deskripsi}
+                  onChange={(e) =>
+                    setSubjectForm({
+                      ...subjectForm,
+                      deskripsi: e.target.value,
+                    })
+                  }
+                  placeholder="Ringkasan topik yang dipelajari pada mata pelajaran ini..."
+                  className="w-full px-3 py-2 rounded-xl bg-[#0F2042] border border-blue-500/50 text-white text-xs placeholder-blue-300/40 focus:outline-none focus:border-blue-300 navy-scrollbar"
+                />
+              </div>
+
+              {!editingSubjectKey && (
+                <label className="flex items-start space-x-2.5 p-3 rounded-xl bg-[#0F2042] border border-blue-500/30 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={subjectForm.seedStarterContent}
+                    onChange={(e) =>
+                      setSubjectForm({
+                        ...subjectForm,
+                        seedStarterContent: e.target.checked,
+                      })
+                    }
+                    className="mt-0.5 cursor-pointer"
+                  />
+                  <div className="text-xs">
+                    <span className="font-bold text-white block">
+                      Buat otomatis Materi 1 & Latihan Level 1 awal
+                    </span>
+                    <span className="text-[11px] text-blue-300">
+                      Memudahkan Anda langsung mengedit isi materi dan soal pertama.
+                    </span>
+                  </div>
+                </label>
+              )}
+
+              <div className="pt-2 flex items-center justify-end space-x-2.5">
+                <button
+                  type="button"
+                  onClick={() => setIsSubjectModalOpen(false)}
+                  className="px-4 py-2 rounded-xl bg-[#0F2042] hover:bg-slate-800 text-blue-200 text-xs font-semibold border border-blue-500/40 cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-60 text-slate-950 text-xs font-extrabold flex items-center space-x-1.5 cursor-pointer shadow-md"
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Menyimpan...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Check className="w-4 h-4 stroke-[2.5]" />
+                      <span>
+                        {editingSubjectKey ? 'Simpan Perubahan' : 'Tambah Mapel'}
+                      </span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -6,6 +6,7 @@ export const ADMIN_EMAILS = [
 // Daftar username admin (digunakan juga untuk menyembunyikan akun admin dari cache leaderboard)
 export const ADMIN_USERNAMES = [
   'admin',
+  'orangpintar',
 ];
 
 /**

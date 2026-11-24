@@ -123,7 +123,7 @@ const LatihanSoalView = ({ isOpen, onClose }) => {
         </div>
 
         {/* 2. Body Area */}
-        <div className="flex-1 p-4 sm:p-6 overflow-y-auto bg-white">
+        <div className="flex-1 p-4 sm:p-6 overflow-y-auto slate-scrollbar bg-white">
           {/* TAHAP 1: Pilih Mata Pelajaran (Hanya BI & MTK) */}
           {!selectedSubject && (
             <div className="max-w-2xl mx-auto py-6">

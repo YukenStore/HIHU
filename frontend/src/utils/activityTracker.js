@@ -603,19 +603,23 @@ export const resetMateriProgress = (subject = null) => {
     data.materiCompleted = [];
     data.unlockedMateri = ['mtk_1', 'bi_1'];
     data.materiStars = {};
-  } else if (subject === 'matematika') {
-    data.materiCompleted = (data.materiCompleted || []).filter((id) => !id.startsWith('mtk_'));
-    data.unlockedMateri = (data.unlockedMateri || []).filter((id) => !id.startsWith('mtk_'));
-    data.unlockedMateri.push('mtk_1');
+  } else {
+    const prefix =
+      subject === 'matematika'
+        ? 'mtk_'
+        : subject === 'bahasa_indonesia'
+        ? 'bi_'
+        : `${subject}_`;
+    const firstId = `${prefix}1`;
+    data.materiCompleted = (data.materiCompleted || []).filter(
+      (id) => !id.startsWith(prefix)
+    );
+    data.unlockedMateri = (data.unlockedMateri || []).filter(
+      (id) => !id.startsWith(prefix)
+    );
+    data.unlockedMateri.push(firstId);
     Object.keys(data.materiStars).forEach((key) => {
-      if (key.startsWith('mtk_')) delete data.materiStars[key];
-    });
-  } else if (subject === 'bahasa_indonesia') {
-    data.materiCompleted = (data.materiCompleted || []).filter((id) => !id.startsWith('bi_'));
-    data.unlockedMateri = (data.unlockedMateri || []).filter((id) => !id.startsWith('bi_'));
-    data.unlockedMateri.push('bi_1');
-    Object.keys(data.materiStars).forEach((key) => {
-      if (key.startsWith('bi_')) delete data.materiStars[key];
+      if (key.startsWith(prefix)) delete data.materiStars[key];
     });
   }
   saveActivityData(data);
@@ -988,19 +992,23 @@ export const resetLatihanProgress = (subject = null) => {
     data.latihanCompleted = [];
     data.unlockedLatihan = ['mtk_lat_1', 'bi_lat_1'];
     data.latihanStars = {};
-  } else if (subject === 'matematika') {
-    data.latihanCompleted = (data.latihanCompleted || []).filter((id) => !id.startsWith('mtk_lat_'));
-    data.unlockedLatihan = (data.unlockedLatihan || []).filter((id) => !id.startsWith('mtk_lat_'));
-    data.unlockedLatihan.push('mtk_lat_1');
+  } else {
+    const prefix =
+      subject === 'matematika'
+        ? 'mtk_lat_'
+        : subject === 'bahasa_indonesia'
+        ? 'bi_lat_'
+        : `${subject}_lat_`;
+    const firstId = `${prefix}1`;
+    data.latihanCompleted = (data.latihanCompleted || []).filter(
+      (id) => !id.startsWith(prefix)
+    );
+    data.unlockedLatihan = (data.unlockedLatihan || []).filter(
+      (id) => !id.startsWith(prefix)
+    );
+    data.unlockedLatihan.push(firstId);
     Object.keys(data.latihanStars).forEach((key) => {
-      if (key.startsWith('mtk_lat_')) delete data.latihanStars[key];
-    });
-  } else if (subject === 'bahasa_indonesia') {
-    data.latihanCompleted = (data.latihanCompleted || []).filter((id) => !id.startsWith('bi_lat_'));
-    data.unlockedLatihan = (data.unlockedLatihan || []).filter((id) => !id.startsWith('bi_lat_'));
-    data.unlockedLatihan.push('bi_lat_1');
-    Object.keys(data.latihanStars).forEach((key) => {
-      if (key.startsWith('bi_lat_')) delete data.latihanStars[key];
+      if (key.startsWith(prefix)) delete data.latihanStars[key];
     });
   }
   saveActivityData(data);

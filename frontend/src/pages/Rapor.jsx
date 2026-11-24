@@ -532,7 +532,7 @@ const Rapor = () => {
                       </button>
                     </div>
 
-                    <div className="overflow-x-auto rounded-xl border-2 border-slate-400 bg-white shadow-xs">
+                    <div className="overflow-x-auto slate-scrollbar rounded-xl border-2 border-slate-400 bg-white shadow-xs">
                       <table className="w-full text-left text-xs">
                         <thead className="bg-[#FAF7F2] text-[#6E6258] font-semibold border-b-2 border-slate-300">
                           <tr>

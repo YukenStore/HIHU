@@ -69,9 +69,132 @@
     }
   }
 
-  /* Scrollbar halus untuk sentuhan mobile */
+  /* Scrollbar halus untuk sentuhan mobile & kustomisasi global agar tidak menggunakan scrollbar default OS */
   * {
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* Hilangkan tombol panah atas/bawah/kiri/kanan bawaan OS pada semua scrollbar */
+  *::-webkit-scrollbar-button {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  /* Default Global Scrollbar (Serasi dengan surface Slate Gray #E2E8F0) */
+  *::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  *::-webkit-scrollbar-track {
+    background: #CBD5E1;
+    border-radius: 9999px;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: #64748B;
+    border-radius: 9999px;
+    border: 2px solid #CBD5E1;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+  }
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* Scrollbar Utama Halaman (Root Window) serasi dengan background Navy/Teal */
+  html::-webkit-scrollbar-track,
+  body::-webkit-scrollbar-track {
+    background: #0F2042;
+    border-radius: 0;
+  }
+  html::-webkit-scrollbar-thumb,
+  body::-webkit-scrollbar-thumb {
+    background: #1E40AF;
+    border-radius: 9999px;
+    border: 2px solid #0F2042;
+  }
+  html::-webkit-scrollbar-thumb:hover,
+  body::-webkit-scrollbar-thumb:hover {
+    background: #3B82F6;
+  }
+
+  /* Scrollbar & Resizer Khusus untuk semua <textarea> dan <select> bertema Navy (#162E5B & #0F2042) */
+  textarea.bg-\[\#162E5B\]::-webkit-scrollbar,
+  textarea.bg-\[\#0F2042\]::-webkit-scrollbar,
+  .bg-\[\#162E5B\] textarea::-webkit-scrollbar,
+  .bg-\[\#0F2042\] textarea::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  textarea.bg-\[\#162E5B\]::-webkit-scrollbar-track,
+  .bg-\[\#0F2042\] textarea.bg-\[\#162E5B\]::-webkit-scrollbar-track {
+    background: #0F2042;
+    border-radius: 9999px;
+    margin: 4px;
+  }
+  textarea.bg-\[\#162E5B\]::-webkit-scrollbar-thumb,
+  .bg-\[\#0F2042\] textarea.bg-\[\#162E5B\]::-webkit-scrollbar-thumb {
+    background: #2563EB;
+    border-radius: 9999px;
+    border: 2px solid #0F2042;
+  }
+  textarea.bg-\[\#0F2042\]::-webkit-scrollbar-track,
+  .bg-\[\#162E5B\] textarea.bg-\[\#0F2042\]::-webkit-scrollbar-track {
+    background: #162E5B;
+    border-radius: 9999px;
+    margin: 4px;
+  }
+  textarea.bg-\[\#0F2042\]::-webkit-scrollbar-thumb,
+  .bg-\[\#162E5B\] textarea.bg-\[\#0F2042\]::-webkit-scrollbar-thumb {
+    background: #2563EB;
+    border-radius: 9999px;
+    border: 2px solid #162E5B;
+  }
+  textarea.bg-\[\#162E5B\]::-webkit-scrollbar-thumb:hover,
+  textarea.bg-\[\#0F2042\]::-webkit-scrollbar-thumb:hover,
+  .bg-\[\#162E5B\] textarea::-webkit-scrollbar-thumb:hover,
+  .bg-\[\#0F2042\] textarea::-webkit-scrollbar-thumb:hover {
+    background: #3B82F6;
+  }
+  textarea.bg-\[\#162E5B\]::-webkit-scrollbar-corner,
+  textarea.bg-\[\#0F2042\]::-webkit-scrollbar-corner,
+  .bg-\[\#162E5B\] textarea::-webkit-scrollbar-corner,
+  .bg-\[\#0F2042\] textarea::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  /* Sudut pengubah ukuran (resize handle) pada textarea Navy agar tidak berwarna putih */
+  textarea.bg-\[\#162E5B\]::-webkit-resizer,
+  .bg-\[\#0F2042\] textarea.bg-\[\#162E5B\]::-webkit-resizer {
+    background-color: #162E5B;
+    background-image: linear-gradient(
+      135deg,
+      transparent 50%,
+      #3B82F6 50%,
+      #3B82F6 60%,
+      transparent 60%,
+      transparent 75%,
+      #3B82F6 75%,
+      #3B82F6 85%,
+      transparent 85%
+    );
+    border-bottom-right-radius: 6px;
+  }
+  textarea.bg-\[\#0F2042\]::-webkit-resizer,
+  .bg-\[\#162E5B\] textarea.bg-\[\#0F2042\]::-webkit-resizer {
+    background-color: #0F2042;
+    background-image: linear-gradient(
+      135deg,
+      transparent 50%,
+      #3B82F6 50%,
+      #3B82F6 60%,
+      transparent 60%,
+      transparent 75%,
+      #3B82F6 75%,
+      #3B82F6 85%,
+      transparent 85%
+    );
+    border-bottom-right-radius: 6px;
   }
 }
 
@@ -234,8 +357,6 @@ input[type="password"]::-ms-clear {
   /* Scrollbar horizontal navigasi lembar soal tryout (mudah dilihat & di-drag) */
   .exam-nav-scrollbar {
     overflow-x: auto;
-    scrollbar-width: thin;
-    scrollbar-color: #C25E38 #F2ECE4;
   }
   .exam-nav-scrollbar::-webkit-scrollbar {
     height: 7px;
@@ -252,11 +373,63 @@ input[type="password"]::-ms-clear {
     background: #A94D2B;
   }
 
-  /* Scrollbar bertema Navy gelap untuk Modal Profil & Karakter */
-  .navy-scrollbar {
-    scrollbar-width: thin;
-    scrollbar-color: #2563EB #0F2042;
+  /* Scrollbar bertema Slate/Light untuk Modal & Kontainer Terang (#E2E8F0) */
+  .slate-scrollbar::-webkit-scrollbar,
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 7px;
   }
+  .slate-scrollbar::-webkit-scrollbar-track,
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: #CBD5E1;
+    border-radius: 9999px;
+  }
+  .slate-scrollbar::-webkit-scrollbar-thumb,
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #64748B;
+    border-radius: 9999px;
+    border: 2px solid #CBD5E1;
+  }
+  .slate-scrollbar::-webkit-scrollbar-thumb:hover,
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+  }
+
+  /* Scrollbar horizontal navigasi soal Bahasa Indonesia (Emerald) */
+  .emerald-scrollbar::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+  .emerald-scrollbar::-webkit-scrollbar-track {
+    background: #D1FAE5;
+    border-radius: 9999px;
+  }
+  .emerald-scrollbar::-webkit-scrollbar-thumb {
+    background: #047857;
+    border-radius: 9999px;
+  }
+  .emerald-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #065F46;
+  }
+
+  /* Scrollbar horizontal navigasi soal Matematika (Burgundy/Rose) */
+  .rose-scrollbar::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+  .rose-scrollbar::-webkit-scrollbar-track {
+    background: #FFE4E6;
+    border-radius: 9999px;
+  }
+  .rose-scrollbar::-webkit-scrollbar-thumb {
+    background: #881337;
+    border-radius: 9999px;
+  }
+  .rose-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #700D2B;
+  }
+
+  /* Scrollbar bertema Navy gelap untuk Modal Profil, Karakter, & Admin Panel */
   .navy-scrollbar::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -272,6 +445,35 @@ input[type="password"]::-ms-clear {
   }
   .navy-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #3B82F6;
+  }
+  .navy-scrollbar::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* Fallback khusus browser Firefox (yang tidak mendukung ::-webkit-scrollbar) */
+  @supports not selector(::-webkit-scrollbar) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #64748B #CBD5E1;
+    }
+    .exam-nav-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: #C25E38 #F2ECE4;
+    }
+    .emerald-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: #047857 #D1FAE5;
+    }
+    .rose-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: #881337 #FFE4E6;
+    }
+    .navy-scrollbar,
+    textarea.bg-\[\#162E5B\],
+    textarea.bg-\[\#0F2042\] {
+      scrollbar-width: thin;
+      scrollbar-color: #2563EB #0F2042;
+    }
   }
 
   /* Safe Area Inset untuk smartphone berlayar notch/poni */

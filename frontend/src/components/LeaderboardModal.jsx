@@ -57,7 +57,7 @@ const LeaderboardModal = ({ isOpen, onClose, user, profileStats }) => {
   const top3 = list.slice(0, 3);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1F1914]/50 backdrop-blur-xs overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1F1914]/50 backdrop-blur-xs overflow-y-auto slate-scrollbar">
       <div className="bg-white rounded-2xl border-2 border-slate-400 shadow-2xl max-w-2xl w-full overflow-hidden relative my-auto flex flex-col max-h-[90vh]">
         {/* Header Modal */}
         <div className="p-4 sm:p-5 border-b-2 border-slate-300 flex items-center justify-between bg-white flex-shrink-0">
@@ -83,7 +83,7 @@ const LeaderboardModal = ({ isOpen, onClose, user, profileStats }) => {
         </div>
 
         {/* Konten Scrollable */}
-        <div className="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1">
+        <div className="p-4 sm:p-5 overflow-y-auto slate-scrollbar space-y-4 flex-1">
           {/* Card Posisi Pengguna ("Kamu") atau Info Mode Guest */}
           {user?.isGuest || isGuestSession() ? (
             <div className="p-4 rounded-xl bg-amber-50 text-[#261C14] flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-2 border-amber-500 shadow-sm">

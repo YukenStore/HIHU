@@ -58,11 +58,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Operasi Hitung',
             ringkasan: 'Operasi hitung campuran bilangan cacah, bulat negatif/positif, dan aturan KABATAKU.',
             tujuan: 'Murid mampu menghitung operasi hitung campuran dengan mendahulukan tanda kurung, perkalian/pembagian, lalu penjumlahan/pengurangan.',
-            konsepKunci: '-> [H] Urutan Prioritas KABATAKU: 1. Tanda Kurung [ ( ) ] | 2. Perkalian (×) & Pembagian (÷) | 3. Penjumlahan (+) & Pengurangan (-)\n-> Operasi setingkat dikerjakan urut dari sebelah kiri ke kanan.',
+            konsepKunci: '-> Urutan Prioritas KABATAKU: 1. Tanda Kurung [ ( ) ] | 2. Perkalian (×) & Pembagian (÷) | 3. Penjumlahan (+) & Pengurangan (-)\n-> Operasi setingkat dikerjakan urut dari sebelah kiri ke kanan.',
             uraianMateri: [
               {
                 subjudul: 'Aturan Tingkatan Operasi Hitung',
-                konten: 'Jika terdapat tanda kurung, kerjakan operasi di dalamnya terlebih dahulu.\n-> [H] Urutan Pengerjaan: 1. Tanda Kurung | 2. Kali (×) & Bagi (÷) | 3. Tambah (+) & Kurang (-)\n-> Perkalian dan pembagian WAJIB dikerjakan sebelum penjumlahan dan pengurangan.',
+                konten: 'Jika terdapat tanda kurung, kerjakan operasi di dalamnya terlebih dahulu.\n-> Urutan Pengerjaan: 1. Tanda Kurung | 2. Kali (×) & Bagi (÷) | 3. Tambah (+) & Kurang (-)\n-> Perkalian dan pembagian WAJIB dikerjakan sebelum penjumlahan dan pengurangan.',
                 rumus: '(Kurung)  →  Kali (×) & Bagi (÷)  →  Tambah (+) & Kurang (-)',
                 contoh: '25 + 15 × 4 - 20 ÷ 5 = 25 + 60 - 4 = 81'
               },
@@ -107,24 +107,24 @@ export const PUSMENDIK_MATERI = {
             judul: 'Perbandingan dan Skala',
             ringkasan: 'Konsep rasio dua nilai atau lebih dan rumus skala gambar/peta terhadap jarak sebenarnya.',
             tujuan: 'Murid mampu menghitung perbandingan senilai/berbalik nilai dan menghitung jarak peta, skala, serta jarak sebenarnya.',
-            konsepKunci: '-> [H] Rumus Skala Pokok: Skala = JP : JS | Jarak Sebenarnya (JS) = JP / Skala | Jarak Peta (JP) = JS × Skala\n-> [H] Konversi Tangga Satuan (km ➔ cm): 1 km = 100.000 cm | Turun 5 Tangga: × 100.000 (+5 nol) | Naik 5 Tangga: ÷ 100.000 (coret 5 nol)',
+            konsepKunci: '-> Rumus Skala Pokok: Skala = JP : JS | Jarak Sebenarnya (JS) = JP / Skala | Jarak Peta (JP) = JS × Skala\n-> Konversi Tangga Satuan (km ➔ cm): 1 km = 100.000 cm | Turun 5 Tangga: × 100.000 (+5 nol) | Naik 5 Tangga: ÷ 100.000 (coret 5 nol)',
             uraianMateri: [
               {
                 subjudul: 'Rumus Segitiga Skala',
-                konten: '-> [H] Tiga Variabel Skala Peta: Skala = JP / JS | Jarak Sebenarnya (JS) = JP / Skala | Jarak pada Peta (JP) = JS × Skala',
+                konten: '-> Tiga Variabel Skala Peta: Skala = JP / JS | Jarak Sebenarnya (JS) = JP / Skala | Jarak pada Peta (JP) = JS × Skala',
                 rumus: 'Skala = JP : JS  (Semua dalam satuan cm)',
                 contoh: 'JP = 5 cm, JS = 25 km = 2.500.000 cm. Skala = 5 : 2.500.000 = 1 : 500.000'
               },
               {
                 subjudul: 'Tangga Satuan Panjang (Kunci Skala km ke cm)',
                 tipe: 'tangga_satuan',
-                konten: 'Dalam menghitung skala, satuan Jarak Sebenarnya (km) harus disamakan ke satuan Jarak Peta (cm) menggunakan tangga satuan panjang:\n-> [H] Urutan Tangga Panjang: km ➔ hm | hm ➔ dam | dam ➔ m | m ➔ dm | dm ➔ cm | cm ➔ mm\n-> Setiap TURUN 1 tangga: Dikali 10 (tambah 1 angka nol)\n-> Setiap NAIK 1 tangga: Dibagi 10 (coret 1 angka nol)\n-> Rumus Kilat km ke cm: TURUN 5 tangga → Dikali 100.000 (tambah 5 angka nol)\n-> Rumus Kilat cm ke km: NAIK 5 tangga → Dibagi 100.000 (coret 5 angka nol)',
+                konten: 'Dalam menghitung skala, satuan Jarak Sebenarnya (km) harus disamakan ke satuan Jarak Peta (cm) menggunakan tangga satuan panjang:\n-> Urutan Tangga Panjang: km ➔ hm | hm ➔ dam | dam ➔ m | m ➔ dm | dm ➔ cm | cm ➔ mm\n-> Setiap TURUN 1 tangga: Dikali 10 (tambah 1 angka nol)\n-> Setiap NAIK 1 tangga: Dibagi 10 (coret 1 angka nol)\n-> Rumus Kilat km ke cm: TURUN 5 tangga → Dikali 100.000 (tambah 5 angka nol)\n-> Rumus Kilat cm ke km: NAIK 5 tangga → Dibagi 100.000 (coret 5 angka nol)',
                 rumus: 'km → hm → dam → m → dm → cm → mm  (km ke cm = × 100.000)',
                 contoh: '• Ubah km ke cm: 4 km = 4 × 100.000 = 400.000 cm (tambah 5 nol).\n• Ubah cm ke km: 6.000.000 cm = 6.000.000 ÷ 100.000 = 60 km (coret 5 nol).'
               },
               {
                 subjudul: 'Perbandingan Senilai',
-                konten: 'Konsep perbandingan senilai:\n-> [H] Ciri Perbandingan Senilai: Nilai A Naik ➔ Nilai B Naik | Kelipatan Sebanding | Contoh: Jumlah Barang vs Total Harga',
+                konten: 'Konsep perbandingan senilai:\n-> Ciri Perbandingan Senilai: Nilai A Naik ➔ Nilai B Naik | Kelipatan Sebanding | Contoh: Jumlah Barang vs Total Harga',
                 contoh: 'Harga 3 buku Rp15.000. Harga 7 buku = (7/3) × 15.000 = Rp35.000.'
               }
             ],
@@ -163,16 +163,16 @@ export const PUSMENDIK_MATERI = {
             judul: 'KPK dan FPB',
             ringkasan: 'Kelipatan Persekutuan Terkecil (KPK) dan Faktor Persekutuan Terbesar (FPB) dengan pohon faktor.',
             tujuan: 'Murid mampu menentukan KPK dan FPB dari dua atau tiga bilangan serta menyelesaikan soal cerita kontekstual.',
-            konsepKunci: '-> [H] Aturan Inti KPK & FPB: KPK: Ambil semua faktor prima pangkat terbesar | FPB: Ambil faktor prima yang sama saja pangkat terkecil\n-> [H] Kata Kunci Ciri Soal KPK: Bersama-sama | Bertemu lagi | Bersamaan | Berdering bersama\n-> [H] Kata Kunci Ciri Soal FPB: Dibagi sama banyak | Jumlah kantong terbanyak | Potongan sama panjang',
+            konsepKunci: '-> Aturan Inti KPK & FPB: KPK: Ambil semua faktor prima pangkat terbesar | FPB: Ambil faktor prima yang sama saja pangkat terkecil\n-> Kata Kunci Ciri Soal KPK: Bersama-sama | Bertemu lagi | Bersamaan | Berdering bersama\n-> Kata Kunci Ciri Soal FPB: Dibagi sama banyak | Jumlah kantong terbanyak | Potongan sama panjang',
             uraianMateri: [
               {
                 subjudul: 'Metode Faktorisasi Prima (Pohon Faktor)',
-                konten: 'Bagi bilangan dengan bilangan prima terkecil (2, 3, 5, 7, 11...) secara berurutan:\n-> [H] Bilangan Prima Dasar (di bawah 30): 2 | 3 | 5 | 7 | 11 | 13 | 17 | 19 | 23 | 29\n-> Tuliskan hasil faktorisasi prima dalam bentuk perkalian bilangan berpangkat.',
+                konten: 'Bagi bilangan dengan bilangan prima terkecil (2, 3, 5, 7, 11...) secara berurutan:\n-> Bilangan Prima Dasar (di bawah 30): 2 | 3 | 5 | 7 | 11 | 13 | 17 | 19 | 23 | 29\n-> Tuliskan hasil faktorisasi prima dalam bentuk perkalian bilangan berpangkat.',
                 contoh: '24 = 2³ × 3; 36 = 2² × 3². FPB = 2² × 3 = 12; KPK = 2³ × 3² = 8 × 9 = 72.'
               },
               {
                 subjudul: 'Kata Kunci Soal Cerita',
-                konten: 'Perhatikan kata kunci berikut pada soal cerita untuk membedakan KPK dan FPB:\n-> [H] Kata Kunci Ciri Soal KPK: Bersama-sama | Bertemu lagi | Bersamaan | Berdering bersama\n-> [H] Kata Kunci Ciri Soal FPB: Dibagi sama banyak | Jumlah kantong terbanyak | Potongan sama panjang'
+                konten: 'Perhatikan kata kunci berikut pada soal cerita untuk membedakan KPK dan FPB:\n-> Kata Kunci Ciri Soal KPK: Bersama-sama | Bertemu lagi | Bersamaan | Berdering bersama\n-> Kata Kunci Ciri Soal FPB: Dibagi sama banyak | Jumlah kantong terbanyak | Potongan sama panjang'
               }
             ],
             contohSoal: {
@@ -210,15 +210,15 @@ export const PUSMENDIK_MATERI = {
             judul: 'Bilangan Pangkat',
             ringkasan: 'Operasi pangkat dua (kuadrat), akar kuadrat, pangkat tiga (kubik), dan akar pangkat tiga.',
             tujuan: 'Murid mampu menghitung kuadrat dan kubik bilangan serta menarik akar kuadrat dan akar kubik.',
-            konsepKunci: '-> [H] Rumus Pangkat Dasar: Pangkat Dua (Kuadrat): a² = a × a | Pangkat Tiga (Kubik): a³ = a × a × a\n-> Hubungan Volume & Rusuk Kubus: Rusuk kubus (s) dicari dengan menarik akar pangkat tiga: s = ∛V',
+            konsepKunci: '-> Rumus Pangkat Dasar: Pangkat Dua (Kuadrat): a² = a × a | Pangkat Tiga (Kubik): a³ = a × a × a\n-> Hubungan Volume & Rusuk Kubus: Rusuk kubus (s) dicari dengan menarik akar pangkat tiga: s = ∛V',
             uraianMateri: [
               {
                 subjudul: 'Daftar Bilangan Kuadrat & Kubik Dasar',
-                konten: 'Hafalkan daftar pangkat dasar 1 sampai 10 berikut untuk mempermudah dan mempercepat perhitungan:\n-> [H] Pangkat Dua (Kuadrat) Dasar 1-10: 1² = 1 | 2² = 4 | 3² = 9 | 4² = 16 | 5² = 25 | 6² = 36 | 7² = 49 | 8² = 64 | 9² = 81 | 10² = 100\n-> [H] Pangkat Tiga (Kubik) Dasar 1-10: 1³ = 1 | 2³ = 8 | 3³ = 27 | 4³ = 64 | 5³ = 125 | 6³ = 216 | 7³ = 343 | 8³ = 512 | 9³ = 729 | 10³ = 1000'
+                konten: 'Hafalkan daftar pangkat dasar 1 sampai 10 berikut untuk mempermudah dan mempercepat perhitungan:\n-> Pangkat Dua (Kuadrat) Dasar 1-10: 1² = 1 | 2² = 4 | 3² = 9 | 4² = 16 | 5² = 25 | 6² = 36 | 7² = 49 | 8² = 64 | 9² = 81 | 10² = 100\n-> Pangkat Tiga (Kubik) Dasar 1-10: 1³ = 1 | 2³ = 8 | 3³ = 27 | 4³ = 64 | 5³ = 125 | 6³ = 216 | 7³ = 343 | 8³ = 512 | 9³ = 729 | 10³ = 1000'
               },
               {
                 subjudul: 'Akar Pangkat Tiga Cepat',
-                konten: 'Trik kilat menarik akar pangkat tiga dengan memperhatikan pasangan digit satuan:\n-> [H] Pasangan Digit Satuan (Akar Kubik): 1 ➔ 1 | 2 ➔ 8 | 3 ➔ 7 | 4 ➔ 4 | 5 ➔ 5 | 6 ➔ 6 | 7 ➔ 3 | 8 ➔ 2 | 9 ➔ 9 | 0 ➔ 0\n-> Pisahkan 3 angka dari belakang untuk menentukan angka puluhan dan angka satuan secara instan.',
+                konten: 'Trik kilat menarik akar pangkat tiga dengan memperhatikan pasangan digit satuan:\n-> Pasangan Digit Satuan (Akar Kubik): 1 ➔ 1 | 2 ➔ 8 | 3 ➔ 7 | 4 ➔ 4 | 5 ➔ 5 | 6 ➔ 6 | 7 ➔ 3 | 8 ➔ 2 | 9 ➔ 9 | 0 ➔ 0\n-> Pisahkan 3 angka dari belakang untuk menentukan angka puluhan dan angka satuan secara instan.',
                 contoh: '∛1.728 → pisahkan 1 dan 728. Depan: 1³ ≤ 1 (1). Satuan: 8 berpasangan dengan 2. Maka ∛1.728 = 12.'
               }
             ],
@@ -264,15 +264,15 @@ export const PUSMENDIK_MATERI = {
             judul: 'Pengukuran',
             ringkasan: 'Konversi satuan panjang (km-mm), massa/berat (kg-mg), waktu (jam-detik), dan kuantitas (lusin, kodi, rim).',
             tujuan: 'Murid mampu mengonversi satuan ukuran baku dalam kehidupan sehari-hari.',
-            konsepKunci: '-> [H] Hubungan Tangga Satuan Luas & Volume: Turun 1 tangga luas (m²): × 100 | Turun 1 tangga volume (m³): × 1.000 | 1 liter = 1 dm³ = 1.000 ml\n-> Tangga satuan baku panjang: turun 1 tangga dikali 10, naik 1 tangga dibagi 10.',
+            konsepKunci: '-> Hubungan Tangga Satuan Luas & Volume: Turun 1 tangga luas (m²): × 100 | Turun 1 tangga volume (m³): × 1.000 | 1 liter = 1 dm³ = 1.000 ml\n-> Tangga satuan baku panjang: turun 1 tangga dikali 10, naik 1 tangga dibagi 10.',
             uraianMateri: [
               {
                 subjudul: 'Satuan Kuantitas Populer',
-                konten: 'Hafalkan kesetaraan jumlah satuan kuantitas berikut:\n-> [H] Satuan Kuantitas (Jumlah): 1 lusin = 12 buah | 1 gros = 144 buah (12 lusin) | 1 kodi = 20 lembar | 1 rim = 500 lembar'
+                konten: 'Hafalkan kesetaraan jumlah satuan kuantitas berikut:\n-> Satuan Kuantitas (Jumlah): 1 lusin = 12 buah | 1 gros = 144 buah (12 lusin) | 1 kodi = 20 lembar | 1 rim = 500 lembar'
               },
               {
                 subjudul: 'Satuan Berat & Volume',
-                konten: 'Hafalkan konversi satuan berat dan volume berikut:\n-> [H] Konversi Satuan Berat: 1 ton = 1.000 kg | 1 kuintal = 100 kg | 1 kg = 10 ons | 1 kg = 1.000 g | 1 ons = 100 g\n-> [H] Konversi Satuan Volume: 1 liter = 1 dm³ | 1 dm³ = 1.000 ml | 1 ml = 1 cm³ (cc)'
+                konten: 'Hafalkan konversi satuan berat dan volume berikut:\n-> Konversi Satuan Berat: 1 ton = 1.000 kg | 1 kuintal = 100 kg | 1 kg = 10 ons | 1 kg = 1.000 g | 1 ons = 100 g\n-> Konversi Satuan Volume: 1 liter = 1 dm³ | 1 dm³ = 1.000 ml | 1 ml = 1 cm³ (cc)'
               }
             ],
             contohSoal: {
@@ -310,17 +310,17 @@ export const PUSMENDIK_MATERI = {
             judul: 'Jarak, Waktu, dan kecepatan',
             ringkasan: 'Hubungan segitiga J-K-W (Jarak, Kecepatan, dan Waktu) serta pemecahan masalah perjalanan.',
             tujuan: 'Murid mampu menghitung kecepatan rata-rata, jarak tempuh, waktu keberangkatan dan waktu tiba.',
-            konsepKunci: '-> [H] Rumus Segitiga J-K-W: Jarak (J) = Kecepatan (K) × Waktu (W) | Kecepatan (K) = Jarak (J) / Waktu (W) | Waktu (W) = Jarak (J) / Kecepatan (K)',
+            konsepKunci: '-> Rumus Segitiga J-K-W: Jarak (J) = Kecepatan (K) × Waktu (W) | Kecepatan (K) = Jarak (J) / Waktu (W) | Waktu (W) = Jarak (J) / Kecepatan (K)',
             uraianMateri: [
               {
                 subjudul: 'Rumus Segitiga J-K-W',
-                konten: 'J di puncak segitiga, K dan W di bawah. Tutup huruf yang dicari untuk menemukan rumusnya:\n-> [H] Rumus Kecepatan: Jarak: J = K × W | Kecepatan: K = J : W | Waktu: W = J : K',
+                konten: 'J di puncak segitiga, K dan W di bawah. Tutup huruf yang dicari untuk menemukan rumusnya:\n-> Rumus Kecepatan: Jarak: J = K × W | Kecepatan: K = J : W | Waktu: W = J : K',
                 rumus: 'J = K × W   |   K = J : W   |   W = J : K',
                 contoh: 'Jarak 120 km ditempuh dalam 2 jam. Kecepatan = 120 : 2 = 60 km/jam.'
               },
               {
                 subjudul: 'Menghitung Waktu Tiba',
-                konten: 'Rumus menghitung waktu tiba di tempat tujuan:\n-> [H] Komponen Waktu Tiba: Waktu Berangkat + Waktu Tempuh + Waktu Istirahat'
+                konten: 'Rumus menghitung waktu tiba di tempat tujuan:\n-> Komponen Waktu Tiba: Waktu Berangkat + Waktu Tempuh + Waktu Istirahat'
               }
             ],
             contohSoal: {
@@ -358,11 +358,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Bangun datar',
             ringkasan: 'Sifat-sifat, keliling, luas bangun datar (persegi, persegi panjang, segitiga, jajar genjang, trapesium, lingkaran).',
             tujuan: 'Murid mampu menghitung luas dan keliling berbagai bangun datar serta bangun gabungan.',
-            konsepKunci: '-> [H] 8 Macam Bangun Datar: Persegi | Persegi Panjang | Segitiga | Jajar Genjang | Trapesium | Belah Ketupat | Layang-layang | Lingkaran\n-> Persegi: L = s², K = 4s\n-> Persegi Panjang: L = p × l, K = 2(p+l)\n-> Segitiga: L = ½ × a × t\n-> Lingkaran: L = πr², K = 2πr = πd (π = 22/7 atau 3,14)',
+            konsepKunci: '-> 8 Macam Bangun Datar: Persegi | Persegi Panjang | Segitiga | Jajar Genjang | Trapesium | Belah Ketupat | Layang-layang | Lingkaran\n-> Persegi: L = s², K = 4s\n-> Persegi Panjang: L = p × l, K = 2(p+l)\n-> Segitiga: L = ½ × a × t\n-> Lingkaran: L = πr², K = 2πr = πd (π = 22/7 atau 3,14)',
             uraianMateri: [
               {
                 subjudul: 'Daftar Rumus Luas Bangun Datar',
-                konten: '-> [H] 8 Macam Bangun Datar: Persegi | Persegi Panjang | Segitiga | Jajar Genjang | Trapesium | Belah Ketupat | Layang-layang | Lingkaran\n-> Persegi: s × s\n-> Persegi Panjang: p × l\n-> Segitiga: ½ × alas × tinggi\n-> Jajar Genjang: alas × tinggi\n-> Trapesium: ½ × (a + b) × tinggi\n-> Belah Ketupat & Layang-layang: ½ × d1 × d2\n-> Lingkaran: π × r² (r = jari-jari, d = 2r)'
+                konten: '-> 8 Macam Bangun Datar: Persegi | Persegi Panjang | Segitiga | Jajar Genjang | Trapesium | Belah Ketupat | Layang-layang | Lingkaran\n-> Persegi: s × s\n-> Persegi Panjang: p × l\n-> Segitiga: ½ × alas × tinggi\n-> Jajar Genjang: alas × tinggi\n-> Trapesium: ½ × (a + b) × tinggi\n-> Belah Ketupat & Layang-layang: ½ × d1 × d2\n-> Lingkaran: π × r² (r = jari-jari, d = 2r)'
               }
             ],
             contohSoal: {
@@ -400,11 +400,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Bangun ruang',
             ringkasan: 'Sifat, jaring-jaring, volume, dan luas permukaan kubus, balok, prisma, limas, dan tabung.',
             tujuan: 'Murid mampu menentukan sifat bangun ruang serta menghitung volume bangun ruang.',
-            konsepKunci: '-> [H] Rumus Volume Bangun Ruang: Kubus: V = s³ | Balok: V = p × l × t | Tabung: V = πr²t | Limas/Kerucut: V = ⅓ × Luas Alas × t\n-> Volume Prisma & Tabung = Luas Alas × Tinggi.',
+            konsepKunci: '-> Rumus Volume Bangun Ruang: Kubus: V = s³ | Balok: V = p × l × t | Tabung: V = πr²t | Limas/Kerucut: V = ⅓ × Luas Alas × t\n-> Volume Prisma & Tabung = Luas Alas × Tinggi.',
             uraianMateri: [
               {
                 subjudul: 'Karakteristik Bangun Ruang Utama',
-                konten: '-> [H] 7 Macam Bangun Ruang: Kubus | Balok | Prisma Segitiga | Tabung | Limas Segi Empat | Kerucut | Bola\n• Kubus: 6 sisi persegi sama, 12 rusuk sama panjang, 8 titik sudut.\n• Balok: 6 sisi (3 pasang sisi kongruen), 12 rusuk, 8 titik sudut.\n• Tabung: 3 sisi (2 lingkaran alas & tutup, 1 selimut melengkung), 2 rusuk lengkung, tidak memiliki titik sudut.'
+                konten: '-> 7 Macam Bangun Ruang: Kubus | Balok | Prisma Segitiga | Tabung | Limas Segi Empat | Kerucut | Bola\n• Kubus: 6 sisi persegi sama, 12 rusuk sama panjang, 8 titik sudut.\n• Balok: 6 sisi (3 pasang sisi kongruen), 12 rusuk, 8 titik sudut.\n• Tabung: 3 sisi (2 lingkaran alas & tutup, 1 selimut melengkung), 2 rusuk lengkung, tidak memiliki titik sudut.'
               }
             ],
             contohSoal: {
@@ -442,7 +442,7 @@ export const PUSMENDIK_MATERI = {
             judul: 'Memahami Kartesius',
             ringkasan: 'Membaca dan menentukan koordinat titik (x, y) pada bidang kartesius dua dimensi.',
             tujuan: 'Murid mampu menentukan letak titik koordinat dan menggambarkan bangun datar pada bidang koordinat kartesius.',
-            konsepKunci: '-> [H] Unsur Bidang Koordinat: Format Titik: (x, y) | Nilai x (Absis): Horizontal (Kanan/Kiri) | Nilai y (Ordinat): Vertikal (Atas/Bawah) | Titik Pusat: O (0, 0)',
+            konsepKunci: '-> Unsur Bidang Koordinat: Format Titik: (x, y) | Nilai x (Absis): Horizontal (Kanan/Kiri) | Nilai y (Ordinat): Vertikal (Atas/Bawah) | Titik Pusat: O (0, 0)',
             uraianMateri: [
               {
                 subjudul: 'Aturan Menulis Koordinat',
@@ -485,11 +485,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Pengelolaan Data',
             ringkasan: 'Statistika dasar: penyajian data (tabel, diagram batang/lingkaran), mean (rata-rata), median, dan modus.',
             tujuan: 'Murid mampu membaca diagram serta menghitung nilai rata-rata, median, dan modus kumpulan data.',
-            konsepKunci: '-> [H] 3 Ukuran Pemusatan Data: Mean = Jumlah Nilai ÷ Banyak Data | Median = Nilai Tengah Urut | Modus = Nilai Paling Sering Muncul',
+            konsepKunci: '-> 3 Ukuran Pemusatan Data: Mean = Jumlah Nilai ÷ Banyak Data | Median = Nilai Tengah Urut | Modus = Nilai Paling Sering Muncul',
             uraianMateri: [
               {
                 subjudul: '3 Ukuran Pemusatan Data',
-                konten: '-> [H] 3 Ukuran Pemusatan Data: Mean (Rata-rata) | Median (Nilai Tengah) | Modus (Nilai Terbanyak)\n• Mean (Rata-rata): Jumlah nilai / banyak data\n• Median (Nilai Tengah): Urutkan data dari terkecil ke terbesar, ambil nilai tepat di tengah.\n• Modus (Nilai Terbanyak): Data dengan frekuensi kemunculan tertinggi.'
+                konten: '-> 3 Ukuran Pemusatan Data: Mean (Rata-rata) | Median (Nilai Tengah) | Modus (Nilai Terbanyak)\n• Mean (Rata-rata): Jumlah nilai / banyak data\n• Median (Nilai Tengah): Urutkan data dari terkecil ke terbesar, ambil nilai tepat di tengah.\n• Modus (Nilai Terbanyak): Data dengan frekuensi kemunculan tertinggi.'
               }
             ],
             contohSoal: {
@@ -527,15 +527,15 @@ export const PUSMENDIK_MATERI = {
             judul: 'Besar Sudut',
             ringkasan: 'Jenis-jenis sudut (lancip, siku-siku, tumpul, lurus), pengukuran sudut dengan busur derajat, sudut segitiga dan segi empat.',
             tujuan: 'Murid mampu mengidentifikasi jenis sudut serta menghitung besar sudut yang belum diketahui pada bangun datar.',
-            konsepKunci: '-> [H] 5 Jenis Sudut Utama: Sudut Lancip (< 90°) | Sudut Siku-siku (90°) | Sudut Tumpul (90° - 180°) | Sudut Lurus (180°) | Putaran Penuh (360°)\n-> [H] Total Sudut Bangun Datar: Segitiga: Total 180° | Segi Empat: Total 360°',
+            konsepKunci: '-> 5 Jenis Sudut Utama: Sudut Lancip (< 90°) | Sudut Siku-siku (90°) | Sudut Tumpul (90° - 180°) | Sudut Lurus (180°) | Putaran Penuh (360°)\n-> Total Sudut Bangun Datar: Segitiga: Total 180° | Segi Empat: Total 360°',
             uraianMateri: [
               {
                 subjudul: 'Klasifikasi Derajat Sudut',
-                konten: '-> [H] Jenis-Jenis Sudut: Sudut Lancip: 0° < x < 90° | Sudut Siku-siku: 90° | Sudut Tumpul: 90° < x < 180° | Sudut Lurus: 180° | Putaran Penuh: 360°'
+                konten: '-> Jenis-Jenis Sudut: Sudut Lancip: 0° < x < 90° | Sudut Siku-siku: 90° | Sudut Tumpul: 90° < x < 180° | Sudut Lurus: 180° | Putaran Penuh: 360°'
               },
               {
                 subjudul: 'Aturan Sudut Segitiga & Segi Empat',
-                konten: 'Kaidah total sudut bangun datar:\n-> [H] Total Sudut Bangun: Segitiga = 180° | Segi Empat = 360° | Lingkaran = 360°\n• Sudut Segitiga: Sudut A + Sudut B + Sudut C = 180°\n• Sudut Segi Empat: Jumlah keempat sudut selalu 360°'
+                konten: 'Kaidah total sudut bangun datar:\n-> Total Sudut Bangun: Segitiga = 180° | Segi Empat = 360° | Lingkaran = 360°\n• Sudut Segitiga: Sudut A + Sudut B + Sudut C = 180°\n• Sudut Segi Empat: Jumlah keempat sudut selalu 360°'
               }
             ],
             contohSoal: {
@@ -573,11 +573,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Penaksiran Ukuran',
             ringkasan: 'Teknik pembulatan bilangan ke satuan, puluhan, dan ratusan terdekat serta taksiran operasi hitung.',
             tujuan: 'Murid mampu memperkirakan dan menaksir hasil perhitungan numerik secara cepat dan logis.',
-            konsepKunci: '-> [H] Aturan Pembulatan: Angka < 5 (0, 1, 2, 3, 4): Bulat ke Bawah | Angka ≥ 5 (5, 6, 7, 8, 9): Bulat ke Atas',
+            konsepKunci: '-> Aturan Pembulatan: Angka < 5 (0, 1, 2, 3, 4): Bulat ke Bawah | Angka ≥ 5 (5, 6, 7, 8, 9): Bulat ke Atas',
             uraianMateri: [
               {
                 subjudul: 'Macam-Macam Taksiran',
-                konten: '-> [H] 3 Jenis Taksiran Operasi: Taksiran Atas (Bulat Naik) | Taksiran Bawah (Bulat Turun) | Taksiran Terbaik (Kaidah Matematika)\n• Taksiran Atas: Semua bilangan dibulatkan ke atas.\n• Taksiran Bawah: Semua bilangan dibulatkan ke bawah.\n• Taksiran Terbaik (Umum): Mengikuti kaidah matematika (≥ 5 ke atas, < 5 ke bawah).'
+                konten: '-> 3 Jenis Taksiran Operasi: Taksiran Atas (Bulat Naik) | Taksiran Bawah (Bulat Turun) | Taksiran Terbaik (Kaidah Matematika)\n• Taksiran Atas: Semua bilangan dibulatkan ke atas.\n• Taksiran Bawah: Semua bilangan dibulatkan ke bawah.\n• Taksiran Terbaik (Umum): Mengikuti kaidah matematika (≥ 5 ke atas, < 5 ke bawah).'
               }
             ],
             contohSoal: {
@@ -629,11 +629,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Penulisan Huruf Kapital',
             ringkasan: 'Kaidah pemakaian huruf kapital pada awal kalimat, nama diri, geografi, hari/bulan, dan sapaan.',
             tujuan: 'Murid mampu menggunakan huruf kapital secara tepat sesuai kaidah EYD edisi V.',
-            konsepKunci: '-> [H] Penggunaan Huruf Kapital: Awal Kalimat | Nama Orang & Gelar | Nama Geografi (Kota, Sungai, Gunung) | Hari & Bulan | Bangsa, Suku & Bahasa',
+            konsepKunci: '-> Penggunaan Huruf Kapital: Awal Kalimat | Nama Orang & Gelar | Nama Geografi (Kota, Sungai, Gunung) | Hari & Bulan | Bangsa, Suku & Bahasa',
             uraianMateri: [
               {
                 subjudul: 'Aturan Penting Huruf Kapital',
-                konten: '-> [H] Area Wajib Huruf Kapital: Awal Kalimat | Nama Orang & Gelar | Nama Geografi | Hari & Bulan\n• Huruf pertama awal kalimat: Dia membaca buku.\n• Nama orang dan julukan: Amir Hamzah, Haji Agus Salim.\n• Nama geografi: Sungai Musi, Danau Toba, Pulau Bali.\n• Nama hari dan bulan: hari Senin, bulan Agustus, Idulfitri.'
+                konten: '-> Area Wajib Huruf Kapital: Awal Kalimat | Nama Orang & Gelar | Nama Geografi | Hari & Bulan\n• Huruf pertama awal kalimat: Dia membaca buku.\n• Nama orang dan julukan: Amir Hamzah, Haji Agus Salim.\n• Nama geografi: Sungai Musi, Danau Toba, Pulau Bali.\n• Nama hari dan bulan: hari Senin, bulan Agustus, Idulfitri.'
               }
             ],
             contohSoal: {
@@ -676,7 +676,7 @@ export const PUSMENDIK_MATERI = {
             judul: 'Penulisan Kata Depan: dari, di, ke',
             ringkasan: 'Membedakan penulisan kata depan (dipisah) dengan awalan di- dan ke- (digabung).',
             tujuan: 'Murid mampu membedakan kata depan tempat dan awalan pembentuk kata kerja pasif.',
-            konsepKunci: '-> [H] Kata Depan (Dipisah untuk Tempat/Arah): di sekolah | ke pasar | dari rumah | di meja | ke perpustakaan\n-> [H] Awalan Kata Kerja (Serangkai): dimakan | ditulis | dibaca | disiram | dikirim',
+            konsepKunci: '-> Kata Depan (Dipisah untuk Tempat/Arah): di sekolah | ke pasar | dari rumah | di meja | ke perpustakaan\n-> Awalan Kata Kerja (Serangkai): dimakan | ditulis | dibaca | disiram | dikirim',
             uraianMateri: [
               {
                 subjudul: 'Uji Sederhana "Bisa Diganti Me-"',
@@ -728,11 +728,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Pemakaian Tanda Baca',
             ringkasan: 'Fungsi dan kaidah pemakaian tanda titik (.), koma (,), titik dua (:), tanda petik ("..."), dan tanda tanya/seru.',
             tujuan: 'Murid mampu menempatkan tanda baca secara tepat dalam kalimat langsung, rincian, dan penutup.',
-            konsepKunci: '-> [H] 6 Macam Tanda Baca Pokok: Titik (.) | Koma (,) | Titik Dua (:) | Tanda Petik ("...") | Tanda Seru (!) | Tanda Tanya (?)',
+            konsepKunci: '-> 6 Macam Tanda Baca Pokok: Titik (.) | Koma (,) | Titik Dua (:) | Tanda Petik ("...") | Tanda Seru (!) | Tanda Tanya (?)',
             uraianMateri: [
               {
                 subjudul: 'Fungsi Tanda Baca Utama',
-                konten: '-> [H] 6 Tanda Baca Pokok: Titik (.) | Koma (,) | Titik Dua (:) | Tanda Petik ("...") | Tanda Seru (!) | Tanda Tanya (?)\n• Titik (.): Akhir kalimat pernyataan, pemisah jam & menit (07.30), singkatan.\n• Koma (,): Rincian (buku, pensil, dan tas), sebelum kata hubung pertentangan (tetapi, melainkan).\n• Petik ("..."): Kalimat langsung. Contoh: Ibu berkata, "Cepat mandi!"'
+                konten: '-> 6 Tanda Baca Pokok: Titik (.) | Koma (,) | Titik Dua (:) | Tanda Petik ("...") | Tanda Seru (!) | Tanda Tanya (?)\n• Titik (.): Akhir kalimat pernyataan, pemisah jam & menit (07.30), singkatan.\n• Koma (,): Rincian (buku, pensil, dan tas), sebelum kata hubung pertentangan (tetapi, melainkan).\n• Petik ("..."): Kalimat langsung. Contoh: Ibu berkata, "Cepat mandi!"'
               }
             ],
             contohSoal: {
@@ -785,11 +785,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Kata Berimbuhan',
             ringkasan: 'Morfologi awalan (me-, ber-, di-, ter-), akhiran (-an, -kan, -i), serta peluluhan fonem K, T, S, P.',
             tujuan: 'Murid mampu membentuk kata berimbuhan dengan tepat dan memahami kaidah peluluhan K-T-S-P.',
-            konsepKunci: '-> [H] Kaidah Luluh Huruf K-T-S-P: K ➔ meng- (karang ➔ mengarang) | T ➔ men- (tulis ➔ menulis) | S ➔ meny- (sapu ➔ menyapu) | P ➔ mem- (potong ➔ memotong)',
+            konsepKunci: '-> Kaidah Luluh Huruf K-T-S-P: K ➔ meng- (karang ➔ mengarang) | T ➔ men- (tulis ➔ menulis) | S ➔ meny- (sapu ➔ menyapu) | P ➔ mem- (potong ➔ memotong)',
             uraianMateri: [
               {
                 subjudul: 'Kaidah Peluluhan K-T-S-P',
-                konten: '-> [H] 4 Pola Peluluhan K-T-S-P: K ➔ meng-... (mengarang) | T ➔ men-... (menulis) | S ➔ meny-... (menyapu) | P ➔ mem-... (memotong)'
+                konten: '-> 4 Pola Peluluhan K-T-S-P: K ➔ meng-... (mengarang) | T ➔ men-... (menulis) | S ➔ meny-... (menyapu) | P ➔ mem-... (memotong)'
               }
             ],
             contohSoal: {
@@ -832,11 +832,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Frasa (Kelompok Kata)',
             ringkasan: 'Gabungan dua kata atau lebih yang bersifat nonpredikatif dan menduduki satu fungsi kalimat.',
             tujuan: 'Murid mampu mengidentifikasi frasa nominal, verbal, dan adjektival dalam kalimat.',
-            konsepKunci: '-> [H] 3 Macam Frasa Bahasa Indonesia: Frasa Nominal (Inti Benda) | Frasa Verbal (Inti Kerja) | Frasa Adjektival (Inti Sifat)\n-> Frasa tidak memiliki predikat sendiri (contoh: "buku cerita tebal", "sedang makan siang").',
+            konsepKunci: '-> 3 Macam Frasa Bahasa Indonesia: Frasa Nominal (Inti Benda) | Frasa Verbal (Inti Kerja) | Frasa Adjektival (Inti Sifat)\n-> Frasa tidak memiliki predikat sendiri (contoh: "buku cerita tebal", "sedang makan siang").',
             uraianMateri: [
               {
                 subjudul: 'Jenis-Jenis Frasa',
-                konten: '-> [H] 3 Kelompok Frasa: Frasa Nominal (Benda) | Frasa Verbal (Kerja) | Frasa Adjektival (Sifat)\n• Frasa Nominal: Inti berupa kata benda (rumah besar, sepatu baru).\n• Frasa Verbal: Inti berupa kata kerja (sedang tidur, akan berangkat).\n• Frasa Adjektival: Inti berupa kata sifat (sangat pandai, agak mahal).'
+                konten: '-> 3 Kelompok Frasa: Frasa Nominal (Benda) | Frasa Verbal (Kerja) | Frasa Adjektival (Sifat)\n• Frasa Nominal: Inti berupa kata benda (rumah besar, sepatu baru).\n• Frasa Verbal: Inti berupa kata kerja (sedang tidur, akan berangkat).\n• Frasa Adjektival: Inti berupa kata sifat (sangat pandai, agak mahal).'
               }
             ],
             contohSoal: {
@@ -874,11 +874,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Makna Kata',
             ringkasan: 'Makna leksikal (kamus), gramatikal (imbuhan), makna denotatif (sebenarnya) dan konotatif (kiasan).',
             tujuan: 'Murid mampu membedakan makna sebenarnya dan makna kiasan dalam konteks bacaan.',
-            konsepKunci: '-> [H] 2 Kategori Makna Kata: Denotatif: Makna Lugas / Sebenarnya | Konotatif: Makna Kiasan / Nilai Rasa Tambahan',
+            konsepKunci: '-> 2 Kategori Makna Kata: Denotatif: Makna Lugas / Sebenarnya | Konotatif: Makna Kiasan / Nilai Rasa Tambahan',
             uraianMateri: [
               {
                 subjudul: 'Contoh Denotatif vs Konotatif',
-                konten: '-> [H] Perbandingan Makna: Denotatif: Makna Sebenarnya (Lugas) | Konotatif: Makna Kiasan (Perumpamaan)\n• Denotatif: Ibu memotong ekor kambing (ekor hewan sebenarnya).\n• Konotatif: Budi menjadi ekor dalam kelompok itu (orang yang selalu mengekor/mengikuti).'
+                konten: '-> Perbandingan Makna: Denotatif: Makna Sebenarnya (Lugas) | Konotatif: Makna Kiasan (Perumpamaan)\n• Denotatif: Ibu memotong ekor kambing (ekor hewan sebenarnya).\n• Konotatif: Budi menjadi ekor dalam kelompok itu (orang yang selalu mengekor/mengikuti).'
               }
             ],
             contohSoal: {
@@ -921,11 +921,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Ungkapan',
             ringkasan: 'Kumpulan ungkapan tradisional (idiom) bahasa Indonesia beserta arti dan penerapannya.',
             tujuan: 'Murid memahami arti ungkapan populer yang sering muncul pada soal cerita fiksi TKA SD.',
-            konsepKunci: '-> [H] Contoh Ungkapan Populer: Buah tangan (Oleh-oleh) | Buah bibir (Bahan pembicaraan) | Kutu buku (Gemar membaca) | Panjang tangan (Suka mencuri) | Lapang dada (Ikhlas / Sabar) | Gulung tikar (Bangkrut)',
+            konsepKunci: '-> Contoh Ungkapan Populer: Buah tangan (Oleh-oleh) | Buah bibir (Bahan pembicaraan) | Kutu buku (Gemar membaca) | Panjang tangan (Suka mencuri) | Lapang dada (Ikhlas / Sabar) | Gulung tikar (Bangkrut)',
             uraianMateri: [
               {
                 subjudul: 'Daftar Ungkapan Populer TKA SD',
-                konten: 'Hafalkan makna ungkapan tradisional yang sering muncul pada soal cerita:\n-> [H] Daftar Ungkapan Populer: Buah tangan = Oleh-oleh | Buah bibir = Bahan pembicaraan | Kutu buku = Gemar membaca | Panjang tangan = Suka mencuri | Lapang dada = Ikhlas / Sabar | Gulung tikar = Bangkrut'
+                konten: 'Hafalkan makna ungkapan tradisional yang sering muncul pada soal cerita:\n-> Daftar Ungkapan Populer: Buah tangan = Oleh-oleh | Buah bibir = Bahan pembicaraan | Kutu buku = Gemar membaca | Panjang tangan = Suka mencuri | Lapang dada = Ikhlas / Sabar | Gulung tikar = Bangkrut'
               }
             ],
             contohSoal: {
@@ -963,11 +963,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Sinonim dan Antonim',
             ringkasan: 'Persamaan kata (sinonim) dan lawan kata (antonim) dalam teks bacaan.',
             tujuan: 'Murid mampu mencari padanan kata dan lawan kata yang sesuai konteks kalimat.',
-            konsepKunci: '-> [H] Contoh Pasangan Antonim (Lawan Kata): Asli >< Palsu | Modern >< Kuno | Hemat >< Boros | Faktual >< Fiktif | Mandiri >< Bergantung',
+            konsepKunci: '-> Contoh Pasangan Antonim (Lawan Kata): Asli >< Palsu | Modern >< Kuno | Hemat >< Boros | Faktual >< Fiktif | Mandiri >< Bergantung',
             uraianMateri: [
               {
                 subjudul: 'Daftar Sinonim & Antonim Penting',
-                konten: 'Hafalkan pasangan sinonim dan lawan kata berikut:\n-> [H] Pasangan Lawan Kata (Antonim): Asli >< Palsu | Modern >< Kuno | Hemat >< Boros | Faktual >< Fiktif | Mandiri >< Bergantung'
+                konten: 'Hafalkan pasangan sinonim dan lawan kata berikut:\n-> Pasangan Lawan Kata (Antonim): Asli >< Palsu | Modern >< Kuno | Hemat >< Boros | Faktual >< Fiktif | Mandiri >< Bergantung'
               }
             ],
             contohSoal: {
@@ -1005,11 +1005,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Kata dalam Bahasa Indonesia',
             ringkasan: 'Klasifikasi kelas kata: nomina (kata benda), verba (kata kerja), adjektiva (kata sifat), numeralia, dan konjungsi.',
             tujuan: 'Murid mampu membedakan jenis kata berdasarkan fungsi gramatikalnya.',
-            konsepKunci: '-> [H] 4 Golongan Kelas Kata Utama: Nomina (Benda) | Verba (Kerja) | Adjektiva (Sifat) | Konjungsi (Hubung)',
+            konsepKunci: '-> 4 Golongan Kelas Kata Utama: Nomina (Benda) | Verba (Kerja) | Adjektiva (Sifat) | Konjungsi (Hubung)',
             uraianMateri: [
               {
                 subjudul: 'Penggolongan Kelas Kata Utama',
-                konten: '-> [H] 4 Golongan Kelas Kata: Nomina (Kata Benda) | Verba (Kata Kerja) | Adjektiva (Kata Sifat) | Konjungsi (Kata Hubung)\n• Kata Benda (Nomina): Meja, sekolah, kucing, udara.\n• Kata Kerja (Verba): Berlari, membaca, menyiram.\n• Kata Sifat (Adjektiva): Cantik, bersih, malas, pintar.\n• Kata Hubung (Konjungsi): Dan, atau, tetapi, karena, sehingga.'
+                konten: '-> 4 Golongan Kelas Kata: Nomina (Kata Benda) | Verba (Kata Kerja) | Adjektiva (Kata Sifat) | Konjungsi (Kata Hubung)\n• Kata Benda (Nomina): Meja, sekolah, kucing, udara.\n• Kata Kerja (Verba): Berlari, membaca, menyiram.\n• Kata Sifat (Adjektiva): Cantik, bersih, malas, pintar.\n• Kata Hubung (Konjungsi): Dan, atau, tetapi, karena, sehingga.'
               }
             ],
             contohSoal: {
@@ -1047,11 +1047,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Kalimat',
             ringkasan: 'Struktur pola kalimat dasar (S-P-O-K), jenis kalimat (berita, tanya, perintah), dan ciri kalimat efektif.',
             tujuan: 'Murid mampu menganalisis pola kalimat S-P-O-K dan menyusun kalimat efektif.',
-            konsepKunci: '-> [H] 4 Unsur Pola Kalimat SPOK: Subjek (S: Pelaku) | Predikat (P: Tindakan) | Objek (O: Penderita) | Keterangan (K: Tempat/Waktu)',
+            konsepKunci: '-> 4 Unsur Pola Kalimat SPOK: Subjek (S: Pelaku) | Predikat (P: Tindakan) | Objek (O: Penderita) | Keterangan (K: Tempat/Waktu)',
             uraianMateri: [
               {
                 subjudul: 'Unsur Kalimat SPOK',
-                konten: '-> [H] Unsur Pembentuk Kalimat: Subjek (S: Pelaku) | Predikat (P: Perbuatan) | Objek (O: Korban/Penderita) | Keterangan (K: Tempat/Waktu)\n• Subjek (S): Pelaku atau pokok bahasan (Budi)\n• Predikat (P): Tindakan atau keadaan subjek (membaca)\n• Objek (O): Hal yang dikenai tindakan (buku cerita)\n• Keterangan (K): Tempat/waktu/cara (di perpustakaan)'
+                konten: '-> Unsur Pembentuk Kalimat: Subjek (S: Pelaku) | Predikat (P: Perbuatan) | Objek (O: Korban/Penderita) | Keterangan (K: Tempat/Waktu)\n• Subjek (S): Pelaku atau pokok bahasan (Budi)\n• Predikat (P): Tindakan atau keadaan subjek (membaca)\n• Objek (O): Hal yang dikenai tindakan (buku cerita)\n• Keterangan (K): Tempat/waktu/cara (di perpustakaan)'
               }
             ],
             contohSoal: {
@@ -1101,11 +1101,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Menyimak',
             ringkasan: 'Keterampilan mendengarkan informasi secara kritis, mencatat ide pokok lisan, dan menangkap instruksi.',
             tujuan: 'Murid mampu menyimak pembacaan teks dan menjawab pertanyaan berdasarkan tuturan lisan.',
-            konsepKunci: '-> [H] 4 Kunci Menyimak: Konsentrasi Penuh | Catat Kata Kunci | Tangkap Pesan Tersirat | Rangkum Inti Pesan',
+            konsepKunci: '-> 4 Kunci Menyimak: Konsentrasi Penuh | Catat Kata Kunci | Tangkap Pesan Tersirat | Rangkum Inti Pesan',
             uraianMateri: [
               {
                 subjudul: 'Langkah Menyimak Efektif',
-                konten: 'Langkah-langkah menyimak secara efektif dan runtut:\n-> [H] 4 Langkah Menyimak: 1. Pusatkan Perhatian | 2. Catat Kata Kunci & Tokoh | 3. Dengarkan Tuntas | 4. Rangkum dengan Kata Sendiri'
+                konten: 'Langkah-langkah menyimak secara efektif dan runtut:\n-> 4 Langkah Menyimak: 1. Pusatkan Perhatian | 2. Catat Kata Kunci & Tokoh | 3. Dengarkan Tuntas | 4. Rangkum dengan Kata Sendiri'
               }
             ],
             contohSoal: {
@@ -1148,11 +1148,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Menulis',
             ringkasan: 'Menyusun paragraf deskripsi, narasi, petunjuk penggunaan (prosedur), dan surat pribadi/resmi.',
             tujuan: 'Murid mampu menyusun teks tertulis secara runtut, kohesif, dan memperhatikan tanda baca.',
-            konsepKunci: '-> [H] 3 Ragam Teks Pokok: Narasi (Cerita Kronologis Waktu) | Deskripsi (Penggambaran Objek Pancaindra) | Prosedur (Langkah Kerja Berurutan)',
+            konsepKunci: '-> 3 Ragam Teks Pokok: Narasi (Cerita Kronologis Waktu) | Deskripsi (Penggambaran Objek Pancaindra) | Prosedur (Langkah Kerja Berurutan)',
             uraianMateri: [
               {
                 subjudul: 'Ciri Teks Prosedur / Petunjuk',
-                konten: '-> [H] Ciri Teks Petunjuk: Kalimat Perintah Imperatif | Urutan Angka Runtut | Rinci & Jelas\n• Menggunakan kalimat perintah (imperatif): "Kocoklah telur hingga mengembang."\n• Menggunakan urutan angka atau konjungsi urutan (pertama, kedua, lalu, selanjutnya).\n• Rinci dan tidak membingungkan.'
+                konten: '-> Ciri Teks Petunjuk: Kalimat Perintah Imperatif | Urutan Angka Runtut | Rinci & Jelas\n• Menggunakan kalimat perintah (imperatif): "Kocoklah telur hingga mengembang."\n• Menggunakan urutan angka atau konjungsi urutan (pertama, kedua, lalu, selanjutnya).\n• Rinci dan tidak membingungkan.'
               }
             ],
             contohSoal: {
@@ -1195,11 +1195,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Puisi',
             ringkasan: 'Unsur pembangun puisi: bait, larik, rima (persajakan), majas, dan pesan moral dalam puisi anak.',
             tujuan: 'Murid mampu menentukan rima, makna kata kias, dan amanat yang terkandung dalam puisi.',
-            konsepKunci: '-> [H] 5 Unsur Pembangun Puisi: Bait & Larik | Rima (Persajakan) | Pilihan Diksi Indah | Majas / Gaya Bahasa | Amanat Moral',
+            konsepKunci: '-> 5 Unsur Pembangun Puisi: Bait & Larik | Rima (Persajakan) | Pilihan Diksi Indah | Majas / Gaya Bahasa | Amanat Moral',
             uraianMateri: [
               {
                 subjudul: 'Unsur Intrinsik Puisi',
-                konten: '-> [H] Unsur Pokok Puisi: Bait & Larik | Rima Akhir (a-b-a-b) | Majas Personifikasi & Metafora | Amanat Moral\n• Bait & Larik: Kumpulan baris membentuk bait.\n• Rima: Pengulangan bunyi akhir (a-b-a-b, a-a-a-a).\n• Majas / Gaya Bahasa: Personifikasi (benda mati seolah hidup), Metafora (perbandingan langsung).\n• Amanat: Nilai moral atau nasihat.'
+                konten: '-> Unsur Pokok Puisi: Bait & Larik | Rima Akhir (a-b-a-b) | Majas Personifikasi & Metafora | Amanat Moral\n• Bait & Larik: Kumpulan baris membentuk bait.\n• Rima: Pengulangan bunyi akhir (a-b-a-b, a-a-a-a).\n• Majas / Gaya Bahasa: Personifikasi (benda mati seolah hidup), Metafora (perbandingan langsung).\n• Amanat: Nilai moral atau nasihat.'
               }
             ],
             contohSoal: {
@@ -1237,11 +1237,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Prosa',
             ringkasan: 'Unsur intrinsik karya sastra fiksi (cerpen, dongeng, fabel): tema, tokoh, watak, latar, dan alur.',
             tujuan: 'Murid mampu menentukan tokoh utama, watak tokoh, latar tempat/waktu, dan konflik cerita.',
-            konsepKunci: '-> [H] Peran Tokoh Cerita: Protagonis (Berwatak Baik) | Antagonis (Penentang / Jahat) | Tritagonis (Penengah Bijak)',
+            konsepKunci: '-> Peran Tokoh Cerita: Protagonis (Berwatak Baik) | Antagonis (Penentang / Jahat) | Tritagonis (Penengah Bijak)',
             uraianMateri: [
               {
                 subjudul: 'Unsur Intrinsik Cerita Fiksi',
-                konten: '-> [H] 5 Unsur Intrinsik Prosa: Tema Pokok | Tokoh & Penokohan | Latar (Tempat, Waktu, Suasana) | Alur Peristiwa | Amanat Cerita\n• Tema: Gagasan dasar cerita.\n• Tokoh & Penokohan: Pelaku dan karakter sifatnya.\n• Latar (Setting): Tempat (desa), waktu (sore), suasana (menegangkan).\n• Alur (Plot): Urutan jalannya peristiwa dari awal hingga penyelesaian.\n• Amanat: Pelajaran hidup bagi pembaca.'
+                konten: '-> 5 Unsur Intrinsik Prosa: Tema Pokok | Tokoh & Penokohan | Latar (Tempat, Waktu, Suasana) | Alur Peristiwa | Amanat Cerita\n• Tema: Gagasan dasar cerita.\n• Tokoh & Penokohan: Pelaku dan karakter sifatnya.\n• Latar (Setting): Tempat (desa), waktu (sore), suasana (menegangkan).\n• Alur (Plot): Urutan jalannya peristiwa dari awal hingga penyelesaian.\n• Amanat: Pelajaran hidup bagi pembaca.'
               }
             ],
             contohSoal: {
@@ -1279,11 +1279,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Kosakata',
             ringkasan: 'Penguasaan kosakata baku, istilah serapan, dan makna leksikal ragam teks sains dan sosial.',
             tujuan: 'Murid mampu memahami arti kosakata khusus dan membedakan kata baku dan tidak baku.',
-            konsepKunci: '-> [H] Contoh Pasangan Kata Baku: Apotek (bukan Apotik) | Praktik (bukan Praktek) | Izin (bukan Ijin) | Antre (bukan Antri) | Risiko (bukan Resiko) | Nasihat (bukan Nasehat)',
+            konsepKunci: '-> Contoh Pasangan Kata Baku: Apotek (bukan Apotik) | Praktik (bukan Praktek) | Izin (bukan Ijin) | Antre (bukan Antri) | Risiko (bukan Resiko) | Nasihat (bukan Nasehat)',
             uraianMateri: [
               {
                 subjudul: 'Contoh Kosakata Baku vs Tidak Baku',
-                konten: 'Hafalkan pasangan kata baku menurut KBBI berikut:\n-> [H] Kata Baku vs Tidak Baku: Apotek (bukan Apotik) | Praktik (bukan Praktek) | Izin (bukan Ijin) | Antre (bukan Antri) | Risiko (bukan Resiko) | Nasihat (bukan Nasehat) | Ekosistem (bukan Ekosistim)'
+                konten: 'Hafalkan pasangan kata baku menurut KBBI berikut:\n-> Kata Baku vs Tidak Baku: Apotek (bukan Apotik) | Praktik (bukan Praktek) | Izin (bukan Ijin) | Antre (bukan Antri) | Risiko (bukan Resiko) | Nasihat (bukan Nasehat) | Ekosistem (bukan Ekosistim)'
               }
             ],
             contohSoal: {
@@ -1328,11 +1328,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Menyusun Kembali Informasi dari Teks',
             ringkasan: 'Merangkum, menyusun parafrasa, membuat peta pikiran, dan menyusun urutan peristiwa teks secara kronologis.',
             tujuan: 'Murid mampu menuliskan kembali ide pokok bacaan secara ringkas dan runtut.',
-            konsepKunci: '-> [H] 4 Tahap Membuat Ringkasan: 1. Baca Keseluruhan Teks | 2. Temukan Kalimat Utama | 3. Rangkai dengan Konjungsi | 4. Cek Kelengkapan Isi',
+            konsepKunci: '-> 4 Tahap Membuat Ringkasan: 1. Baca Keseluruhan Teks | 2. Temukan Kalimat Utama | 3. Rangkai dengan Konjungsi | 4. Cek Kelengkapan Isi',
             uraianMateri: [
               {
                 subjudul: 'Langkah Merangkum Bacaan',
-                konten: 'Langkah-langkah merangkum teks bacaan secara runtut:\n-> [H] Tahap Ringkasan: 1. Baca Keseluruhan | 2. Temukan Ide Pokok | 3. Rangkai dengan Konjungsi | 4. Hilangkan Rincian Tak Perlu\n• Baca keseluruhan paragraf dengan seksama.\n• Tentukan kalimat utama dan ide pokok tiap paragraf.\n• Rangkaikan ide pokok menggunakan kata hubung yang tepat.\n• Hilangkan contoh dan rincian yang tidak terlalu penting.'
+                konten: 'Langkah-langkah merangkum teks bacaan secara runtut:\n-> Tahap Ringkasan: 1. Baca Keseluruhan | 2. Temukan Ide Pokok | 3. Rangkai dengan Konjungsi | 4. Hilangkan Rincian Tak Perlu\n• Baca keseluruhan paragraf dengan seksama.\n• Tentukan kalimat utama dan ide pokok tiap paragraf.\n• Rangkaikan ide pokok menggunakan kata hubung yang tepat.\n• Hilangkan contoh dan rincian yang tidak terlalu penting.'
               }
             ],
             contohSoal: {
@@ -1380,11 +1380,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Informasi Tersurat',
             ringkasan: 'Menemukan fakta eksplisit (5W1H / ADiKSiMBa) yang tertulis langsung di dalam teks wacana.',
             tujuan: 'Murid mampu menemukan fakta yang dinyatakan secara langsung tanpa perlu penafsiran.',
-            konsepKunci: '-> [H] 6 Kata Tanya ADIKSIMBA: Apa (Hal/Benda) | Di mana (Tempat) | Kapan (Waktu) | Siapa (Tokoh/Orang) | Mengapa (Alasan/Sebab) | Bagaimana (Cara/Proses)',
+            konsepKunci: '-> 6 Kata Tanya ADIKSIMBA: Apa (Hal/Benda) | Di mana (Tempat) | Kapan (Waktu) | Siapa (Tokoh/Orang) | Mengapa (Alasan/Sebab) | Bagaimana (Cara/Proses)',
             uraianMateri: [
               {
                 subjudul: 'Panduan Kata Tanya 5W1H',
-                konten: '-> [H] Panduan Kata Tanya Pokok: Apa (Benda/Peristiwa) | Di mana (Tempat) | Kapan (Waktu) | Siapa (Tokoh/Orang) | Mengapa (Alasan/Sebab) | Bagaimana (Cara/Proses)\n• Apa: Menanyakan benda/peristiwa.\n• Di mana: Menanyakan tempat.\n• Kapan: Menanyakan waktu.\n• Siapa: Menanyakan tokoh/orang.\n• Mengapa: Menanyakan alasan/penyebab (karena).\n• Bagaimana: Menanyakan cara/proses/keadaan.'
+                konten: '-> Panduan Kata Tanya Pokok: Apa (Benda/Peristiwa) | Di mana (Tempat) | Kapan (Waktu) | Siapa (Tokoh/Orang) | Mengapa (Alasan/Sebab) | Bagaimana (Cara/Proses)\n• Apa: Menanyakan benda/peristiwa.\n• Di mana: Menanyakan tempat.\n• Kapan: Menanyakan waktu.\n• Siapa: Menanyakan tokoh/orang.\n• Mengapa: Menanyakan alasan/penyebab (karena).\n• Bagaimana: Menanyakan cara/proses/keadaan.'
               }
             ],
             contohSoal: {
@@ -1427,11 +1427,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Menarik Kesimpulan',
             ringkasan: 'Menyimpulkan isi atau pesan utama bacaan berdasarkan seluruh fakta dan premis yang tersaji.',
             tujuan: 'Murid mampu merumuskan kesimpulan akhir yang mencakup seluruh gagasan wacana.',
-            konsepKunci: '-> [H] 3 Ciri Kesimpulan yang Tepat: Memuat Intisari Seluruh Isi | Didukung Fakta Nyata Teks | Berupa Pernyataan Menyeluruh',
+            konsepKunci: '-> 3 Ciri Kesimpulan yang Tepat: Memuat Intisari Seluruh Isi | Didukung Fakta Nyata Teks | Berupa Pernyataan Menyeluruh',
             uraianMateri: [
               {
                 subjudul: 'Cara Merumuskan Kesimpulan',
-                konten: 'Langkah menarik kesimpulan yang valid:\n-> [H] Langkah Simpulan: 1. Pahami Ide Pokok Tiap Paragraf | 2. Hubungkan Sebab-Akibat | 3. Rumuskan Intisari Menyeluruh\n• Pahami ide pokok tiap paragraf.\n• Hubungkan sebab dan akibat antarparagraf.\n• Cari kalimat yang mewakili keseluruhan isi, bukan hanya penggalan kecil satu kalimat saja.'
+                konten: 'Langkah menarik kesimpulan yang valid:\n-> Langkah Simpulan: 1. Pahami Ide Pokok Tiap Paragraf | 2. Hubungkan Sebab-Akibat | 3. Rumuskan Intisari Menyeluruh\n• Pahami ide pokok tiap paragraf.\n• Hubungkan sebab dan akibat antarparagraf.\n• Cari kalimat yang mewakili keseluruhan isi, bukan hanya penggalan kecil satu kalimat saja.'
               }
             ],
             contohSoal: {
@@ -1479,11 +1479,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Relevansi Peristiwa dalam teks',
             ringkasan: 'Menghubungkan peristiwa atau konflik dalam cerita dengan situasi nyata dalam kehidupan sehari-hari.',
             tujuan: 'Murid mampu mengambil nilai pelajaran dari teks dan mengaitkannya dengan kehidupan sosial nyata.',
-            konsepKunci: '-> [H] Contoh Nilai Karakter Relevan: Sikap Tolong-Menolong | Kejujuran | Pantang Menyerah | Gemar Menabung | Gotong Royong',
+            konsepKunci: '-> Contoh Nilai Karakter Relevan: Sikap Tolong-Menolong | Kejujuran | Pantang Menyerah | Gemar Menabung | Gotong Royong',
             uraianMateri: [
               {
                 subjudul: 'Contoh Relevansi Konseptual',
-                konten: '-> [H] Nilai Moral & Relevansi Nyata: Semut Rajin (Gemar Menabung) | Kura-kura Gigih (Pantang Menyerah) | Gotong Royong (Kerja Sama Warga)\n• Tokoh fabel semut yang menabung makanan untuk musim dingin memiliki relevansi dengan kebiasaan manusia menabung uang untuk masa depan.'
+                konten: '-> Nilai Moral & Relevansi Nyata: Semut Rajin (Gemar Menabung) | Kura-kura Gigih (Pantang Menyerah) | Gotong Royong (Kerja Sama Warga)\n• Tokoh fabel semut yang menabung makanan untuk musim dingin memiliki relevansi dengan kebiasaan manusia menabung uang untuk masa depan.'
               }
             ],
             contohSoal: {
@@ -1531,11 +1531,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Kesesuaian Antarunsur dalam teks',
             ringkasan: 'Menganalisis hubungan sebab-akibat antarperistiwa, kesesuaian judul dengan isi, dan motivasi tindakan tokoh.',
             tujuan: 'Murid mampu menilai apakah tindakan tokoh logis dan sesuai dengan watak serta alur cerita.',
-            konsepKunci: '-> [H] Kata Hubung Sebab-Akibat: karena | sebab | sehingga | oleh karena itu | akibatnya | maka',
+            konsepKunci: '-> Kata Hubung Sebab-Akibat: karena | sebab | sehingga | oleh karena itu | akibatnya | maka',
             uraianMateri: [
               {
                 subjudul: 'Analisis Hubungan Sebab-Akibat',
-                konten: '-> [H] 2 Unsur Hubungan Kausalitas: Sebab (Alasan / Pemicu Terjadinya) | Akibat (Hasil / Dampak Peristiwa)\n-> [H] Konjungsi Kausalitas: karena | sebab | sehingga | oleh karena itu | maka\n• Sebab: Mengapa suatu peristiwa terjadi (alasan).\n• Akibat: Hasil atau konsekuensi dari peristiwa tersebut.'
+                konten: '-> 2 Unsur Hubungan Kausalitas: Sebab (Alasan / Pemicu Terjadinya) | Akibat (Hasil / Dampak Peristiwa)\n-> Konjungsi Kausalitas: karena | sebab | sehingga | oleh karena itu | maka\n• Sebab: Mengapa suatu peristiwa terjadi (alasan).\n• Akibat: Hasil atau konsekuensi dari peristiwa tersebut.'
               }
             ],
             contohSoal: {
@@ -1578,11 +1578,11 @@ export const PUSMENDIK_MATERI = {
             judul: 'Respons Emosional Terhadap Unsur Teks Fiksi',
             ringkasan: 'Memberikan penilaian, empati, dan tanggapan emosional terhadap nasib dan keputusan tokoh cerita fiksi.',
             tujuan: 'Murid mampu mengungkapkan perasaan setuju, sedih, bangga, atau simpati terhadap isi teks fiksi.',
-            konsepKunci: '-> [H] 3 Bentuk Tanggapan Kritis: Empati (Peduli Nasib Tokoh) | Apresiasi (Kagum atas Usaha) | Evaluasi (Menolak Sikap Curang)',
+            konsepKunci: '-> 3 Bentuk Tanggapan Kritis: Empati (Peduli Nasib Tokoh) | Apresiasi (Kagum atas Usaha) | Evaluasi (Menolak Sikap Curang)',
             uraianMateri: [
               {
                 subjudul: 'Bentuk Respons Emosional Siswa',
-                konten: '-> [H] Ragam Respons Emosional: Empati (Ikut Merasakan Penderitaan) | Apresiasi (Mengagumi Ketabahan) | Evaluasi Kritis (Menolak Perilaku Culas)\n• Empati: Ikut merasakan penderitaan tokoh yang kurang beruntung.\n• Apresiasi: Mengagumi ketabahan dan kecerdikan tokoh.\n• Evaluasi Kritis: Menolak perilaku curang atau culas yang dilakukan tokoh antagonis.'
+                konten: '-> Ragam Respons Emosional: Empati (Ikut Merasakan Penderitaan) | Apresiasi (Mengagumi Ketabahan) | Evaluasi Kritis (Menolak Perilaku Culas)\n• Empati: Ikut merasakan penderitaan tokoh yang kurang beruntung.\n• Apresiasi: Mengagumi ketabahan dan kecerdikan tokoh.\n• Evaluasi Kritis: Menolak perilaku curang atau culas yang dilakukan tokoh antagonis.'
               }
             ],
             contohSoal: {

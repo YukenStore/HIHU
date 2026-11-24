@@ -8,6 +8,100 @@ const STORAGE_KEY = 'tka_sd_custom_contents_v1';
 const BASE_MATERI = JSON.parse(JSON.stringify(PUSMENDIK_MATERI));
 const BASE_LATIHAN = JSON.parse(JSON.stringify(PUSMENDIK_LATIHAN));
 
+export const DEFAULT_SUBJECT_KEYS = ['bahasa_indonesia', 'matematika'];
+
+/**
+ * Palet tema warna untuk kartu & peta mata pelajaran (Mapel Wajib & Mapel Pilihan)
+ */
+export const SUBJECT_COLOR_THEMES = {
+  emerald: {
+    id: 'emerald',
+    label: 'Hijau Emerald',
+    primaryHex: '#047857',
+    hoverHex: '#065F46',
+    darkHex: '#064E3B',
+    softBgHex: '#ECFDF5',
+    softBorderHex: '#A7F3D0',
+    accentRgba: 'rgba(4, 120, 87, 0.1)',
+    scrollbarClass: 'emerald-scrollbar',
+  },
+  rose: {
+    id: 'rose',
+    label: 'Merah Burgundy',
+    primaryHex: '#881337',
+    hoverHex: '#700D2B',
+    darkHex: '#4C0519',
+    softBgHex: '#FFF1F2',
+    softBorderHex: '#FECDD3',
+    accentRgba: 'rgba(136, 19, 55, 0.1)',
+    scrollbarClass: 'rose-scrollbar',
+  },
+  blue: {
+    id: 'blue',
+    label: 'Biru Royal',
+    primaryHex: '#1D4ED8',
+    hoverHex: '#1E40AF',
+    darkHex: '#1E3A8A',
+    softBgHex: '#EFF6FF',
+    softBorderHex: '#BFDBFE',
+    accentRgba: 'rgba(29, 78, 216, 0.1)',
+    scrollbarClass: 'slate-scrollbar',
+  },
+  purple: {
+    id: 'purple',
+    label: 'Ungu Violet',
+    primaryHex: '#6D28D9',
+    hoverHex: '#5B21B6',
+    darkHex: '#4C1D95',
+    softBgHex: '#F5F3FF',
+    softBorderHex: '#DDD6FE',
+    accentRgba: 'rgba(109, 40, 217, 0.1)',
+    scrollbarClass: 'slate-scrollbar',
+  },
+  amber: {
+    id: 'amber',
+    label: 'Oranye Amber',
+    primaryHex: '#B45309',
+    hoverHex: '#92400E',
+    darkHex: '#78350F',
+    softBgHex: '#FFFBEB',
+    softBorderHex: '#FDE68A',
+    accentRgba: 'rgba(180, 83, 9, 0.1)',
+    scrollbarClass: 'exam-nav-scrollbar',
+  },
+  teal: {
+    id: 'teal',
+    label: 'Biru Toska',
+    primaryHex: '#0F766E',
+    hoverHex: '#115E59',
+    darkHex: '#134E4A',
+    softBgHex: '#F0FDFA',
+    softBorderHex: '#99F6E4',
+    accentRgba: 'rgba(15, 118, 110, 0.1)',
+    scrollbarClass: 'emerald-scrollbar',
+  },
+};
+
+/**
+ * Membersihkan tag [H] atau [horizontal] secara rekursif pada objek data
+ */
+const stripHorizontalTagsDeep = (val) => {
+  if (typeof val === 'string') {
+    return val.replace(/\[h(?:orizontal)?\]\s*/gi, '');
+  }
+  if (Array.isArray(val)) {
+    return val.map(stripHorizontalTagsDeep);
+  }
+  if (val && typeof val === 'object') {
+    const cleaned = {};
+    for (const [k, v] of Object.entries(val)) {
+      cleaned[k] = stripHorizontalTagsDeep(v);
+    }
+    return cleaned;
+  }
+  return val;
+};
+
 /**
  * Mengambil daftar override dari localStorage
  */
@@ -35,27 +129,138 @@ const setCachedCustomContents = (items) => {
 };
 
 /**
- * Menerapkan daftar kustomisasi (Materi & Latihan Soal) langsung ke objek PUSMENDIK_MATERI dan PUSMENDIK_LATIHAN
+ * Memastikan struktur objek mapel tersedia di PUSMENDIK_MATERI dan PUSMENDIK_LATIHAN
+ */
+const ensureSubjectContainer = (subjectKey, meta = {}) => {
+  const title =
+    meta.title ||
+    PUSMENDIK_MATERI[subjectKey]?.title ||
+    PUSMENDIK_LATIHAN[subjectKey]?.nama ||
+    subjectKey
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+  const category =
+    meta.category ||
+    (DEFAULT_SUBJECT_KEYS.includes(subjectKey) ? 'wajib' : 'pilihan');
+  const colorTheme =
+    meta.colorTheme ||
+    (subjectKey === 'bahasa_indonesia'
+      ? 'emerald'
+      : subjectKey === 'matematika'
+      ? 'rose'
+      : 'blue');
+  const deskripsi =
+    meta.deskripsi ||
+    `Materi pembelajaran dan latihan soal berjenjang standar asesmen TKA SD untuk mata pelajaran ${title}.`;
+
+  if (!PUSMENDIK_MATERI[subjectKey]) {
+    PUSMENDIK_MATERI[subjectKey] = {
+      title,
+      category,
+      colorTheme,
+      isCustomSubject: !DEFAULT_SUBJECT_KEYS.includes(subjectKey),
+      deskripsi,
+      elemen: [
+        {
+          id: `${subjectKey}_el_1`,
+          namaElemen: `Kompetensi ${title}`,
+          deskripsi,
+          bab: [],
+        },
+      ],
+    };
+  } else {
+    PUSMENDIK_MATERI[subjectKey].title = title;
+    PUSMENDIK_MATERI[subjectKey].category = category;
+    PUSMENDIK_MATERI[subjectKey].colorTheme = colorTheme;
+    if (meta.deskripsi) {
+      PUSMENDIK_MATERI[subjectKey].deskripsi = meta.deskripsi;
+    }
+  }
+
+  if (!PUSMENDIK_LATIHAN[subjectKey]) {
+    PUSMENDIK_LATIHAN[subjectKey] = {
+      nama: title,
+      category,
+      colorTheme,
+      isCustomSubject: !DEFAULT_SUBJECT_KEYS.includes(subjectKey),
+      deskripsi,
+      levels: [],
+    };
+  } else {
+    PUSMENDIK_LATIHAN[subjectKey].nama = title;
+    PUSMENDIK_LATIHAN[subjectKey].category = category;
+    PUSMENDIK_LATIHAN[subjectKey].colorTheme = colorTheme;
+    if (meta.deskripsi) {
+      PUSMENDIK_LATIHAN[subjectKey].deskripsi = meta.deskripsi;
+    }
+  }
+};
+
+/**
+ * Menerapkan daftar kustomisasi (Mapel, Materi & Latihan Soal) langsung ke objek PUSMENDIK_MATERI dan PUSMENDIK_LATIHAN
  */
 export const applyCustomContentsToData = (items = []) => {
-  // 1. Kembalikan ke baseline awal terlebih dahulu
-  ['matematika', 'bahasa_indonesia'].forEach((subj) => {
-    if (BASE_MATERI[subj]) {
-      PUSMENDIK_MATERI[subj].elemen = JSON.parse(
-        JSON.stringify(BASE_MATERI[subj].elemen)
-      );
+  // 1. Bersihkan mapel kustom yang ada dan kembalikan mapel bawaan ke baseline awal
+  Object.keys(PUSMENDIK_MATERI).forEach((k) => {
+    if (!BASE_MATERI[k]) {
+      delete PUSMENDIK_MATERI[k];
     }
-    if (BASE_LATIHAN[subj]) {
-      PUSMENDIK_LATIHAN[subj].levels = JSON.parse(
-        JSON.stringify(BASE_LATIHAN[subj].levels)
-      );
+  });
+  Object.keys(PUSMENDIK_LATIHAN).forEach((k) => {
+    if (!BASE_LATIHAN[k]) {
+      delete PUSMENDIK_LATIHAN[k];
     }
   });
 
-  // 2. Terapkan setiap item kustomisasi secara berurutan
-  items.forEach((item) => {
+  DEFAULT_SUBJECT_KEYS.forEach((subj) => {
+    if (BASE_MATERI[subj]) {
+      PUSMENDIK_MATERI[subj] = JSON.parse(JSON.stringify(BASE_MATERI[subj]));
+      PUSMENDIK_MATERI[subj].category = 'wajib';
+      PUSMENDIK_MATERI[subj].colorTheme =
+        subj === 'bahasa_indonesia' ? 'emerald' : 'rose';
+    }
+    if (BASE_LATIHAN[subj]) {
+      PUSMENDIK_LATIHAN[subj] = JSON.parse(JSON.stringify(BASE_LATIHAN[subj]));
+      PUSMENDIK_LATIHAN[subj].category = 'wajib';
+      PUSMENDIK_LATIHAN[subj].colorTheme =
+        subj === 'bahasa_indonesia' ? 'emerald' : 'rose';
+    }
+  });
+
+  // 2. Tahap Pertama: Terapkan definisi mata pelajaran kustom (contentType === 'subject')
+  const deletedSubjects = new Set();
+  items.forEach((rawItem) => {
+    const item = stripHorizontalTagsDeep(rawItem);
+    if (!item || item.contentType !== 'subject' || !item.subject) return;
+    const { subject, action, payload } = item;
+
+    if (action === 'delete') {
+      deletedSubjects.add(subject);
+      if (!DEFAULT_SUBJECT_KEYS.includes(subject)) {
+        delete PUSMENDIK_MATERI[subject];
+        delete PUSMENDIK_LATIHAN[subject];
+      }
+    } else if (payload) {
+      deletedSubjects.delete(subject);
+      ensureSubjectContainer(subject, payload);
+    }
+  });
+
+  // 3. Tahap Kedua: Terapkan setiap item Materi & Latihan Soal
+  items.forEach((rawItem) => {
+    const item = stripHorizontalTagsDeep(rawItem);
     if (!item || !item.contentType || !item.subject || !item.itemId) return;
+    if (item.contentType === 'subject') return;
     const { contentType, subject, itemId, action, payload } = item;
+
+    if (deletedSubjects.has(subject) && !DEFAULT_SUBJECT_KEYS.includes(subject)) {
+      return;
+    }
+
+    if (!PUSMENDIK_MATERI[subject] || !PUSMENDIK_LATIHAN[subject]) {
+      ensureSubjectContainer(subject);
+    }
 
     if (contentType === 'materi' && PUSMENDIK_MATERI[subject]) {
       const elemenList = PUSMENDIK_MATERI[subject].elemen;
@@ -125,8 +330,8 @@ export const applyCustomContentsToData = (items = []) => {
     }
   });
 
-  // 3. Rapikan penomoran urut Materi (no: 1..N) dan pengurutan Level Latihan
-  ['matematika', 'bahasa_indonesia'].forEach((subj) => {
+  // 4. Rapikan penomoran urut Materi (no: 1..N) dan pengurutan Level Latihan di semua mapel
+  Object.keys(PUSMENDIK_MATERI).forEach((subj) => {
     if (PUSMENDIK_MATERI[subj]?.elemen) {
       let counter = 1;
       PUSMENDIK_MATERI[subj].elemen.forEach((el) => {
@@ -135,8 +340,13 @@ export const applyCustomContentsToData = (items = []) => {
         });
       });
     }
+  });
+
+  Object.keys(PUSMENDIK_LATIHAN).forEach((subj) => {
     if (PUSMENDIK_LATIHAN[subj]?.levels) {
-      PUSMENDIK_LATIHAN[subj].levels.sort((a, b) => Number(a.level) - Number(b.level));
+      PUSMENDIK_LATIHAN[subj].levels.sort(
+        (a, b) => Number(a.level) - Number(b.level)
+      );
     }
   });
 
@@ -247,4 +457,153 @@ export const isDefaultContentItem = (contentType, subject, itemId) => {
 export const hasCustomOverride = (contentType, subject, itemId) => {
   const id = `${contentType}:${subject}:${itemId}`;
   return getCachedCustomContents().some((i) => i.id === id);
+};
+
+/**
+ * Mengambil seluruh daftar Mata Pelajaran (Mapel Wajib & Mapel Pilihan) beserta metadatanya
+ */
+export const getAllSubjects = () => {
+  const keys = Array.from(
+    new Set([
+      ...DEFAULT_SUBJECT_KEYS,
+      ...Object.keys(PUSMENDIK_MATERI),
+      ...Object.keys(PUSMENDIK_LATIHAN),
+    ])
+  );
+
+  return keys.map((key) => {
+    const materiObj = PUSMENDIK_MATERI[key] || {};
+    const latihanObj = PUSMENDIK_LATIHAN[key] || {};
+    const isDefault = DEFAULT_SUBJECT_KEYS.includes(key);
+    const title =
+      materiObj.title ||
+      latihanObj.nama ||
+      (key === 'bahasa_indonesia'
+        ? 'Bahasa Indonesia'
+        : key === 'matematika'
+        ? 'Matematika'
+        : key);
+    const category =
+      materiObj.category ||
+      latihanObj.category ||
+      (isDefault ? 'wajib' : 'pilihan');
+    const colorThemeId =
+      materiObj.colorTheme ||
+      latihanObj.colorTheme ||
+      (key === 'bahasa_indonesia'
+        ? 'emerald'
+        : key === 'matematika'
+        ? 'rose'
+        : 'blue');
+    const theme =
+      SUBJECT_COLOR_THEMES[colorThemeId] || SUBJECT_COLOR_THEMES.blue;
+
+    const materiList =
+      materiObj.elemen?.flatMap((e) => e.bab || []) || [];
+    const latihanList = (latihanObj.levels || []).map((lvl) => ({
+      ...lvl,
+      id: lvl.id || `${key}_lat_${lvl.level}`,
+      no: lvl.level,
+    }));
+
+    const defaultMateriDesc =
+      key === 'bahasa_indonesia'
+        ? 'Huruf kapital, kata depan, tanda baca, kalimat efektif, sinonim/antonim, puisi, prosa, hingga analisis inferensial teks.'
+        : key === 'matematika'
+        ? 'Operasi hitung campuran, skala & perbandingan, KPK/FPB, bilangan pangkat, kecepatan, geometri, sudut, dan pengelolaan data.'
+        : materiObj.deskripsi ||
+          `Materi pembelajaran terstruktur dan kuis pemahaman untuk mata pelajaran ${title}.`;
+
+    const defaultLatihanDesc =
+      key === 'bahasa_indonesia'
+        ? 'Latihan berjenjang dari Fondasi Dasar hingga Penalaran HOTS Nasional: makna kata, kalimat efektif, sastra, dan teks inferensial.'
+        : key === 'matematika'
+        ? 'Latihan berjenjang dari Fondasi Dasar hingga Penalaran HOTS: operasi hitung, KPK/FPB, skala, pecahan, geometri, dan statistika.'
+        : latihanObj.deskripsi ||
+          materiObj.deskripsi ||
+          `Latihan soal berjenjang standar asesmen untuk mata pelajaran ${title}.`;
+
+    return {
+      key,
+      title,
+      category, // 'wajib' | 'pilihan'
+      isDefault,
+      colorTheme: colorThemeId,
+      theme,
+      deskripsi: materiObj.deskripsi || defaultMateriDesc,
+      deskripsiMateri: defaultMateriDesc,
+      deskripsiLatihan: defaultLatihanDesc,
+      materiList,
+      latihanList,
+    };
+  });
+};
+
+/**
+ * Mengambil metadata satu mata pelajaran berdasarkan key
+ */
+export const getSubjectByKey = (subjectKey) => {
+  const all = getAllSubjects();
+  return all.find((s) => s.key === subjectKey) || null;
+};
+
+/**
+ * Menambahkan atau memperbarui Mata Pelajaran di Admin Panel
+ */
+export const saveAdminSubject = async ({
+  key,
+  title,
+  category = 'pilihan',
+  deskripsi = '',
+  colorTheme = 'blue',
+}) => {
+  const cleanTitle = String(title || '').trim();
+  if (!cleanTitle) {
+    throw new Error('Nama mata pelajaran wajib diisi.');
+  }
+
+  const subjectKey =
+    key ||
+    cleanTitle
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '') ||
+    `mapel_${Date.now()}`;
+
+  const payload = {
+    key: subjectKey,
+    title: cleanTitle,
+    category: category === 'wajib' ? 'wajib' : 'pilihan',
+    deskripsi:
+      String(deskripsi || '').trim() ||
+      `Materi pembelajaran dan latihan soal berjenjang untuk mata pelajaran ${cleanTitle}.`,
+    colorTheme: SUBJECT_COLOR_THEMES[colorTheme] ? colorTheme : 'blue',
+  };
+
+  await saveAdminContentItem({
+    contentType: 'subject',
+    subject: subjectKey,
+    itemId: 'meta',
+    action: 'upsert',
+    payload,
+  });
+
+  return payload;
+};
+
+/**
+ * Menghapus Mata Pelajaran Kustom beserta kontennya (Khusus Mapel Tambahan)
+ */
+export const deleteAdminSubject = async (subjectKey) => {
+  if (DEFAULT_SUBJECT_KEYS.includes(subjectKey)) {
+    throw new Error('Mata pelajaran wajib bawaan tidak dapat dihapus.');
+  }
+
+  return saveAdminContentItem({
+    contentType: 'subject',
+    subject: subjectKey,
+    itemId: 'meta',
+    action: 'delete',
+    payload: { deleted: true },
+  });
 };

@@ -116,7 +116,7 @@ const RaporView = ({ isOpen, onClose }) => {
         </div>
 
         {/* 3. Body Content */}
-        <div className="flex-1 p-4 sm:p-6 overflow-y-auto space-y-6">
+        <div className="flex-1 p-4 sm:p-6 overflow-y-auto slate-scrollbar space-y-6">
           {activeTab === 'ringkasan' && (
             <>
               {/* 4 Kartu Statistik Cepat dengan Outline Berwarna Kontras */}

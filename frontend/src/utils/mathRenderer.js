@@ -8,7 +8,10 @@ export function formatMath(text) {
   if (text === null || text === undefined) return '';
   if (typeof text !== 'string') return String(text);
 
-  let result = text;
+  // Bersihkan tag [H] atau [horizontal] jika masih ada, serta samakan format baris baru
+  let result = text
+    .replace(/\[h(?:orizontal)?\]\s*/gi, '')
+    .replace(/\r\n/g, '\n');
 
   // 1. Render display math $$ ... $$
   result = result.replace(/\$\$([^$]+)\$\$/g, (match, formula) => {
@@ -49,10 +52,8 @@ export function formatMath(text) {
   // 4. Konversi format markdown bold **teks** menjadi <strong>teks</strong>
   result = result.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
 
-  // 5. Konversi newline \n menjadi <br /> jika teks belum memiliki tag HTML block/break
-  if (!result.includes('<p') && !result.includes('<br')) {
-    result = result.replace(/\n/g, '<br />');
-  }
+  // 5. Konversi newline \n menjadi <br /> agar baris baru sesuai dengan ketikan di Admin Panel
+  result = result.replace(/\n/g, '<br />');
 
   return result;
 }

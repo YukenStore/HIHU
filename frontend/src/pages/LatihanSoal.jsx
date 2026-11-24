@@ -2,7 +2,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { PUSMENDIK_LATIHAN } from '../data/latihanData';
-import { syncCustomContentFromServer } from '../services/contentService';
+import {
+  syncCustomContentFromServer,
+  getAllSubjects,
+  getSubjectByKey,
+} from '../services/contentService';
 import {
   getActivityData,
   markLatihanComplete,
@@ -38,6 +42,7 @@ import {
   Eye,
   XCircle,
   Award,
+  Layers,
 } from 'lucide-react';
 
 /**
@@ -273,8 +278,53 @@ const LatihanSoal = () => {
     return false;
   };
 
+  // Data seluruh mapel (Mapel Wajib & Mapel Pilihan)
+  const allSubjects = getAllSubjects();
+  const wajibSubjects = allSubjects.filter((s) => s.category === 'wajib');
+  const pilihanSubjects = allSubjects.filter((s) => s.category !== 'wajib');
+
+  // Helper membangun konfigurasi mapel aktif (mendukung mapel bawaan & mapel tambahan dari Admin Panel)
+  const getSubjectConfig = (subjKey) => {
+    if (!subjKey) return null;
+    if (SUBJECTS_CONFIG[subjKey]) {
+      const meta = getSubjectByKey(subjKey);
+      return {
+        ...SUBJECTS_CONFIG[subjKey],
+        title: meta?.title || SUBJECTS_CONFIG[subjKey].title,
+        deskripsi: meta?.deskripsiLatihan || SUBJECTS_CONFIG[subjKey].deskripsi,
+        category: meta?.category || 'wajib',
+        colorTheme: meta?.theme,
+      };
+    }
+    const meta = getSubjectByKey(subjKey);
+    if (!meta) return null;
+    const levels = (PUSMENDIK_LATIHAN[subjKey]?.levels || []).map((lvl) => ({
+      ...lvl,
+      id: lvl.id || `${subjKey}_lat_${lvl.level}`,
+      no: lvl.level,
+    }));
+    return {
+      key: subjKey,
+      title: meta.title,
+      category: meta.category || 'pilihan',
+      totalLevels: levels.length,
+      tagline: `${levels.length} Tingkat Latihan Soal Standar Pusmendik`,
+      deskripsi: meta.deskripsiLatihan,
+      icon: BookOpen,
+      levels,
+      colorTheme: meta.theme,
+      theme: {
+        gradient: 'from-slate-900 to-slate-900',
+        border: 'border-[#33261D]',
+      },
+      milestones: {},
+    };
+  };
+
   // Data mapel aktif
-  const currentSubject = selectedSubject ? SUBJECTS_CONFIG[selectedSubject] : null;
+  const currentSubject = selectedSubject
+    ? getSubjectConfig(selectedSubject)
+    : null;
   const currentLevels = currentSubject ? currentSubject.levels : [];
 
   // Menentukan index latihan yang sedang aktif sekarang di mapel aktif
@@ -666,7 +716,7 @@ const LatihanSoal = () => {
           </button>
         </div>
 
-        {/* --- TAHAP 1: PILIHAN MATA PELAJARAN (BAHASA INDONESIA & MATEMATIKA) --- */}
+        {/* --- TAHAP 1: PILIHAN MATA PELAJARAN (MAPEL WAJIB & MAPEL PILIHAN) --- */}
         {!selectedSubject && (
           <div className="max-w-3xl mx-auto w-full py-4 sm:py-8 space-y-6 animate-fade-in">
             {/* Header Pilihan */}
@@ -679,158 +729,177 @@ const LatihanSoal = () => {
               </p>
             </div>
 
-            {/* 2 Kartu Mata Pelajaran */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
-              {/* Kartu 1: Bahasa Indonesia */}
-              {(() => {
-                const biLevels = SUBJECTS_CONFIG.bahasa_indonesia.levels;
-                const biDone = biLevels.filter((l) => isLevelCompleted(l.id)).length;
-                const biPercent = Math.round((biDone / biLevels.length) * 100);
+            {/* Renderer Kartu Mata Pelajaran */}
+            {(() => {
+              const renderSubjectCard = (subj) => {
+                const subjLevels = subj.latihanList || [];
+                const doneCount = subjLevels.filter((l) =>
+                  isLevelCompleted(l.id)
+                ).length;
+                const percent =
+                  subjLevels.length > 0
+                    ? Math.round((doneCount / subjLevels.length) * 100)
+                    : 0;
+                const IconComp =
+                  subj.key === 'matematika' ? Calculator : BookOpen;
+                const theme = subj.theme;
 
                 return (
                   <div
+                    key={subj.key}
                     onClick={() => {
-                      setSelectedSubject('bahasa_indonesia');
+                      setSelectedSubject(subj.key);
                       setSearchQuery('');
                     }}
                     onMouseMove={(e) => {
                       const r = e.currentTarget.getBoundingClientRect();
-                      e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`);
-                      e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`);
+                      e.currentTarget.style.setProperty(
+                        '--mx',
+                        `${e.clientX - r.left}px`
+                      );
+                      e.currentTarget.style.setProperty(
+                        '--my',
+                        `${e.clientY - r.top}px`
+                      );
                     }}
-                    className="group relative overflow-hidden p-6 rounded-2xl bg-white border-2 border-[#047857] hover:border-[#047857] hover:ring-4 hover:ring-[#047857]/20 hover:shadow-2xl hover:shadow-[#047857]/20 hover:-translate-y-2 active:scale-[0.985] transition-all duration-300 ease-out cursor-pointer flex flex-col justify-between select-none"
+                    style={{
+                      borderColor: theme.primaryHex,
+                    }}
+                    className="group relative overflow-hidden p-6 rounded-2xl bg-white border-2 hover:shadow-2xl hover:-translate-y-2 active:scale-[0.985] transition-all duration-300 ease-out cursor-pointer flex flex-col justify-between select-none"
                   >
                     {/* Interactive Cursor Spotlight Glow */}
                     <div
                       className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                       style={{
-                        background: 'radial-gradient(350px circle at var(--mx, 50%) var(--my, 50%), rgba(4, 120, 87, 0.1), transparent 75%)',
+                        background: `radial-gradient(350px circle at var(--mx, 50%) var(--my, 50%), ${theme.accentRgba}, transparent 75%)`,
                       }}
                     />
 
                     <div className="relative z-10">
                       <div className="flex items-center justify-between mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0] flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-[-4deg] group-hover:shadow-md group-hover:bg-[#D1FAE5]">
-                          <BookOpen className="w-6 h-6" />
+                        <div
+                          style={{
+                            backgroundColor: theme.softBgHex,
+                            color: theme.primaryHex,
+                            borderColor: theme.softBorderHex,
+                          }}
+                          className="w-12 h-12 rounded-xl border flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-[-4deg] group-hover:shadow-md"
+                        >
+                          <IconComp className="w-6 h-6" />
                         </div>
-                        <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0] transition-all duration-300 group-hover:scale-105 shadow-2xs">
-                          10 Latihan Soal
+                        <span
+                          style={{
+                            backgroundColor: theme.softBgHex,
+                            color: theme.primaryHex,
+                            borderColor: theme.softBorderHex,
+                          }}
+                          className="px-2.5 py-0.5 rounded-full text-xs font-bold border transition-all duration-300 group-hover:scale-105 shadow-2xs"
+                        >
+                          {subjLevels.length} Latihan Soal
                         </span>
                       </div>
 
-                      <h3 className="text-lg font-bold text-[#261C14] group-hover:text-[#047857] transition-colors duration-200">
-                        Bahasa Indonesia
+                      <h3 className="text-lg font-bold text-[#261C14] transition-colors duration-200">
+                        {subj.title}
                       </h3>
                       <p className="text-xs text-[#6E6258] mt-2 leading-relaxed">
-                        Latihan berjenjang dari Fondasi Dasar hingga Penalaran HOTS Nasional: makna kata, kalimat efektif, sastra, dan teks inferensial.
+                        {subj.deskripsiLatihan}
                       </p>
 
                       {/* Bar Progres & Bintang */}
                       <div className="mt-4 pt-3 border-t border-[#E6DFD5] space-y-2">
                         <div className="flex items-center justify-between text-[11px] font-medium text-[#6E6258]">
-                          <span>Progres: {biDone} dari 10 Latihan</span>
-                          <span className="text-[#047857] font-semibold">{biPercent}%</span>
+                          <span>
+                            Progres: {doneCount} dari {subjLevels.length}{' '}
+                            Latihan
+                          </span>
+                          <span
+                            style={{ color: theme.primaryHex }}
+                            className="font-semibold"
+                          >
+                            {percent}%
+                          </span>
                         </div>
                         <div className="w-full bg-[#F2ECE4] rounded-full h-2 overflow-hidden">
                           <div
-                            className="bg-[#047857] h-2 rounded-full transition-all duration-300"
-                            style={{ width: `${Math.max(4, biPercent)}%` }}
+                            className="h-2 rounded-full transition-all duration-300"
+                            style={{
+                              width: `${Math.max(4, percent)}%`,
+                              backgroundColor: theme.primaryHex,
+                            }}
                           />
                         </div>
                         <div className="flex items-center space-x-1.5 text-[11px] font-semibold text-[#D97E26]">
                           <Star className="w-3.5 h-3.5 fill-[#E5A875] text-[#D97E26]" />
-                          <span>{biLevels.reduce((acc, l) => acc + getLevelStars(l.id), 0)} / {biLevels.length * 3} Bintang</span>
+                          <span>
+                            {subjLevels.reduce(
+                              (acc, l) => acc + getLevelStars(l.id),
+                              0
+                            )}{' '}
+                            / {subjLevels.length * 3} Bintang
+                          </span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="relative z-10 mt-5 pt-3 border-t border-[#E6DFD5] flex items-center justify-between text-xs font-bold text-[#047857] transition-all">
-                      <span className="group-hover:translate-x-1 transition-transform duration-300">
-                        Buka Peta 10 Latihan Bahasa Indonesia
-                      </span>
-                      <div className="w-7 h-7 rounded-lg bg-[#ECFDF5] border border-[#A7F3D0] flex items-center justify-center group-hover:translate-x-1.5 group-hover:bg-[#047857] group-hover:text-white transition-all duration-300 shadow-2xs">
-                        <ChevronRight className="w-4 h-4" />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* Kartu 2: Matematika */}
-              {(() => {
-                const mtkLevels = SUBJECTS_CONFIG.matematika.levels;
-                const mtkDone = mtkLevels.filter((l) => isLevelCompleted(l.id)).length;
-                const mtkPercent = Math.round((mtkDone / mtkLevels.length) * 100);
-
-                return (
-                  <div
-                    onClick={() => {
-                      setSelectedSubject('matematika');
-                      setSearchQuery('');
-                    }}
-                    onMouseMove={(e) => {
-                      const r = e.currentTarget.getBoundingClientRect();
-                      e.currentTarget.style.setProperty('--mx', `${e.clientX - r.left}px`);
-                      e.currentTarget.style.setProperty('--my', `${e.clientY - r.top}px`);
-                    }}
-                    className="group relative overflow-hidden p-6 rounded-2xl bg-white border-2 border-[#881337] hover:border-[#881337] hover:ring-4 hover:ring-[#881337]/20 hover:shadow-2xl hover:shadow-[#881337]/20 hover:-translate-y-2 active:scale-[0.985] transition-all duration-300 ease-out cursor-pointer flex flex-col justify-between select-none"
-                  >
-                    {/* Interactive Cursor Spotlight Glow */}
                     <div
-                      className="pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      style={{
-                        background: 'radial-gradient(350px circle at var(--mx, 50%) var(--my, 50%), rgba(136, 19, 55, 0.1), transparent 75%)',
-                      }}
-                    />
-
-                    <div className="relative z-10">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="w-12 h-12 rounded-xl bg-[#FFF1F2] text-[#881337] border border-[#FECDD3] flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-[4deg] group-hover:shadow-md group-hover:bg-[#FFE4E6]">
-                          <Calculator className="w-6 h-6" />
-                        </div>
-                        <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#FFF1F2] text-[#881337] border border-[#FECDD3] transition-all duration-300 group-hover:scale-105 shadow-2xs">
-                          10 Latihan Soal
-                        </span>
-                      </div>
-
-                      <h3 className="text-lg font-bold text-[#261C14] group-hover:text-[#881337] transition-colors duration-200">
-                        Matematika
-                      </h3>
-                      <p className="text-xs text-[#6E6258] mt-2 leading-relaxed">
-                        Latihan berjenjang dari Fondasi Dasar hingga Penalaran HOTS: operasi hitung, KPK/FPB, skala, pecahan, geometri, dan statistika.
-                      </p>
-
-                      {/* Bar Progres & Bintang */}
-                      <div className="mt-4 pt-3 border-t border-[#E6DFD5] space-y-2">
-                        <div className="flex items-center justify-between text-[11px] font-medium text-[#6E6258]">
-                          <span>Progres: {mtkDone} dari 10 Latihan</span>
-                          <span className="text-[#881337] font-semibold">{mtkPercent}%</span>
-                        </div>
-                        <div className="w-full bg-[#F2ECE4] rounded-full h-2 overflow-hidden">
-                          <div
-                            className="bg-[#881337] h-2 rounded-full transition-all duration-300"
-                            style={{ width: `${Math.max(4, mtkPercent)}%` }}
-                          />
-                        </div>
-                        <div className="flex items-center space-x-1.5 text-[11px] font-semibold text-[#D97E26]">
-                          <Star className="w-3.5 h-3.5 fill-[#E5A875] text-[#D97E26]" />
-                          <span>{mtkLevels.reduce((acc, l) => acc + getLevelStars(l.id), 0)} / {mtkLevels.length * 3} Bintang</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="relative z-10 mt-5 pt-3 border-t border-[#E6DFD5] flex items-center justify-between text-xs font-bold text-[#881337] transition-all">
+                      style={{ color: theme.primaryHex }}
+                      className="relative z-10 mt-5 pt-3 border-t border-[#E6DFD5] flex items-center justify-between text-xs font-bold transition-all"
+                    >
                       <span className="group-hover:translate-x-1 transition-transform duration-300">
-                        Buka Peta 10 Latihan Matematika
+                        Buka Peta {subjLevels.length} Latihan {subj.title}
                       </span>
-                      <div className="w-7 h-7 rounded-lg bg-[#FFF1F2] border border-[#FECDD3] flex items-center justify-center group-hover:translate-x-1.5 group-hover:bg-[#881337] group-hover:text-white transition-all duration-300 shadow-2xs">
+                      <div
+                        style={{
+                          backgroundColor: theme.softBgHex,
+                          borderColor: theme.softBorderHex,
+                          color: theme.primaryHex,
+                        }}
+                        className="w-7 h-7 rounded-lg border flex items-center justify-center group-hover:translate-x-1.5 transition-all duration-300 shadow-2xs"
+                      >
                         <ChevronRight className="w-4 h-4" />
                       </div>
                     </div>
                   </div>
                 );
-              })()}
-            </div>
+              };
+
+              return (
+                <div className="space-y-7 pt-1">
+                  {/* BAGIAN ATAS: MAPEL WAJIB */}
+                  <div className="space-y-3.5">
+                    <div className="flex items-center space-x-3">
+                      <span className="px-3.5 py-1 rounded-xl bg-[#162E5B] border border-amber-400/60 text-amber-300 text-xs font-bold uppercase tracking-wider shadow-md flex items-center space-x-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                        <span>Mapel Wajib</span>
+                      </span>
+                      <div className="h-px flex-1 bg-white/25" />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                      {wajibSubjects.map((subj) => renderSubjectCard(subj))}
+                    </div>
+                  </div>
+
+                  {/* BAGIAN BAWAH: MAPEL PILIHAN (Di-hide jika belum ada mapel pilihan yang ditambahkan) */}
+                  {pilihanSubjects.length > 0 && (
+                    <div className="space-y-3.5 pt-2">
+                      <div className="flex items-center space-x-3">
+                        <span className="px-3.5 py-1 rounded-xl bg-[#162E5B] border border-emerald-400/60 text-emerald-300 text-xs font-bold uppercase tracking-wider shadow-md flex items-center space-x-1.5">
+                          <Layers className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>Mapel Pilihan</span>
+                        </span>
+                        <div className="h-px flex-1 bg-white/25" />
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        {pilihanSubjects.map((subj) => renderSubjectCard(subj))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         )}
 
@@ -933,7 +1002,13 @@ const LatihanSoal = () => {
                       </div>
 
                       {/* Grid Soal Navigation Strip */}
-                      <div className="flex items-center space-x-2 overflow-x-auto pb-2 pt-1 scrollbar-thin">
+                      <div
+                        className={`flex items-center space-x-2 overflow-x-auto pb-2 pt-1 ${
+                          selectedSubject === 'bahasa_indonesia'
+                            ? 'emerald-scrollbar'
+                            : 'rose-scrollbar'
+                        }`}
+                      >
                         {activeLatihan.soal.map((q, idx) => {
                           const answered = isQuestionAnswered(q, userAnswers[idx]);
                           const isCurrent = currentQuestionIndex === idx;
