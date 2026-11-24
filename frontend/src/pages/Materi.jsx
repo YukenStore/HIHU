@@ -9,6 +9,8 @@ import {
   resetMateriProgress,
   getActivityData,
   recordUserActivity,
+  isGuestSession,
+  triggerGuestRestrictionModal,
 } from '../utils/activityTracker';
 import { getCharacterAvatar } from '../utils/characterAvatars';
 import MaterialReader from '../components/views/MaterialReader';
@@ -259,6 +261,10 @@ const Materi = () => {
   const isLevelCompleted = (babId) => completedBabIds.includes(babId);
 
   const isLevelUnlocked = (index, bab, levelsList) => {
+    // Mode Guest: hanya Materi 1 (index === 0) yang terbuka
+    if (isGuestSession()) {
+      return index === 0;
+    }
     // Level 1 selalu terbuka
     if (index === 0) return true;
     // Terbuka jika sudah selesai
@@ -281,8 +287,22 @@ const Materi = () => {
     (bab, idx) => isLevelUnlocked(idx, bab, currentLevels) && !isLevelCompleted(bab.id)
   );
 
+  // Klik item materi di Peta atau Daftar Grid (Cek pembatasan Guest untuk Materi 2+)
+  const handleSelectBabCard = (bab, index = 0) => {
+    if (isGuestSession() && (index > 0 || Number(bab?.no) > 1)) {
+      triggerGuestRestrictionModal(`Materi ${bab.no}: ${bab.judul}`);
+      return;
+    }
+    setSelectedLevelModal(bab);
+  };
+
   // Buka Pembelajaran Materi Normal
   const handleOpenBab = (bab) => {
+    if (isGuestSession() && Number(bab?.no) > 1) {
+      setSelectedLevelModal(null);
+      triggerGuestRestrictionModal(`Materi ${bab.no}: ${bab.judul}`);
+      return;
+    }
     setSelectedLevelModal(null);
     setActiveBab(bab);
     setInQuizMode(false);
@@ -367,6 +387,11 @@ const Materi = () => {
 
   // Mulai Tantangan Lompat Level
   const handleStartJumpChallenge = (bab) => {
+    if (isGuestSession()) {
+      setSelectedLevelModal(null);
+      triggerGuestRestrictionModal(`Materi ${bab?.no}: ${bab?.judul}`);
+      return;
+    }
     setSelectedLevelModal(null);
     setJumpChallengeBab(bab);
     setJumpQuizIndex(0);
@@ -1106,7 +1131,7 @@ const Materi = () => {
                   return (
                     <div
                       key={bab.id}
-                      onClick={() => setSelectedLevelModal(bab)}
+                      onClick={() => handleSelectBabCard(bab, originalIndex)}
                       className={`p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer flex flex-col justify-between ${
                         isCompleted
                           ? selectedSubject === 'bahasa_indonesia'
@@ -1278,7 +1303,7 @@ const Materi = () => {
 
                           {/* Tombol Lingkaran Interaktif Tactile 3D Node */}
                           <button
-                            onClick={() => setSelectedLevelModal(bab)}
+                            onClick={() => handleSelectBabCard(bab, index)}
                             className={`w-18 h-18 sm:w-20 sm:h-20 rounded-full flex flex-col items-center justify-center font-bold border-2 transition-all duration-150 cursor-pointer relative z-10 select-none group ${
                               isCompleted
                                 ? selectedSubject === 'bahasa_indonesia'

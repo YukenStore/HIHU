@@ -15,6 +15,7 @@ import AdminPanel from './pages/AdminPanel';
 import NavyBackground from './components/NavyBackground';
 import RewardModal from './components/RewardModal';
 import FantasyGachaModal from './components/FantasyGachaModal';
+import GuestRestrictedModal from './components/GuestRestrictedModal';
 
 function App() {
   return (
@@ -30,6 +31,8 @@ function App() {
             <RewardModal />
             {/* Modal Hadiah Spesial Gacha Karakter Fantasi (Tryout >= 80%) */}
             <FantasyGachaModal />
+            {/* Modal Pembatasan Fitur untuk Akun Guest */}
+            <GuestRestrictedModal />
 
             <Routes>
           {/* Route Publik (Pengguna yang sudah login akan otomatis dialihkan ke /dashboard) */}

@@ -65,7 +65,7 @@ const Navbar = () => {
               {isAdminUser(user) && (
                 <button
                   onClick={() => navigate('/admin')}
-                  className="inline-flex items-center space-x-1 sm:space-x-1.5 px-2 sm:px-3 py-1.5 rounded-lg text-xs font-bold text-amber-300 bg-[#162E5B] hover:bg-[#1E3A8A] border border-amber-400/60 transition-all cursor-pointer shadow-sm active:scale-95"
+                  className="inline-flex items-center space-x-1 sm:space-x-1.5 px-2 sm:px-3 py-3 rounded-lg text-xs font-bold text-amber-300 bg-[#162E5B] hover:bg-[#1E3A8A] border border-amber-400/60 transition-all cursor-pointer shadow-sm active:scale-95"
                   title="Buka Admin Panel (Kelola Materi & Latihan Soal)"
                 >
                   <ShieldCheck className="w-3.5 h-3.5 text-amber-400 flex-shrink-0" />

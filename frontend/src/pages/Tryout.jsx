@@ -2,7 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { PUSMENDIK_TRYOUT } from '../data/tryoutData';
-import { recordTryout, getActivityData } from '../utils/activityTracker';
+import {
+  recordTryout,
+  getActivityData,
+  isGuestSession,
+  triggerGuestRestrictionModal,
+} from '../utils/activityTracker';
 import { formatMath } from '../utils/mathRenderer';
 import {
   BookOpen,
@@ -20,6 +25,7 @@ import {
   RotateCcw,
   Eye,
   LayoutDashboard,
+  Lock,
 } from 'lucide-react';
 
 /**
@@ -269,7 +275,10 @@ const Tryout = () => {
   // Muat status paket tryout yang sudah pernah dikerjakan secara persisten
   const loadCompletedTryouts = () => {
     try {
-      const raw = localStorage.getItem('tka_sd_completed_tryouts');
+      const storageKey = isGuestSession()
+        ? 'tka_sd_guest_completed_tryouts'
+        : 'tka_sd_completed_tryouts';
+      const raw = localStorage.getItem(storageKey);
       const map = raw ? JSON.parse(raw) : {};
 
       // Sinkronkan juga dari activityTracker jika ada data yang belum tercatat di map
@@ -330,6 +339,12 @@ const Tryout = () => {
 
   // Mulai Tryout
   const handleStartExam = (pkg) => {
+    if (isGuestSession() && Number(pkg?.nomorPaket) > 1) {
+      triggerGuestRestrictionModal(
+        `${pkg.namaPaket || `Paket ${pkg.nomorPaket}`} Tryout`
+      );
+      return;
+    }
     setActivePackage(pkg);
     setCurrentQuestionIndex(0);
     setUserAnswers({});
@@ -342,6 +357,12 @@ const Tryout = () => {
 
   // Buka langsung Mode Review & Pembahasan untuk paket yang sudah pernah dikerjakan
   const handleOpenReview = (pkg, completedInfo) => {
+    if (isGuestSession() && Number(pkg?.nomorPaket) > 1) {
+      triggerGuestRestrictionModal(
+        `${pkg.namaPaket || `Paket ${pkg.nomorPaket}`} Tryout`
+      );
+      return;
+    }
     setActivePackage(pkg);
     setCurrentQuestionIndex(0);
     setUserAnswers(completedInfo?.userAnswers || {});
@@ -423,10 +444,13 @@ const Tryout = () => {
       updatedAt: Date.now(),
     };
     try {
-      const raw = localStorage.getItem('tka_sd_completed_tryouts');
+      const storageKey = isGuestSession()
+        ? 'tka_sd_guest_completed_tryouts'
+        : 'tka_sd_completed_tryouts';
+      const raw = localStorage.getItem(storageKey);
       const existing = raw ? JSON.parse(raw) : {};
       existing[completionKey] = newCompletion;
-      localStorage.setItem('tka_sd_completed_tryouts', JSON.stringify(existing));
+      localStorage.setItem(storageKey, JSON.stringify(existing));
       setCompletedTryouts(existing);
     } catch (e) {
       console.error('Gagal menyimpan riwayat pengerjaan:', e);
@@ -858,12 +882,23 @@ const Tryout = () => {
                     const completedInfo = completedTryouts[completionKey];
                     const isCompleted = !!completedInfo;
                     const isMath = selectedSubject === 'matematika';
+                    const isLockedForGuest =
+                      isGuestSession() && Number(pkg.nomorPaket) > 1;
 
                     return (
                       <div
                         key={pkg.id || pkg.nomorPaket}
+                        onClick={() => {
+                          if (isLockedForGuest) {
+                            triggerGuestRestrictionModal(
+                              `${pkg.namaPaket} Tryout ${PUSMENDIK_TRYOUT[selectedSubject].nama}`
+                            );
+                          }
+                        }}
                         className={`p-4 sm:p-5 rounded-2xl bg-white transition-all flex flex-col justify-between shadow-xs hover:shadow-md ${
-                          isMath
+                          isLockedForGuest
+                            ? 'border-2 border-slate-300 opacity-85 cursor-pointer'
+                            : isMath
                             ? 'border-2 border-[#881337] hover:border-[#700D2B]'
                             : 'border-2 border-[#047857] hover:border-[#065F46]'
                         }`}
@@ -871,13 +906,20 @@ const Tryout = () => {
                         <div>
                           <div className="flex items-center justify-between mb-2.5">
                             <span className={`text-xs font-bold px-2.5 py-0.5 rounded-md border ${
-                              isMath
+                              isLockedForGuest
+                                ? 'bg-slate-100 text-slate-600 border-slate-300'
+                                : isMath
                                 ? 'bg-[#FFF1F2] text-[#881337] border-[#FECDD3]'
                                 : 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]'
                             }`}>
                               {pkg.namaPaket}
                             </span>
-                            {isCompleted ? (
+                            {isLockedForGuest ? (
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-300 flex items-center space-x-1">
+                                <Lock className="w-2.5 h-2.5" />
+                                <span>Terkunci</span>
+                              </span>
+                            ) : isCompleted ? (
                               <span className={`text-[11px] font-bold px-2 py-0.5 rounded border flex items-center space-x-1 ${
                                 isMath
                                   ? 'bg-[#FFF1F2] text-[#881337] border-[#FECDD3]'
@@ -903,9 +945,27 @@ const Tryout = () => {
                         </div>
 
                         <div className={`mt-4 pt-3 border-t space-y-1.5 ${
-                          isMath ? 'border-rose-200' : 'border-emerald-200'
+                          isLockedForGuest
+                            ? 'border-slate-200'
+                            : isMath
+                            ? 'border-rose-200'
+                            : 'border-emerald-200'
                         }`}>
-                          {isCompleted ? (
+                          {isLockedForGuest ? (
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                triggerGuestRestrictionModal(
+                                  `${pkg.namaPaket} Tryout ${PUSMENDIK_TRYOUT[selectedSubject].nama}`
+                                );
+                              }}
+                              className="w-full py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold text-xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer"
+                            >
+                              <Lock className="w-3.5 h-3.5 text-slate-600" />
+                              <span>Daftar / Login untuk Membuka</span>
+                            </button>
+                          ) : isCompleted ? (
                             <>
                               <button
                                 onClick={() => handleOpenReview(pkg, completedInfo)}

@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { X, Award, Flame, Zap, Trophy, Check, Lock, Star, Sparkles, Pencil, AlertCircle, Loader2 } from 'lucide-react';
-import { setActiveTitle, setActiveAvatar, triggerRewardCelebration, calculateLevelInfo, getTitleBadgeClass } from '../utils/activityTracker';
+import {
+  setActiveTitle,
+  setActiveAvatar,
+  triggerRewardCelebration,
+  calculateLevelInfo,
+  getTitleBadgeClass,
+  isGuestSession,
+  triggerGuestRestrictionModal,
+} from '../utils/activityTracker';
 import { getCharacterAvatar } from '../utils/characterAvatars';
 import { useAuth } from '../context/AuthContext';
 import AvatarPickerModal from './AvatarPickerModal';
@@ -132,6 +140,11 @@ const ProfileModal = ({ isOpen, onClose, user, profileStats, onProfileUpdated, o
                 <button
                   type="button"
                   onClick={() => {
+                    if (user?.isGuest || isGuestSession()) {
+                      onClose();
+                      triggerGuestRestrictionModal('Pengaturan Ubah Username');
+                      return;
+                    }
                     setNewUsername(user?.username || '');
                     setUsernameError('');
                     setIsEditingUsername((prev) => !prev);

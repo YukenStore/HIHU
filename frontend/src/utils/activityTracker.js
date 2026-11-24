@@ -13,6 +13,57 @@ import {
  */
 
 const STORAGE_KEY = 'tka_sd_user_activity_v2';
+const GUEST_STORAGE_KEY = 'tka_sd_guest_simulation_v1';
+
+/**
+ * Memeriksa apakah sesi aktif saat ini adalah akun Guest (simulasi)
+ */
+export const isGuestSession = () => {
+  if (typeof window === 'undefined') return false;
+  try {
+    if (localStorage.getItem('token') === 'GUEST_SIMULATION_TOKEN') return true;
+    const rawUser = localStorage.getItem('user');
+    if (rawUser) {
+      const parsed = JSON.parse(rawUser);
+      return Boolean(parsed?.isGuest);
+    }
+  } catch (_) {}
+  return false;
+};
+
+const getActiveStorageKey = () => (isGuestSession() ? GUEST_STORAGE_KEY : STORAGE_KEY);
+
+/**
+ * Mereset data simulasi Guest tanpa menyentuh data pengguna asli
+ */
+export const resetGuestSimulationData = () => {
+  if (typeof window === 'undefined') return;
+  try {
+    const initialGuestData = {
+      isGuestSimulation: true,
+      materiCompleted: [],
+      unlockedMateri: ['mtk_1', 'bi_1'],
+      materiStars: {},
+      latihanCompleted: [],
+      unlockedLatihan: ['mtk_lat_1', 'bi_lat_1'],
+      latihanStars: {},
+      latihanHistory: [],
+      tryoutHistory: [],
+      streak: {
+        count: 0,
+        lastActiveDate: null,
+        activeToday: false,
+      },
+      exp: 0,
+      unlockedTitles: ['pemula'],
+      activeTitle: 'pemula',
+      avatar: 'baby-boy',
+      unlockedAvatars: ['baby-boy', 'baby-girl'],
+    };
+    localStorage.setItem(GUEST_STORAGE_KEY, JSON.stringify(initialGuestData));
+    localStorage.removeItem('tka_sd_guest_completed_tryouts');
+  } catch (_) {}
+};
 
 // Bersihkan cache lama jika ada di browser
 if (typeof window !== 'undefined') {
@@ -294,8 +345,9 @@ export const checkAndUnlockTitles = (data) => {
 
 export const getActivityData = () => {
   let data = null;
+  const activeKey = getActiveStorageKey();
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = localStorage.getItem(activeKey);
     if (raw) data = JSON.parse(raw);
   } catch (e) {
     console.error('Gagal membaca aktivitas:', e);
@@ -414,6 +466,8 @@ let syncTimeout = null;
  */
 export const syncProfileToDatabase = (data) => {
   if (typeof window === 'undefined') return;
+  // Guest tidak pernah menyimpan data simulasi ke database asli
+  if (isGuestSession()) return;
   const token = localStorage.getItem('token');
   if (!token) return;
 
@@ -451,6 +505,7 @@ export const syncProfileToDatabase = (data) => {
  */
 export const syncProfileFromDatabase = async () => {
   if (typeof window === 'undefined') return null;
+  if (isGuestSession()) return null;
   const token = localStorage.getItem('token');
   if (!token) return null;
 
@@ -506,8 +561,9 @@ export const syncProfileFromDatabase = async () => {
  */
 export const saveActivityData = (data, shouldSync = true) => {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    if (shouldSync) {
+    const activeKey = getActiveStorageKey();
+    localStorage.setItem(activeKey, JSON.stringify(data));
+    if (shouldSync && !isGuestSession()) {
       syncProfileToDatabase(data);
     }
   } catch (e) {
@@ -515,7 +571,23 @@ export const saveActivityData = (data, shouldSync = true) => {
   }
 };
 
+/**
+ * Memicu pop-up ajakan Register / Login ketika user Guest mengakses fitur yang dibatasi
+ */
+export const triggerGuestRestrictionModal = (featureName = 'Fitur ini') => {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(
+      new CustomEvent('tka_guest_restricted', {
+        detail: { featureName },
+      })
+    );
+  }
+};
+
 export const unlockMateri = (babId) => {
+  if (isGuestSession() && babId !== 'mtk_1' && babId !== 'bi_1') {
+    return;
+  }
   const data = getActivityData();
   if (!data.unlockedMateri) data.unlockedMateri = ['mtk_1', 'bi_1'];
   if (!data.unlockedMateri.includes(babId)) {
@@ -873,6 +945,9 @@ export const markMateriComplete = (babId, stars = 3) => {
 };
 
 export const unlockLatihan = (latihanId) => {
+  if (isGuestSession() && latihanId !== 'mtk_lat_1' && latihanId !== 'bi_lat_1') {
+    return;
+  }
   const data = getActivityData();
   if (!data.unlockedLatihan) data.unlockedLatihan = ['mtk_lat_1', 'bi_lat_1'];
   if (!data.unlockedLatihan.includes(latihanId)) {

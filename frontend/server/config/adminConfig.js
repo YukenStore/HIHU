@@ -7,6 +7,7 @@
  */
 export const ADMIN_EMAILS = [
   'yumenoboken@gmail.com',
+  'faalihabraar@gmail.com',
   // Tambahkan email admin lainnya di bawah baris ini:
   // 'admin.kedua@gmail.com',
 ];

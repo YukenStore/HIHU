@@ -9,6 +9,8 @@ import {
   unlockLatihan,
   resetLatihanProgress,
   recordLatihan,
+  isGuestSession,
+  triggerGuestRestrictionModal,
 } from '../utils/activityTracker';
 import { getCharacterAvatar } from '../utils/characterAvatars';
 import { formatMath } from '../utils/mathRenderer';
@@ -254,6 +256,10 @@ const LatihanSoal = () => {
   const isLevelCompleted = (lvlId) => completedLatihanIds.includes(lvlId);
 
   const isLevelUnlocked = (index, lvl, levelsList) => {
+    // Mode Guest: hanya Latihan 1 (index === 0) yang terbuka
+    if (isGuestSession()) {
+      return index === 0;
+    }
     // Latihan 1 selalu terbuka
     if (index === 0) return true;
     // Terbuka jika sudah selesai
@@ -348,8 +354,22 @@ const LatihanSoal = () => {
     return true;
   };
 
+  // Klik item latihan di Peta atau Daftar Grid (Cek pembatasan Guest untuk Latihan 2+)
+  const handleSelectLatihanCard = (lvl, index = 0) => {
+    if (isGuestSession() && (index > 0 || Number(lvl?.level) > 1)) {
+      triggerGuestRestrictionModal(`Latihan ${lvl.level}: ${lvl.subjudul || lvl.namaLevel}`);
+      return;
+    }
+    setSelectedLevelModal(lvl);
+  };
+
   // Buka dan Mulai Pengerjaan Latihan Normal
   const handleStartLatihan = (lvl) => {
+    if (isGuestSession() && Number(lvl?.level) > 1) {
+      setSelectedLevelModal(null);
+      triggerGuestRestrictionModal(`Latihan ${lvl.level}: ${lvl.subjudul || lvl.namaLevel}`);
+      return;
+    }
     setSelectedLevelModal(null);
     setActiveLatihan(lvl);
     setCurrentQuestionIndex(0);
@@ -448,6 +468,11 @@ const LatihanSoal = () => {
 
   // Mulai Tantangan Lompat Latihan
   const handleStartJumpChallenge = (lvl) => {
+    if (isGuestSession()) {
+      setSelectedLevelModal(null);
+      triggerGuestRestrictionModal(`Latihan ${lvl?.level}: ${lvl?.subjudul || lvl?.namaLevel}`);
+      return;
+    }
     setSelectedLevelModal(null);
     setJumpChallengeLevel(lvl);
     setJumpQuizIndex(0);
@@ -1739,7 +1764,7 @@ const LatihanSoal = () => {
                   return (
                     <div
                       key={lvl.id}
-                      onClick={() => setSelectedLevelModal(lvl)}
+                      onClick={() => handleSelectLatihanCard(lvl, originalIndex)}
                       className={`p-4 rounded-lg border transition-all duration-300 cursor-pointer flex flex-col justify-between ${
                         isCompleted
                           ? isMtk
@@ -1901,7 +1926,7 @@ const LatihanSoal = () => {
 
                           {/* Tombol Lingkaran Interaktif Tactile 3D Node */}
                           <button
-                            onClick={() => setSelectedLevelModal(lvl)}
+                            onClick={() => handleSelectLatihanCard(lvl, index)}
                             className={`w-18 h-18 sm:w-20 sm:h-20 rounded-full flex flex-col items-center justify-center font-bold border-2 transition-all duration-300 cursor-pointer relative z-10 select-none group ${
                               isCompleted
                                 ? selectedSubject === 'matematika'

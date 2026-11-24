@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { X, Trophy, Medal, Flame, Star, Sparkles, User, Award, Shield, Search } from 'lucide-react';
+import { X, Trophy, Medal, Flame, Star, Sparkles, User, Award, Shield, Search, Lock } from 'lucide-react';
 import { getLeaderboardData, syncLeaderboardFromDatabase } from '../utils/leaderboardData';
+import { isGuestSession, triggerGuestRestrictionModal } from '../utils/activityTracker';
 import { getCharacterAvatar } from '../utils/characterAvatars';
 
 /**
@@ -83,7 +84,37 @@ const LeaderboardModal = ({ isOpen, onClose, user, profileStats }) => {
 
         {/* Konten Scrollable */}
         <div className="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1">
-          {/* Card Posisi Pengguna ("Kamu") */}
+          {/* Card Posisi Pengguna ("Kamu") atau Info Mode Guest */}
+          {user?.isGuest || isGuestSession() ? (
+            <div className="p-4 rounded-xl bg-amber-50 text-[#261C14] flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-2 border-amber-500 shadow-sm">
+              <div className="flex items-start sm:items-center space-x-3">
+                <div className="w-10 h-10 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center flex-shrink-0 shadow-xs">
+                  <Lock className="w-5 h-5" />
+                </div>
+                <div>
+                  <span className="text-xs font-extrabold text-amber-800 uppercase tracking-wider">
+                    Mode Guest (Tamu)
+                  </span>
+                  <h4 className="text-sm font-bold text-[#261C14]">
+                    Akun Guest Tidak Terdaftar di Leaderboard
+                  </h4>
+                  <p className="text-xs text-[#6E6258] mt-0.5">
+                    Daftar atau login akun resmi agar EXP, Level, dan namamu tercatat di Papan Peringkat Nasional!
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  triggerGuestRestrictionModal('Papan Peringkat (Leaderboard)');
+                }}
+                className="px-3.5 py-2 rounded-lg bg-[#162E5B] hover:bg-[#1E3A8A] text-white text-xs font-bold transition-all cursor-pointer flex-shrink-0 shadow-xs"
+              >
+                Daftar / Login
+              </button>
+            </div>
+          ) : myEntry ? (
           <div className="p-3.5 sm:p-4 rounded-xl bg-[#FAF7F2] text-[#261C14] flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-2 border-[#C25E38] shadow-sm">
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 rounded-lg bg-[#C25E38] text-white flex items-center justify-center text-sm font-bold flex-shrink-0 shadow-xs">
@@ -119,12 +150,9 @@ const LeaderboardModal = ({ isOpen, onClose, user, profileStats }) => {
                   {myEntry.exp} Total EXP
                 </span>
               </div>
-              <div className="px-2 py-0.5 rounded bg-[#FEF7EE] text-[#D97E26] border border-[#FCD9BD] text-xs font-medium flex items-center space-x-1">
-                <span>🔥</span>
-                <span>{myEntry.streak} Hari</span>
-              </div>
             </div>
           </div>
+          ) : null}
 
           {/* Podium Juara */}
           <div>
@@ -337,7 +365,7 @@ const LeaderboardModal = ({ isOpen, onClose, user, profileStats }) => {
                       </div>
                     </div>
 
-                    {/* Level, EXP & Streak */}
+                    {/* Level & EXP */}
                     <div className="flex-shrink-0 flex items-center space-x-2 sm:space-x-3 text-right">
                       <div>
                         <span className="px-2 py-0.5 rounded bg-[#F2ECE4] text-[#261C14] border border-slate-300 text-xs font-semibold inline-block">
@@ -346,11 +374,6 @@ const LeaderboardModal = ({ isOpen, onClose, user, profileStats }) => {
                         <span className="text-[10px] text-[#6E6258] block mt-0.5">
                           {item.exp} EXP
                         </span>
-                      </div>
-
-                      <div className="hidden sm:flex items-center space-x-1 px-2 py-0.5 rounded bg-[#FEF7EE] text-[#D97E26] border border-[#F6D8B8] text-xs font-medium">
-                        <span>🔥</span>
-                        <span>{item.streak}h</span>
                       </div>
                     </div>
                   </div>

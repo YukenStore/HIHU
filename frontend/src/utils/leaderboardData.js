@@ -1,5 +1,6 @@
-import { AVAILABLE_TITLES, getUserProfileStats } from './activityTracker';
+import { AVAILABLE_TITLES, getUserProfileStats, isGuestSession } from './activityTracker';
 import { profileService } from '../services/profileService';
+import { isAdminUser, isAdminLeaderboardEntry } from '../config/adminConfig';
 
 const LEADERBOARD_STORAGE_KEY = 'tka_leaderboard_registry_v2';
 
@@ -17,27 +18,30 @@ export const syncLeaderboardFromDatabase = async () => {
   try {
     const list = await profileService.getLeaderboard(100);
     if (Array.isArray(list) && list.length > 0) {
-      const mapped = list.map((item) => {
-        let avatarVal = 'baby-boy';
-        try {
-          if (typeof item.activity_data === 'string') {
-            const parsed = JSON.parse(item.activity_data);
-            if (parsed.avatar) avatarVal = parsed.avatar;
-          } else if (typeof item.activity_data === 'object' && item.activity_data?.avatar) {
-            avatarVal = item.activity_data.avatar;
-          }
-        } catch (_) {}
-        return {
-          id: `user_${item.id}`,
-          name: item.username,
-          level: item.level || 1,
-          exp: item.exp || 0,
-          titleId: item.active_title || 'pemula',
-          streak: item.streak_count || 0,
-          avatar: avatarVal,
-          updatedAt: Date.now(),
-        };
-      });
+      const mapped = list
+        .filter((item) => !isAdminLeaderboardEntry(item))
+        .map((item) => {
+          let avatarVal = 'baby-boy';
+          try {
+            if (typeof item.activity_data === 'string') {
+              const parsed = JSON.parse(item.activity_data);
+              if (parsed.avatar) avatarVal = parsed.avatar;
+            } else if (typeof item.activity_data === 'object' && item.activity_data?.avatar) {
+              avatarVal = item.activity_data.avatar;
+            }
+          } catch (_) {}
+          return {
+            id: `user_${item.id}`,
+            name: item.username,
+            email: item.email || '',
+            level: item.level || 1,
+            exp: item.exp || 0,
+            titleId: item.active_title || 'pemula',
+            streak: item.streak_count || 0,
+            avatar: avatarVal,
+            updatedAt: Date.now(),
+          };
+        });
       saveLeaderboardRegistry(mapped);
       return mapped;
     }
@@ -58,8 +62,15 @@ export const getLeaderboardRegistry = () => {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        // Bersihkan jika ada entri dummy/mock lama (misal berawalan peer_)
-        const cleaned = parsed.filter((u) => !u.id?.startsWith('peer_'));
+        // Bersihkan jika ada entri dummy/mock lama, akun Guest, atau akun Admin
+        const cleaned = parsed.filter(
+          (u) =>
+            !u.id?.startsWith('peer_') &&
+            u.id !== 'guest_simulation' &&
+            u.name?.toLowerCase() !== 'guest' &&
+            u.name?.toLowerCase() !== 'guest (tamu)' &&
+            !isAdminLeaderboardEntry(u)
+        );
         return cleaned;
       }
     }
@@ -84,8 +95,15 @@ export const saveLeaderboardRegistry = (list) => {
  * Mendaftarkan user baru (hasil register) ke dalam leaderboard jika belum ada
  */
 export const registerUserToLeaderboard = (username) => {
-  if (!username) return;
+  if (!username || isGuestSession()) return;
   const cleanName = username.trim();
+  if (
+    cleanName.toLowerCase() === 'guest' ||
+    cleanName.toLowerCase() === 'guest (tamu)' ||
+    isAdminLeaderboardEntry({ name: cleanName })
+  ) {
+    return;
+  }
   const registry = getLeaderboardRegistry();
 
   const existingIndex = registry.findIndex(
@@ -112,9 +130,29 @@ export const registerUserToLeaderboard = (username) => {
  * Melakukan sinkronisasi data user aktif (setelah login / selesai belajar materi / latihan / tryout)
  */
 export const syncLeaderboardUser = (currentUser, userStats) => {
+  // Akun Guest dan akun Admin tidak pernah didaftarkan ke dalam Leaderboard
+  if (
+    isGuestSession() ||
+    currentUser?.isGuest ||
+    isAdminUser(currentUser) ||
+    isAdminLeaderboardEntry(
+      { name: currentUser?.username, email: currentUser?.email },
+      currentUser
+    )
+  ) {
+    return;
+  }
   const userName =
     currentUser?.username ||
-    (currentUser?.email ? currentUser.email.split('@')[0] : 'yuken');
+    (currentUser?.email ? currentUser.email.split('@')[0] : '');
+  if (
+    !userName ||
+    userName.toLowerCase() === 'guest' ||
+    userName.toLowerCase() === 'guest (tamu)' ||
+    isAdminLeaderboardEntry({ name: userName }, currentUser)
+  ) {
+    return;
+  }
 
   const stats = userStats || getUserProfileStats();
   const currentTitleId = stats?.activeTitle?.id || 'pemula';
@@ -162,21 +200,35 @@ export const syncLeaderboardUser = (currentUser, userStats) => {
  * dan bertambah saat ada user baru yang register/login/belajar.
  */
 export const getLeaderboardData = (currentUser, userStats) => {
-  const userName =
-    currentUser?.username ||
-    (currentUser?.email ? currentUser.email.split('@')[0] : 'yuken');
+  const isGuest = isGuestSession() || Boolean(currentUser?.isGuest);
+  const isAdmin =
+    isAdminUser(currentUser) ||
+    isAdminLeaderboardEntry(
+      { name: currentUser?.username, email: currentUser?.email },
+      currentUser
+    );
+  const isExcludedUser = isGuest || isAdmin;
+
+  const userName = isExcludedUser
+    ? '__excluded_user__'
+    : currentUser?.username ||
+      (currentUser?.email ? currentUser.email.split('@')[0] : '');
 
   const stats = userStats || getUserProfileStats();
 
-  // Sinkronkan dulu data user aktif saat ini
-  syncLeaderboardUser(currentUser, stats);
+  // Sinkronkan dulu data user aktif saat ini (hanya jika bukan Guest dan bukan Admin)
+  if (!isExcludedUser && userName) {
+    syncLeaderboardUser(currentUser, stats);
+  }
 
-  const registry = getLeaderboardRegistry();
+  const registry = getLeaderboardRegistry().filter(
+    (entry) => !isAdminLeaderboardEntry(entry, currentUser)
+  );
 
-  // Pastikan setidaknya ada data user aktif
-  if (registry.length === 0) {
+  // Pastikan setidaknya ada data user aktif (hanya jika bukan Guest dan bukan Admin)
+  if (registry.length === 0 && !isExcludedUser && userName) {
     registry.push({
-      id: currentUser?.id || 'user_yuken',
+      id: currentUser?.id || `user_${Date.now()}`,
       name: userName,
       level: stats?.level || 1,
       exp: stats?.totalExp || 0,
@@ -222,8 +274,10 @@ export const getLeaderboardData = (currentUser, userStats) => {
     rank: index + 1,
   }));
 
-  const myEntry = ranked.find((item) => item.isCurrentUser) || ranked[0];
-  const myRank = myEntry?.rank || 1;
+  const myEntry = isExcludedUser
+    ? null
+    : ranked.find((item) => item.isCurrentUser) || null;
+  const myRank = myEntry?.rank || null;
 
   return {
     list: ranked,

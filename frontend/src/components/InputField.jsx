@@ -17,6 +17,7 @@ const InputField = ({
   showPasswordToggle = false,
   disabled = false,
   autoComplete,
+  isAutofilled = false,
   ...restProps
 }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -51,6 +52,8 @@ const InputField = ({
             ${
               error
                 ? 'border-[#C93B3B] bg-white text-[#C93B3B] placeholder-red-300 focus:border-[#C93B3B] focus:ring-1 focus:ring-[#C93B3B]'
+                : isAutofilled
+                ? 'border-amber-400 !bg-[#FEF08A] text-slate-900 font-medium placeholder-amber-700/60 focus:border-amber-500 focus:ring-2 focus:ring-amber-400/30'
                 : 'border-slate-300 bg-white text-slate-800 placeholder-slate-400 focus:border-[#1E3A8A] focus:ring-2 focus:ring-[#1E3A8A]/20'
             }
             ${disabled ? 'bg-slate-100 cursor-not-allowed text-slate-400' : ''}

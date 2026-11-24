@@ -1,11 +1,18 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authService } from '../services/authService';
 import { syncLeaderboardUser } from '../utils/leaderboardData';
-import { syncProfileFromDatabase } from '../utils/activityTracker';
+import { syncProfileFromDatabase, resetGuestSimulationData } from '../utils/activityTracker';
 import { syncCustomContentFromServer } from '../services/contentService';
 import { isAdminUser } from '../config/adminConfig';
 
 const AuthContext = createContext(null);
+
+export const GUEST_USER_PROFILE = {
+  id: 'guest_simulation',
+  username: 'Guest',
+  email: 'guest@simulasi.tkasd',
+  isGuest: true,
+};
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
@@ -21,6 +28,11 @@ export const AuthProvider = ({ children }) => {
       // Muat kustomisasi Materi & Latihan Soal dari database Cloudflare D1
       syncCustomContentFromServer();
       const storedToken = localStorage.getItem('token');
+      if (storedToken === 'GUEST_SIMULATION_TOKEN') {
+        setUser(GUEST_USER_PROFILE);
+        setLoading(false);
+        return;
+      }
       if (storedToken) {
         try {
           const data = await authService.getMe();
@@ -110,6 +122,22 @@ export const AuthProvider = ({ children }) => {
     if (data && data.user) {
       setUser(data.user);
       localStorage.setItem('user', JSON.stringify(data.user));
+      try {
+        const rawSaved = localStorage.getItem('tka_saved_user');
+        if (rawSaved) {
+          const parsedSaved = JSON.parse(rawSaved);
+          const wasEmail = parsedSaved?.identifier?.includes('@');
+          localStorage.setItem(
+            'tka_saved_user',
+            JSON.stringify({
+              ...parsedSaved,
+              identifier: wasEmail ? data.user.email : data.user.username,
+              username: data.user.username,
+              email: data.user.email,
+            })
+          );
+        }
+      } catch (_) {}
       if (data.token) {
         setToken(data.token);
         localStorage.setItem('token', data.token);
@@ -123,14 +151,36 @@ export const AuthProvider = ({ children }) => {
   };
 
   /**
+   * Fungsi Masuk sebagai Guest (Simulasi Terisolasi)
+   */
+  const loginAsGuest = () => {
+    resetGuestSimulationData();
+    const guestToken = 'GUEST_SIMULATION_TOKEN';
+    setToken(guestToken);
+    setUser(GUEST_USER_PROFILE);
+    localStorage.setItem('token', guestToken);
+    localStorage.setItem('user', JSON.stringify(GUEST_USER_PROFILE));
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('tka_profile_updated'));
+    }
+    return { user: GUEST_USER_PROFILE, token: guestToken };
+  };
+
+  /**
    * Fungsi Logout
    */
   const logout = () => {
+    const wasGuest = user?.isGuest || localStorage.getItem('token') === 'GUEST_SIMULATION_TOKEN';
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    localStorage.removeItem('tka_sd_user_activity_v1');
+    if (wasGuest) {
+      localStorage.removeItem('tka_sd_guest_simulation_v1');
+      localStorage.removeItem('tka_sd_guest_completed_tryouts');
+    } else {
+      localStorage.removeItem('tka_sd_user_activity_v1');
+    }
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new Event('tka_profile_updated'));
     }
@@ -141,8 +191,10 @@ export const AuthProvider = ({ children }) => {
     token,
     loading,
     isAuthenticated: !!token,
-    isAdmin: isAdminUser(user),
+    isGuest: Boolean(user?.isGuest || token === 'GUEST_SIMULATION_TOKEN'),
+    isAdmin: !user?.isGuest && isAdminUser(user),
     login,
+    loginAsGuest,
     register,
     verifyOtp,
     resendOtp,

@@ -1,4 +1,5 @@
 import { query } from '../config/db.js';
+import { isAdminEmail } from '../config/adminConfig.js';
 
 /**
  * Mengambil profil gamifikasi pengguna berdasarkan user_id dari Cloudflare D1
@@ -80,6 +81,7 @@ export const getLeaderboardList = async (limit = 100) => {
     SELECT 
       u.id, 
       u.username, 
+      u.email,
       COALESCE(p.exp, 0) as exp, 
       COALESCE(p.level, 1) as level, 
       COALESCE(p.active_title, 'pemula') as active_title, 
@@ -93,5 +95,7 @@ export const getLeaderboardList = async (limit = 100) => {
     LIMIT ?
   `;
   const response = await query(sql, [limit]);
-  return response.results || [];
+  const rows = response.results || [];
+  // Sembunyikan akun Admin dari daftar Leaderboard
+  return rows.filter((row) => !isAdminEmail(row.email));
 };
