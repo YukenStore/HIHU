@@ -2,14 +2,12 @@
  * ============================================================================
  * KONFIGURASI VALIDASI EMAIL ADMIN (BACKEND)
  * ============================================================================
- * Tambahkan alamat email admin baru ke dalam array ADMIN_EMAILS di bawah ini.
- * Digunakan oleh middleware backend untuk memvalidasi request edit Materi & Latihan Soal.
  */
+
 export const ADMIN_EMAILS = [
   'yumenoboken@gmail.com',
   'faalihabraar@gmail.com',
-  // Tambahkan email admin lainnya di bawah baris ini:
-  // 'admin.kedua@gmail.com',
+  'indonesiangamer208@gmail.com',
 ];
 
 /**

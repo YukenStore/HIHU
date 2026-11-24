@@ -1,12 +1,14 @@
 export const ADMIN_EMAILS = [
   'yumenoboken@gmail.com',
   'faalihabraar@gmail.com',
+  'indonesiangamer208@gmail.com',
 ];
 
 // Daftar username admin (digunakan juga untuk menyembunyikan akun admin dari cache leaderboard)
 export const ADMIN_USERNAMES = [
   'admin',
   'orangpintar',
+  'HIHU',
 ];
 
 /**
