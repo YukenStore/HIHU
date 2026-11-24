@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import { useAuth } from '../context/AuthContext';
+import { isAdminUser } from '../config/adminConfig';
 import { PUSMENDIK_MATERI } from '../data/pusmendikData';
 import {
   syncCustomContentFromServer,
@@ -193,6 +195,8 @@ const getPathOffset = (index) => {
 
 const Materi = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isAdmin = isAdminUser(user);
 
   // Mata Pelajaran Terpilih ('bahasa_indonesia' | 'matematika' | null)
   const [selectedSubject, setSelectedSubject] = useState(null);
@@ -432,8 +436,9 @@ const Materi = () => {
     // Petunjuk (hint) tetap terlihat agar murid terbantu memilih jawaban yang tepat
   };
 
-  // Mulai Tantangan Lompat Level
+  // Mulai Tantangan Lompat Level (Khusus Admin)
   const handleStartJumpChallenge = (bab) => {
+    if (!isAdmin) return;
     if (isGuestSession()) {
       setSelectedLevelModal(null);
       triggerGuestRestrictionModal(`Materi ${bab?.no}: ${bab?.judul}`);
@@ -1078,8 +1083,14 @@ const Materi = () => {
                       Peta Materi {currentSubject.title}
                     </h1>
                     <p className="text-xs sm:text-sm text-[#6E6258] max-w-xl mt-0.5 leading-relaxed">
-                      Pelajari materi secara bertahap atau buka lebih awal dengan{' '}
-                      <strong className={`transition-colors ${selectedSubject === 'bahasa_indonesia' ? 'text-[#047857]' : 'text-[#881337]'}`}>Tantangan Lompat Materi</strong>.
+                      {isAdmin ? (
+                        <>
+                          Pelajari materi secara bertahap atau buka lebih awal dengan{' '}
+                          <strong className={`transition-colors ${selectedSubject === 'bahasa_indonesia' ? 'text-[#047857]' : 'text-[#881337]'}`}>Tantangan Lompat Materi (Khusus Admin)</strong>.
+                        </>
+                      ) : (
+                        'Pelajari setiap topik materi secara bertahap dan raih bintang maksimal di kuis pemahaman.'
+                      )}
                     </p>
                   </div>
 
@@ -1320,7 +1331,7 @@ const Materi = () => {
 
                       <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold">
                         <span className={isUnlocked ? 'text-blue-600' : 'text-slate-400'}>
-                          {isUnlocked ? 'Buka Materi' : 'Lompat Materi ⚡'}
+                          {isUnlocked ? 'Buka Materi' : isAdmin ? 'Lompat Materi ⚡ (Admin)' : 'Masih Terkunci 🔒'}
                         </span>
                         <ChevronRight className="w-3.5 h-3.5" />
                       </div>
@@ -1400,7 +1411,7 @@ const Materi = () => {
                                 : 'bg-[#F2ECE4] border-[#E6DFD5] text-[#8C7E72] shadow-[0_5px_0_0_#D8CDC2] hover:bg-[#EAE2D8] hover:text-[#6E6258] hover:shadow-[0_6px_0_0_#C5B8AC] hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_1px_0_0_#D8CDC2]'
                             }`}
                             title={`Materi ${bab.no}: ${bab.judul} (${
-                              isCompleted ? 'Tuntas' : isUnlocked ? 'Terbuka' : 'Terkunci - Klik untuk Lompat'
+                              isCompleted ? 'Tuntas' : isUnlocked ? 'Terbuka' : isAdmin ? 'Terkunci - Klik untuk Lompat (Admin)' : 'Terkunci'
                             })`}
                           >
                             {/* Ikon di dalam node */}
@@ -1565,9 +1576,9 @@ const Materi = () => {
 
         return (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1F1914]/50 backdrop-blur-xs animate-fade-in">
-            <div className="bg-white rounded-lg border border-[#E6DFD5] shadow-xl max-w-md w-full overflow-hidden relative animate-fade-in">
+            <div className="bg-white rounded-lg border border-[#E6DFD5] shadow-xl max-w-md w-full max-h-[88vh] flex flex-col overflow-hidden relative animate-fade-in">
               {/* Header Modal */}
-              <div className="p-5 bg-[#1F1914] text-white relative border-b border-[#33261D]">
+              <div className="p-5 bg-[#1F1914] text-white relative border-b border-[#33261D] flex-shrink-0">
                 <button
                   onClick={() => setSelectedLevelModal(null)}
                   className="absolute right-4 top-4 w-7 h-7 rounded-lg bg-[#2D241C] hover:bg-[#3D2E22] text-[#D4C8BC] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
@@ -1612,7 +1623,7 @@ const Materi = () => {
               </div>
 
               {/* Body Modal */}
-              <div className="p-5 space-y-4">
+              <div className="p-5 space-y-4 overflow-y-auto slate-scrollbar flex-1">
                 {/* Capaian Bintang Materi */}
                 <div className="p-3.5 rounded-lg bg-[#FAF7F2] border border-[#E6DFD5] flex items-center justify-between">
                   <div>
@@ -1665,7 +1676,7 @@ const Materi = () => {
                 </div>
 
                 {selectedLevelModal.konsepKunci && (
-                  <div className="p-3 rounded-lg bg-[#FEF7EE] border border-[#F6D8B8] text-xs text-[#261C14]">
+                  <div className="p-3 rounded-lg bg-[#FEF7EE] border border-[#F6D8B8] text-xs text-[#261C14] max-h-52 overflow-y-auto amber-scrollbar">
                     <strong className="text-[#D97E26] block font-semibold mb-0.5">Konsep Inti:</strong>
                     <div
                       className="whitespace-pre-line leading-relaxed block"
@@ -1685,11 +1696,17 @@ const Materi = () => {
                         <strong className="block font-semibold text-[#261C14]">
                           Materi ini masih terkunci!
                         </strong>
-                        <p className="mt-0.5 text-[#6E6258] leading-relaxed">
-                          Selesaikan Materi {prevBab?.no} ({prevBab?.judul}) terlebih dahulu,{' '}
-                          <strong className={selectedSubject === 'bahasa_indonesia' ? 'text-[#047857]' : 'text-[#881337]'}>atau kamu dapat langsung melompat</strong>{' '}
-                          ke materi ini dengan menjawab tantangan soal pemahaman materi!
-                        </p>
+                        {isAdmin ? (
+                          <p className="mt-0.5 text-[#6E6258] leading-relaxed">
+                            Selesaikan Materi {prevBab?.no} ({prevBab?.judul}) terlebih dahulu,{' '}
+                            <strong className={selectedSubject === 'bahasa_indonesia' ? 'text-[#047857]' : 'text-[#881337]'}>atau sebagai Admin kamu dapat langsung melompat</strong>{' '}
+                            ke materi ini dengan menjawab tantangan soal pemahaman materi!
+                          </p>
+                        ) : (
+                          <p className="mt-0.5 text-[#6E6258] leading-relaxed">
+                            Selesaikan Materi {prevBab?.no} ({prevBab?.judul}) beserta kuis pemahamannya terlebih dahulu untuk membuka materi ini.
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1709,16 +1726,16 @@ const Materi = () => {
                       <BookOpen className="w-4 h-4" />
                       <span>{isCompleted ? 'Pelajari Ulang Materi' : 'Mulai Belajar Materi'}</span>
                     </button>
-                  ) : (
-                    /* Opsi Lompat Materi */
+                  ) : isAdmin ? (
+                    /* Opsi Lompat Materi (Khusus Admin) */
                     <button
                       onClick={() => handleStartJumpChallenge(selectedLevelModal)}
                       className="w-full py-2.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold text-xs sm:text-sm transition-colors flex items-center justify-center space-x-2 cursor-pointer shadow-xs"
                     >
                       <Zap className="w-4 h-4 fill-current" />
-                      <span>Lompat ke Materi Ini (Tantangan Kuis)</span>
+                      <span>Lompat ke Materi Ini (Khusus Admin)</span>
                     </button>
-                  )}
+                  ) : null}
 
                   <button
                     onClick={() => setSelectedLevelModal(null)}
@@ -1733,12 +1750,12 @@ const Materi = () => {
         );
       })()}
 
-      {/* --- MODAL 2: TANTANGAN LOMPAT MATERI (JUMP CHALLENGE) --- */}
-      {jumpChallengeBab && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1F1914]/50 backdrop-blur-xs animate-fade-in overflow-y-auto">
-          <div className="bg-white rounded-lg border border-[#E6DFD5] shadow-xl max-w-lg w-full overflow-hidden relative animate-fade-in my-auto">
+      {/* --- MODAL 2: TANTANGAN LOMPAT MATERI (JUMP CHALLENGE - KHUSUS ADMIN) --- */}
+      {jumpChallengeBab && isAdmin && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1F1914]/50 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded-lg border border-[#E6DFD5] shadow-xl max-w-lg w-full max-h-[88vh] flex flex-col overflow-hidden relative animate-fade-in my-auto">
             {/* Header Tantangan Lompat */}
-            <div className="p-5 bg-[#1F1914] text-white relative border-b border-[#33261D]">
+            <div className="p-5 bg-[#1F1914] text-white relative border-b border-[#33261D] flex-shrink-0">
               <button
                 onClick={() => setJumpChallengeBab(null)}
                 className="absolute right-4 top-4 w-7 h-7 rounded-lg bg-[#2D241C] hover:bg-[#3D2E22] text-[#D4C8BC] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
@@ -1759,7 +1776,7 @@ const Materi = () => {
             </div>
 
             {/* Body Tantangan */}
-            <div className="p-5 sm:p-6">
+            <div className="p-5 sm:p-6 overflow-y-auto slate-scrollbar flex-1">
               {jumpFinished ? (
                 <div className="text-center py-6 space-y-4 animate-fade-in">
                   <div className="w-14 h-14 rounded-full bg-[#E8F2EF] text-[#286657] flex items-center justify-center mx-auto border border-[#BCD9D0]">
@@ -1968,10 +1985,10 @@ const Materi = () => {
       {/* --- MODAL 3: BUKU PANDUAN CARA BERMAIN --- */}
       {showGuideModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1F1914]/50 backdrop-blur-xs animate-fade-in">
-          <div className={`bg-white rounded-2xl border-2 shadow-2xl max-w-md w-full overflow-hidden relative animate-fade-in ${
+          <div className={`bg-white rounded-2xl border-2 shadow-2xl max-w-md w-full max-h-[88vh] flex flex-col overflow-hidden relative animate-fade-in ${
             selectedSubject === 'matematika' ? 'border-[#881337]' : 'border-[#047857]'
           }`}>
-            <div className={`p-5 text-white border-b-2 relative ${
+            <div className={`p-5 text-white border-b-2 relative flex-shrink-0 ${
               selectedSubject === 'matematika' ? 'bg-[#881337] border-[#700D2B]' : 'bg-[#047857] border-[#065F46]'
             }`}>
               <button
@@ -1993,7 +2010,7 @@ const Materi = () => {
               </p>
             </div>
 
-            <div className="p-5 space-y-3.5 text-xs text-[#261C14] leading-relaxed">
+            <div className="p-5 space-y-3.5 text-xs text-[#261C14] leading-relaxed overflow-y-auto slate-scrollbar flex-1">
               <div className="flex items-start space-x-3">
                 <span className={`w-6 h-6 rounded-md flex items-center justify-center font-bold flex-shrink-0 text-xs border ${
                   selectedSubject === 'matematika'
@@ -2022,19 +2039,21 @@ const Materi = () => {
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3">
-                <span className={`w-6 h-6 rounded-md flex items-center justify-center font-bold flex-shrink-0 text-xs border ${
-                  selectedSubject === 'matematika'
-                    ? 'bg-[#FFF1F2] text-[#881337] border-[#FECDD3]'
-                    : 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]'
-                }`}>
-                  3
-                </span>
-                <div>
-                  <strong className="block text-[#261C14] font-semibold">Fitur Tantangan Lompat Materi</strong>
-                  Ingin langsung belajar topik di materi tertentu? Kamu bisa membuka materi lebih awal dengan menyelesaikan <strong>Tantangan Kuis</strong> dari materi yang dituju!
+              {isAdmin && (
+                <div className="flex items-start space-x-3">
+                  <span className={`w-6 h-6 rounded-md flex items-center justify-center font-bold flex-shrink-0 text-xs border ${
+                    selectedSubject === 'matematika'
+                      ? 'bg-[#FFF1F2] text-[#881337] border-[#FECDD3]'
+                      : 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]'
+                  }`}>
+                    3
+                  </span>
+                  <div>
+                    <strong className="block text-[#261C14] font-semibold">Fitur Tantangan Lompat Materi (Khusus Admin)</strong>
+                    Sebagai Admin, kamu bisa membuka materi lebih awal dengan menyelesaikan <strong>Tantangan Kuis</strong> dari materi yang dituju!
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="flex items-start space-x-3">
                 <span className={`w-6 h-6 rounded-md flex items-center justify-center font-bold flex-shrink-0 text-xs border ${
@@ -2042,7 +2061,7 @@ const Materi = () => {
                     ? 'bg-[#FFF1F2] text-[#881337] border-[#FECDD3]'
                     : 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]'
                 }`}>
-                  4
+                  {isAdmin ? '4' : '3'}
                 </span>
                 <div>
                   <strong className="block text-[#261C14] font-semibold">Milestone Peti & Piala Puncak</strong>
@@ -2070,7 +2089,7 @@ const Materi = () => {
       {/* --- MODAL 4: MILESTONE PETI & PIALA --- */}
       {milestoneModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1F1914]/50 backdrop-blur-xs animate-fade-in">
-          <div className="bg-white rounded-lg border border-[#E6DFD5] shadow-xl max-w-sm w-full overflow-hidden relative text-center p-6 space-y-4 animate-fade-in">
+          <div className="bg-white rounded-lg border border-[#E6DFD5] shadow-xl max-w-sm w-full max-h-[88vh] overflow-y-auto slate-scrollbar relative text-center p-6 space-y-4 animate-fade-in">
             <div
               className={`w-14 h-14 rounded-full flex items-center justify-center mx-auto border ${
                 milestoneModal.unlocked

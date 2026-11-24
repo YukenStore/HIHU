@@ -395,6 +395,24 @@ input[type="password"]::-ms-clear {
     background: #475569;
   }
 
+  /* Scrollbar bertema Warm Amber/Cream untuk kotak Konsep Inti (#FEF7EE) */
+  .amber-scrollbar::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+  .amber-scrollbar::-webkit-scrollbar-track {
+    background: #FDE6C4;
+    border-radius: 9999px;
+  }
+  .amber-scrollbar::-webkit-scrollbar-thumb {
+    background: #D97E26;
+    border-radius: 9999px;
+    border: 1.5px solid #FDE6C4;
+  }
+  .amber-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #B5671B;
+  }
+
   /* Scrollbar horizontal navigasi soal Bahasa Indonesia (Emerald) */
   .emerald-scrollbar::-webkit-scrollbar {
     width: 7px;
@@ -459,6 +477,10 @@ input[type="password"]::-ms-clear {
     .exam-nav-scrollbar {
       scrollbar-width: thin;
       scrollbar-color: #C25E38 #F2ECE4;
+    }
+    .amber-scrollbar {
+      scrollbar-width: thin;
+      scrollbar-color: #D97E26 #FDE6C4;
     }
     .emerald-scrollbar {
       scrollbar-width: thin;

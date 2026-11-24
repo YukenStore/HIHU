@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import { useAuth } from '../context/AuthContext';
+import { isAdminUser } from '../config/adminConfig';
 import { PUSMENDIK_LATIHAN } from '../data/latihanData';
 import {
   syncCustomContentFromServer,
@@ -193,6 +195,8 @@ const getPathOffset = (index) => {
 
 const LatihanSoal = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isAdmin = isAdminUser(user);
 
   // Mata Pelajaran Terpilih ('bahasa_indonesia' | 'matematika' | null)
   const [selectedSubject, setSelectedSubject] = useState(null);
@@ -516,8 +520,9 @@ const LatihanSoal = () => {
     refreshActivity();
   };
 
-  // Mulai Tantangan Lompat Latihan
+  // Mulai Tantangan Lompat Latihan (Khusus Admin)
   const handleStartJumpChallenge = (lvl) => {
+    if (!isAdmin) return;
     if (isGuestSession()) {
       setSelectedLevelModal(null);
       triggerGuestRestrictionModal(`Latihan ${lvl?.level}: ${lvl?.subjudul || lvl?.namaLevel}`);
@@ -1936,7 +1941,7 @@ const LatihanSoal = () => {
 
                       <div className="mt-4 pt-3 border-t border-[#E6DFD5] flex items-center justify-between text-xs font-medium">
                         <span className={`transition-colors duration-300 ${isUnlocked ? (isMtk ? 'text-[#881337]' : 'text-[#047857]') : 'text-[#8C7E72]'}`}>
-                          {isUnlocked ? 'Kerjakan Latihan' : 'Lompat Latihan'}
+                          {isUnlocked ? 'Kerjakan Latihan' : isAdmin ? 'Lompat Latihan (Admin)' : 'Masih Terkunci 🔒'}
                         </span>
                         <ChevronRight className="w-3.5 h-3.5 text-[#8C7E72]" />
                       </div>
@@ -2018,7 +2023,7 @@ const LatihanSoal = () => {
                                 : 'bg-[#F2ECE4] border-[#E6DFD5] text-[#8C7E72] shadow-[0_5px_0_0_#D8CDC2] hover:bg-[#EAE2D8] hover:text-[#6E6258] hover:shadow-[0_6px_0_0_#C5B8AC] hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_1px_0_0_#D8CDC2]'
                             }`}
                             title={`Latihan ${lvl.level}: ${lvl.subjudul || lvl.namaLevel} (${
-                              isCompleted ? 'Tuntas' : isUnlocked ? 'Terbuka' : 'Terkunci - Klik untuk Lompat'
+                              isCompleted ? 'Tuntas' : isUnlocked ? 'Terbuka' : isAdmin ? 'Terkunci - Klik untuk Lompat (Admin)' : 'Terkunci'
                             })`}
                           >
                             {/* Ikon di dalam node */}
@@ -2181,11 +2186,11 @@ const LatihanSoal = () => {
 
         return (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1F1914]/50 backdrop-blur-xs">
-            <div className={`bg-white rounded-2xl border-2 shadow-xl max-w-md w-full overflow-hidden relative ${
+            <div className={`bg-white rounded-2xl border-2 shadow-xl max-w-md w-full max-h-[88vh] flex flex-col overflow-hidden relative ${
               selectedSubject === 'matematika' ? 'border-[#881337]' : 'border-[#047857]'
             }`}>
               {/* Header Modal */}
-              <div className={`p-4 text-white relative border-b-2 ${
+              <div className={`p-4 text-white relative border-b-2 flex-shrink-0 ${
                 selectedSubject === 'matematika' ? 'bg-[#881337] border-[#700D2B]' : 'bg-[#047857] border-[#065F46]'
               }`}>
                 <button
@@ -2226,7 +2231,7 @@ const LatihanSoal = () => {
               </div>
 
               {/* Body Modal */}
-              <div className="p-4 space-y-3.5">
+              <div className="p-4 space-y-3.5 overflow-y-auto slate-scrollbar flex-1">
                 {/* Capaian Bintang Latihan */}
                 <div className="p-3 rounded-lg bg-[#FAF7F2] border border-[#E6DFD5] flex items-center justify-between">
                   <div>
@@ -2293,7 +2298,9 @@ const LatihanSoal = () => {
                           Latihan ini masih terkunci
                         </strong>
                         <p className="mt-0.5 text-[#6E6258] leading-relaxed">
-                          Selesaikan Latihan {prevLvl?.level} terlebih dahulu, atau langsung melompat dengan menyelesaikan kuis tantangan.
+                          {isAdmin
+                            ? `Selesaikan Latihan ${prevLvl?.level} terlebih dahulu, atau sebagai Admin langsung melompat dengan menyelesaikan kuis tantangan.`
+                            : `Selesaikan Latihan ${prevLvl?.level} terlebih dahulu untuk membuka latihan ini.`}
                         </p>
                       </div>
                     </div>
@@ -2314,15 +2321,15 @@ const LatihanSoal = () => {
                       <CheckCircle2 className="w-4 h-4" />
                       <span>{isCompleted ? 'Kerjakan Ulang Latihan' : 'Mulai Kerjakan Latihan'}</span>
                     </button>
-                  ) : (
+                  ) : isAdmin ? (
                     <button
                       onClick={() => handleStartJumpChallenge(selectedLevelModal)}
                       className="w-full py-2.5 rounded-lg bg-[#D97E26] hover:bg-[#B5671B] text-white font-semibold text-xs sm:text-sm transition-colors flex items-center justify-center space-x-2 cursor-pointer"
                     >
                       <Zap className="w-4 h-4 fill-current" />
-                      <span>Lompat ke Latihan Ini (Tantangan)</span>
+                      <span>Lompat ke Latihan Ini (Khusus Admin)</span>
                     </button>
-                  )}
+                  ) : null}
 
                   <button
                     onClick={() => setSelectedLevelModal(null)}
@@ -2337,14 +2344,14 @@ const LatihanSoal = () => {
         );
       })()}
 
-      {/* --- MODAL 2: TANTANGAN LOMPAT LATIHAN (JUMP CHALLENGE) --- */}
-      {jumpChallengeLevel && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1F1914]/50 backdrop-blur-xs overflow-y-auto">
-          <div className={`bg-white rounded-2xl border-2 shadow-xl max-w-lg w-full overflow-hidden relative my-auto ${
+      {/* --- MODAL 2: TANTANGAN LOMPAT LATIHAN (JUMP CHALLENGE - KHUSUS ADMIN) --- */}
+      {jumpChallengeLevel && isAdmin && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1F1914]/50 backdrop-blur-xs">
+          <div className={`bg-white rounded-2xl border-2 shadow-xl max-w-lg w-full max-h-[88vh] flex flex-col overflow-hidden relative my-auto ${
             selectedSubject === 'matematika' ? 'border-[#881337]' : 'border-[#047857]'
           }`}>
             {/* Header Tantangan Lompat */}
-            <div className={`p-4 text-white relative border-b-2 ${
+            <div className={`p-4 text-white relative border-b-2 flex-shrink-0 ${
               selectedSubject === 'matematika' ? 'bg-[#881337] border-[#700D2B]' : 'bg-[#047857] border-[#065F46]'
             }`}>
               <button
@@ -2367,7 +2374,7 @@ const LatihanSoal = () => {
             </div>
 
             {/* Body Tantangan */}
-            <div className="p-4 sm:p-5">
+            <div className="p-4 sm:p-5 overflow-y-auto slate-scrollbar flex-1">
               {jumpFinished ? (
                 <div className="text-center py-4 space-y-3">
                   <div className="w-12 h-12 rounded-full bg-[#E8F2EF] text-[#286657] flex items-center justify-center mx-auto border border-[#C5DDD6]">
@@ -2558,10 +2565,10 @@ const LatihanSoal = () => {
       {/* --- MODAL 3: BUKU PANDUAN CARA BERMAIN --- */}
       {showGuideModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1F1914]/50 backdrop-blur-xs animate-fade-in">
-          <div className={`bg-white rounded-2xl border-2 shadow-2xl max-w-md w-full overflow-hidden relative ${
+          <div className={`bg-white rounded-2xl border-2 shadow-2xl max-w-md w-full max-h-[88vh] flex flex-col overflow-hidden relative ${
             selectedSubject === 'matematika' ? 'border-[#881337]' : 'border-[#047857]'
           }`}>
-            <div className={`p-5 text-white border-b-2 relative ${
+            <div className={`p-5 text-white border-b-2 relative flex-shrink-0 ${
               selectedSubject === 'matematika' ? 'bg-[#881337] border-[#700D2B]' : 'bg-[#047857] border-[#065F46]'
             }`}>
               <button
@@ -2583,7 +2590,7 @@ const LatihanSoal = () => {
               </p>
             </div>
 
-            <div className="p-5 space-y-3.5 text-xs text-[#261C14] leading-relaxed">
+            <div className="p-5 space-y-3.5 text-xs text-[#261C14] leading-relaxed overflow-y-auto slate-scrollbar flex-1">
               <div className="flex items-start space-x-3">
                 <span className={`w-6 h-6 rounded-md flex items-center justify-center font-bold flex-shrink-0 text-xs border ${
                   selectedSubject === 'matematika'
@@ -2612,19 +2619,21 @@ const LatihanSoal = () => {
                 </div>
               </div>
 
-              <div className="flex items-start space-x-3">
-                <span className={`w-6 h-6 rounded-md flex items-center justify-center font-bold flex-shrink-0 text-xs border ${
-                  selectedSubject === 'matematika'
-                    ? 'bg-[#FFF1F2] text-[#881337] border-[#FECDD3]'
-                    : 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]'
-                }`}>
-                  3
-                </span>
-                <div>
-                  <strong className="block text-[#261C14] font-semibold">Fitur Tantangan Lompat Latihan</strong>
-                  Ingin langsung berlatih di tingkat tertentu? Kamu bisa membuka latihan lebih awal dengan menyelesaikan <strong>Tantangan Kuis</strong>.
+              {isAdmin && (
+                <div className="flex items-start space-x-3">
+                  <span className={`w-6 h-6 rounded-md flex items-center justify-center font-bold flex-shrink-0 text-xs border ${
+                    selectedSubject === 'matematika'
+                      ? 'bg-[#FFF1F2] text-[#881337] border-[#FECDD3]'
+                      : 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]'
+                  }`}>
+                    3
+                  </span>
+                  <div>
+                    <strong className="block text-[#261C14] font-semibold">Fitur Tantangan Lompat Latihan (Khusus Admin)</strong>
+                    Sebagai Admin, kamu bisa membuka latihan lebih awal dengan menyelesaikan <strong>Tantangan Kuis</strong>.
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="flex items-start space-x-3">
                 <span className={`w-6 h-6 rounded-md flex items-center justify-center font-bold flex-shrink-0 text-xs border ${
@@ -2632,7 +2641,7 @@ const LatihanSoal = () => {
                     ? 'bg-[#FFF1F2] text-[#881337] border-[#FECDD3]'
                     : 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0]'
                 }`}>
-                  4
+                  {isAdmin ? '4' : '3'}
                 </span>
                 <div>
                   <strong className="block text-[#261C14] font-semibold">Milestone Peti & Piala Puncak</strong>
@@ -2660,7 +2669,7 @@ const LatihanSoal = () => {
       {/* --- MODAL 4: MILESTONE PETI & PIALA --- */}
       {milestoneModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1F1914]/50 backdrop-blur-xs">
-          <div className="bg-white rounded-xl border border-[#E6DFD5] shadow-xl max-w-sm w-full overflow-hidden relative text-center p-5 space-y-3">
+          <div className="bg-white rounded-xl border border-[#E6DFD5] shadow-xl max-w-sm w-full max-h-[88vh] overflow-y-auto slate-scrollbar relative text-center p-5 space-y-3">
             <div
               className={`w-12 h-12 rounded-lg flex items-center justify-center mx-auto border ${
                 milestoneModal.unlocked
