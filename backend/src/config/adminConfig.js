@@ -1,14 +1,19 @@
+import { ADMIN_EMAILS as FRONTEND_ADMIN_EMAILS } from '../../../frontend/src/config/adminConfig.js';
+
 /**
  * ============================================================================
  * KONFIGURASI VALIDASI EMAIL ADMIN (BACKEND)
  * ============================================================================
  */
 
-export const ADMIN_EMAILS = [
-  'yumenoboken@gmail.com',
-  'faalihabraar@gmail.com',
-  'indonesiangamer208@gmail.com',
-];
+export const ADMIN_EMAILS = Array.from(
+  new Set([
+    'yumenoboken@gmail.com',
+    'faalihabraar@gmail.com',
+    'indonesiangamer208@gmail.com',
+    ...(Array.isArray(FRONTEND_ADMIN_EMAILS) ? FRONTEND_ADMIN_EMAILS : []),
+  ])
+);
 
 /**
  * Memeriksa apakah email termasuk dalam daftar Admin

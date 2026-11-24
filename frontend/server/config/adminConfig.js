@@ -1,16 +1,19 @@
+import { ADMIN_EMAILS as FRONTEND_ADMIN_EMAILS } from '../../src/config/adminConfig.js';
+
 /**
  * ============================================================================
- * KONFIGURASI VALIDASI EMAIL ADMIN (BACKEND)
+ * KONFIGURASI VALIDASI EMAIL ADMIN (VERCEL SERVERLESS BACKEND)
  * ============================================================================
- * Tambahkan alamat email admin baru ke dalam array ADMIN_EMAILS di bawah ini.
- * Digunakan oleh middleware backend untuk memvalidasi request edit Materi & Latihan Soal.
+ * Otomatis menyinkronkan daftar email admin dari frontend/src/config/adminConfig.js
  */
-export const ADMIN_EMAILS = [
-  'yumenoboken@gmail.com',
-  'faalihabraar@gmail.com',
-  // Tambahkan email admin lainnya di bawah baris ini:
-  // 'admin.kedua@gmail.com',
-];
+export const ADMIN_EMAILS = Array.from(
+  new Set([
+    'yumenoboken@gmail.com',
+    'faalihabraar@gmail.com',
+    'indonesiangamer208@gmail.com',
+    ...(Array.isArray(FRONTEND_ADMIN_EMAILS) ? FRONTEND_ADMIN_EMAILS : []),
+  ])
+);
 
 /**
  * Memeriksa apakah email termasuk dalam daftar Admin
