@@ -52,7 +52,10 @@ export function formatMath(text) {
   // 4. Konversi format markdown bold **teks** menjadi <strong>teks</strong>
   result = result.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
 
-  // 5. Konversi newline \n menjadi <br /> agar baris baru sesuai dengan ketikan di Admin Panel
+  // 5. Konversi format markdown italic *teks* menjadi <em>teks</em>
+  result = result.replace(/(?<!\*)\*([^\s*][^*]*?)\*(?!\*)/g, '<em>$1</em>');
+
+  // 6. Konversi newline \n menjadi <br /> agar baris baru sesuai dengan ketikan di Admin Panel
   result = result.replace(/\n/g, '<br />');
 
   return result;

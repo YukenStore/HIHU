@@ -171,8 +171,9 @@ const InteractiveDropdownList = ({ items, defaultOpenAll = null }) => {
  */
 /**
  * Renderer Konten Materi:
- * Menampilkan teks materi sesuai dengan baris baru (newline) yang diketik di Admin Panel,
- * menghapus tag [H], serta memformat rumus matematika dengan KaTeX.
+ * Menampilkan teks materi sesuai dengan baris baru (newline) dan format ala MS Word
+ * (penomoran <ol>, daftar poin <ul>, perataan teks, garis bawah, stabilo, bold, italic, font)
+ * yang diketik di Admin Panel, menghapus tag [H], serta memformat rumus matematika dengan KaTeX.
  */
 const EnhancedContentRenderer = ({ content }) => {
   if (!content) return null;
@@ -191,19 +192,36 @@ const EnhancedContentRenderer = ({ content }) => {
           return <div key={`empty-${lineIndex}`} className="h-2" />;
         }
 
+        // Ambil teks polos tanpa tag HTML untuk mendeteksi awalan poin ("->", "📌", "📐", "💡")
+        const plainText = trimmed.replace(/<[^>]*>/g, '').trim();
+
+        const isImportantPin = plainText.startsWith('📌');
+        const isFormulaPin = plainText.startsWith('📐');
+        const isTipsPin = plainText.startsWith('💡');
         const isArrowOrBullet =
-          trimmed.startsWith('->') ||
-          trimmed.startsWith('→') ||
-          trimmed.startsWith('•');
+          plainText.startsWith('->') ||
+          plainText.startsWith('→') ||
+          plainText.startsWith('•');
+
+        let boxClass = 'text-slate-700 font-normal';
+        if (isImportantPin) {
+          boxClass =
+            'p-3 rounded-xl bg-amber-50/90 border-l-4 border-amber-500 border border-amber-200 text-slate-800 font-medium shadow-2xs';
+        } else if (isFormulaPin) {
+          boxClass =
+            'p-3 rounded-xl bg-blue-50/90 border-l-4 border-blue-600 border border-blue-200 text-slate-800 font-medium shadow-2xs';
+        } else if (isTipsPin) {
+          boxClass =
+            'p-3 rounded-xl bg-emerald-50/90 border-l-4 border-emerald-600 border border-emerald-200 text-slate-800 font-medium shadow-2xs';
+        } else if (isArrowOrBullet) {
+          boxClass =
+            'p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 text-slate-800 font-medium';
+        }
 
         return (
           <div
             key={`line-${lineIndex}`}
-            className={`text-xs sm:text-sm leading-relaxed whitespace-pre-line ${
-              isArrowOrBullet
-                ? 'p-2.5 rounded-lg bg-slate-50 border border-slate-200/80 text-slate-800 font-medium'
-                : 'text-slate-700 font-normal'
-            }`}
+            className={`text-xs sm:text-sm leading-relaxed whitespace-pre-line ${boxClass}`}
             dangerouslySetInnerHTML={{ __html: formatMath(rawLine) }}
           />
         );
@@ -526,9 +544,15 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
           <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
             {bab.judul}
           </h3>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed whitespace-pre-line">
-            {bab.ringkasan || 'Mari kita pelajari materi ini bersama langkah demi langkah dengan penjelasan yang mudah dan menyenangkan!'}
-          </p>
+          <div
+            className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed whitespace-pre-line"
+            dangerouslySetInnerHTML={{
+              __html: formatMath(
+                bab.ringkasan ||
+                  'Mari kita pelajari materi ini bersama langkah demi langkah dengan penjelasan yang mudah dan menyenangkan!'
+              ),
+            }}
+          />
         </div>
 
         {/* Misi Pembelajaran */}
@@ -537,13 +561,14 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
             <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 border border-blue-200/60 flex items-center justify-center flex-shrink-0 mt-0.5">
               <Target className="w-4 h-4" />
             </div>
-            <div className="space-y-0.5">
+            <div className="space-y-0.5 flex-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 block">
                 Misi Pembelajaran Hari Ini:
               </span>
-              <p className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed whitespace-pre-line">
-                {bab.tujuan}
-              </p>
+              <div
+                className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed whitespace-pre-line"
+                dangerouslySetInnerHTML={{ __html: formatMath(bab.tujuan) }}
+              />
             </div>
           </div>
         )}

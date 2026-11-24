@@ -483,4 +483,31 @@ input[type="password"]::-ms-clear {
   .pb-safe {
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
+
+  /* Gaya Penomoran (Numbered List) & Daftar Poin (Bullet List) ala Microsoft Word */
+  .ms-word-editor ol,
+  .ms-word-ol,
+  ol.ms-word-ol {
+    list-style-type: decimal !important;
+    padding-left: 1.5rem !important;
+    margin: 0.35rem 0 !important;
+  }
+  .ms-word-editor ul,
+  .ms-word-ul,
+  ul.ms-word-ul {
+    list-style-type: disc !important;
+    padding-left: 1.5rem !important;
+    margin: 0.35rem 0 !important;
+  }
+  .ms-word-editor li,
+  .ms-word-ol li,
+  .ms-word-ul li {
+    margin: 0.2rem 0 !important;
+    display: list-item !important;
+  }
+  .ms-word-editor u,
+  u {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
 }

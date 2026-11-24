@@ -3,6 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { isAdminUser, ADMIN_EMAILS } from '../config/adminConfig';
 import Navbar from '../components/Navbar';
+import RichTextEditor from '../components/RichTextEditor';
 import { PUSMENDIK_MATERI } from '../data/pusmendikData';
 import { PUSMENDIK_LATIHAN } from '../data/latihanData';
 import {
@@ -1228,7 +1229,7 @@ const AdminPanel = () => {
                         <label className="block text-xs font-semibold text-blue-200 mb-1">
                           Ringkasan Singkat (Ditampilkan di Kartu Peta)
                         </label>
-                        <textarea
+                        <RichTextEditor
                           rows={2}
                           value={materiForm.ringkasan}
                           onChange={(e) =>
@@ -1237,7 +1238,8 @@ const AdminPanel = () => {
                               ringkasan: e.target.value,
                             })
                           }
-                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs focus:outline-none focus:border-blue-300 navy-scrollbar"
+                          bgClass="bg-[#162E5B]"
+                          placeholder="Tulis ringkasan singkat materi..."
                         />
                       </div>
 
@@ -1245,21 +1247,22 @@ const AdminPanel = () => {
                         <label className="block text-xs font-semibold text-blue-200 mb-1">
                           Tujuan Pembelajaran
                         </label>
-                        <textarea
+                        <RichTextEditor
                           rows={2}
                           value={materiForm.tujuan}
                           onChange={(e) =>
                             setMateriForm({ ...materiForm, tujuan: e.target.value })
                           }
-                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs focus:outline-none focus:border-blue-300 navy-scrollbar"
+                          bgClass="bg-[#162E5B]"
+                          placeholder="Tulis tujuan pembelajaran..."
                         />
                       </div>
 
                       <div>
                         <label className="block text-xs font-semibold text-blue-200 mb-1">
-                          Konsep Kunci (Gunakan baris baru atau awali dengan &quot;-&gt;&quot; untuk poin)
+                          Konsep Kunci (Gunakan baris baru, tombol Poin, atau Penomoran)
                         </label>
-                        <textarea
+                        <RichTextEditor
                           rows={3}
                           value={materiForm.konsepKunci}
                           onChange={(e) =>
@@ -1268,7 +1271,8 @@ const AdminPanel = () => {
                               konsepKunci: e.target.value,
                             })
                           }
-                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs font-mono focus:outline-none focus:border-blue-300 navy-scrollbar"
+                          bgClass="bg-[#162E5B]"
+                          placeholder="Tulis konsep kunci materi..."
                         />
                       </div>
 
@@ -1276,7 +1280,7 @@ const AdminPanel = () => {
                         <label className="block text-xs font-semibold text-blue-200 mb-1">
                           Tips Juara
                         </label>
-                        <textarea
+                        <RichTextEditor
                           rows={2}
                           value={materiForm.tipsJuara}
                           onChange={(e) =>
@@ -1285,7 +1289,8 @@ const AdminPanel = () => {
                               tipsJuara: e.target.value,
                             })
                           }
-                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs focus:outline-none focus:border-blue-300 navy-scrollbar"
+                          bgClass="bg-[#162E5B]"
+                          placeholder="Tulis tips cepat menyelesaikan soal..."
                         />
                       </div>
                     </div>
@@ -1375,7 +1380,7 @@ const AdminPanel = () => {
                               <label className="block text-[11px] font-semibold text-blue-200 mb-1">
                                 Isi Penjelasan Materi
                               </label>
-                              <textarea
+                              <RichTextEditor
                                 rows={4}
                                 value={bagian.konten || ''}
                                 onChange={(e) => {
@@ -1389,7 +1394,8 @@ const AdminPanel = () => {
                                     uraianMateri: next,
                                   });
                                 }}
-                                className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs navy-scrollbar"
+                                bgClass="bg-[#0F2042]"
+                                placeholder="Tulis penjelasan materi di sini..."
                               />
                             </div>
 
@@ -1398,7 +1404,7 @@ const AdminPanel = () => {
                                 <label className="block text-[11px] font-semibold text-blue-200 mb-1">
                                   Kotak Rumus / Pola (Opsional)
                                 </label>
-                                <textarea
+                                <RichTextEditor
                                   rows={2}
                                   value={bagian.rumus || ''}
                                   onChange={(e) => {
@@ -1412,14 +1418,15 @@ const AdminPanel = () => {
                                       uraianMateri: next,
                                     });
                                   }}
-                                  className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs navy-scrollbar"
+                                  bgClass="bg-[#0F2042]"
+                                  placeholder="Tulis rumus atau kaidah pokok..."
                                 />
                               </div>
                               <div>
                                 <label className="block text-[11px] font-semibold text-blue-200 mb-1">
                                   Contoh Penerapan (Opsional)
                                 </label>
-                                <textarea
+                                <RichTextEditor
                                   rows={2}
                                   value={bagian.contoh || ''}
                                   onChange={(e) => {
@@ -1433,7 +1440,8 @@ const AdminPanel = () => {
                                       uraianMateri: next,
                                     });
                                   }}
-                                  className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs navy-scrollbar"
+                                  bgClass="bg-[#0F2042]"
+                                  placeholder="Tulis contoh penerapan..."
                                 />
                               </div>
                             </div>
@@ -1451,7 +1459,7 @@ const AdminPanel = () => {
                         <label className="block text-xs font-semibold text-blue-200 mb-1">
                           Pertanyaan Contoh Soal
                         </label>
-                        <textarea
+                        <RichTextEditor
                           rows={2}
                           value={materiForm.contohSoal?.soal || ''}
                           onChange={(e) =>
@@ -1463,14 +1471,15 @@ const AdminPanel = () => {
                               },
                             })
                           }
-                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs navy-scrollbar"
+                          bgClass="bg-[#162E5B]"
+                          placeholder="Tulis pertanyaan contoh soal..."
                         />
                       </div>
                       <div>
                         <label className="block text-xs font-semibold text-blue-200 mb-1">
                           Penyelesaian / Pembahasan Contoh Soal
                         </label>
-                        <textarea
+                        <RichTextEditor
                           rows={2}
                           value={materiForm.contohSoal?.penjelasan || ''}
                           onChange={(e) =>
@@ -1482,7 +1491,8 @@ const AdminPanel = () => {
                               },
                             })
                           }
-                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs navy-scrollbar"
+                          bgClass="bg-[#162E5B]"
+                          placeholder="Tulis langkah penyelesaian contoh soal..."
                         />
                       </div>
                     </div>
@@ -1554,7 +1564,7 @@ const AdminPanel = () => {
                               <label className="block text-[11px] font-semibold text-blue-200 mb-1">
                                 Pertanyaan Kuis
                               </label>
-                              <textarea
+                              <RichTextEditor
                                 rows={2}
                                 value={q.pertanyaan || ''}
                                 onChange={(e) => {
@@ -1568,7 +1578,8 @@ const AdminPanel = () => {
                                     soalLatihan: next,
                                   });
                                 }}
-                                className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs navy-scrollbar"
+                                bgClass="bg-[#0F2042]"
+                                placeholder="Tulis pertanyaan kuis pemahaman..."
                               />
                             </div>
 
@@ -1839,7 +1850,9 @@ const AdminPanel = () => {
                                       : 'Pilihan Ganda'}
                                   </span>
                                   <span className="text-xs text-blue-100 truncate">
-                                    {q.pertanyaan || '(Pertanyaan belum diisi)'}
+                                    {(q.pertanyaan || '')
+                                      .replace(/<[^>]*>/g, '')
+                                      .trim() || '(Pertanyaan belum diisi)'}
                                   </span>
                                 </div>
 
@@ -1973,7 +1986,7 @@ const AdminPanel = () => {
                                     <label className="block text-[11px] font-semibold text-blue-200 mb-1">
                                       Teks Stimulus / Bacaan Cerita (Kosongkan jika tidak ada)
                                     </label>
-                                    <textarea
+                                    <RichTextEditor
                                       rows={2}
                                       value={q.stimulus || ''}
                                       onChange={(e) => {
@@ -1987,7 +2000,8 @@ const AdminPanel = () => {
                                           soal: next,
                                         });
                                       }}
-                                      className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs navy-scrollbar"
+                                      bgClass="bg-[#0F2042]"
+                                      placeholder="Tulis teks stimulus atau bacaan cerita..."
                                     />
                                   </div>
 
@@ -1995,7 +2009,7 @@ const AdminPanel = () => {
                                     <label className="block text-[11px] font-semibold text-blue-200 mb-1">
                                       Pertanyaan Soal *
                                     </label>
-                                    <textarea
+                                    <RichTextEditor
                                       rows={3}
                                       value={q.pertanyaan || ''}
                                       onChange={(e) => {
@@ -2009,7 +2023,8 @@ const AdminPanel = () => {
                                           soal: next,
                                         });
                                       }}
-                                      className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs navy-scrollbar"
+                                      bgClass="bg-[#0F2042]"
+                                      placeholder="Tulis pertanyaan soal di sini..."
                                     />
                                   </div>
 
@@ -2318,7 +2333,7 @@ const AdminPanel = () => {
                                     <label className="block text-[11px] font-semibold text-blue-200 mb-1">
                                       Penjelasan / Pembahasan Soal
                                     </label>
-                                    <textarea
+                                    <RichTextEditor
                                       rows={2}
                                       value={q.penjelasan || ''}
                                       onChange={(e) => {
@@ -2332,7 +2347,8 @@ const AdminPanel = () => {
                                           soal: next,
                                         });
                                       }}
-                                      className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs navy-scrollbar"
+                                      bgClass="bg-[#0F2042]"
+                                      placeholder="Tulis penjelasan / pembahasan lengkap soal..."
                                     />
                                   </div>
                                 </div>

@@ -17,6 +17,7 @@ import {
   triggerGuestRestrictionModal,
 } from '../utils/activityTracker';
 import { getCharacterAvatar } from '../utils/characterAvatars';
+import { formatMath } from '../utils/mathRenderer';
 import MaterialReader from '../components/views/MaterialReader';
 import {
   BookOpen,
@@ -918,9 +919,14 @@ const Materi = () => {
                     </div>
                   ) : (
                     <>
-                      <h4 className="text-sm sm:text-base font-semibold text-slate-900 leading-relaxed mb-4 whitespace-pre-line">
-                        {activeBab.soalLatihan[currentQuizIndex].pertanyaan}
-                      </h4>
+                      <div
+                        className="text-sm sm:text-base font-semibold text-slate-900 leading-relaxed mb-4 whitespace-pre-line"
+                        dangerouslySetInnerHTML={{
+                          __html: formatMath(
+                            activeBab.soalLatihan[currentQuizIndex].pertanyaan
+                          ),
+                        }}
+                      />
 
                       {/* Pilihan Jawaban */}
                       <div className="space-y-2">
@@ -951,7 +957,11 @@ const Materi = () => {
                                   : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
                               }`}
                             >
-                              <span>{opt}</span>
+                              <span
+                                dangerouslySetInnerHTML={{
+                                  __html: formatMath(opt),
+                                }}
+                              />
                               <div
                                 className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-semibold transition-colors ${
                                   isWrongSubmitted
@@ -976,9 +986,14 @@ const Materi = () => {
                           <HelpCircle className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
                           <div>
                             <strong className="block font-semibold">Petunjuk Soal:</strong>
-                            <span className="text-slate-700 mt-0.5 block leading-relaxed">
-                              {activeBab.soalLatihan[currentQuizIndex].hint}
-                            </span>
+                            <span
+                              className="text-slate-700 mt-0.5 block leading-relaxed"
+                              dangerouslySetInnerHTML={{
+                                __html: formatMath(
+                                  activeBab.soalLatihan[currentQuizIndex].hint
+                                ),
+                              }}
+                            />
                           </div>
                         </div>
                       )}
@@ -1275,9 +1290,12 @@ const Materi = () => {
                           {bab.judul}
                         </h4>
 
-                        <p className="text-[11px] text-slate-500 mt-1 line-clamp-2 leading-relaxed">
-                          {bab.ringkasan}
-                        </p>
+                        <div
+                          className="text-[11px] text-slate-500 mt-1 line-clamp-2 leading-relaxed"
+                          dangerouslySetInnerHTML={{
+                            __html: formatMath(bab.ringkasan),
+                          }}
+                        />
 
                         {/* Capaian Bintang Level di Grid */}
                         <div className="flex items-center space-x-1 mt-2.5">
@@ -1638,17 +1656,23 @@ const Materi = () => {
                   <h5 className="text-[11px] font-semibold uppercase tracking-wider text-[#6E6258]">
                     Ringkasan Materi
                   </h5>
-                  <p className="text-xs sm:text-sm text-[#261C14] mt-1 leading-relaxed whitespace-pre-line">
-                    {selectedLevelModal.ringkasan?.replace(/\[h(?:orizontal)?\]\s*/gi, '')}
-                  </p>
+                  <div
+                    className="text-xs sm:text-sm text-[#261C14] mt-1 leading-relaxed whitespace-pre-line"
+                    dangerouslySetInnerHTML={{
+                      __html: formatMath(selectedLevelModal.ringkasan),
+                    }}
+                  />
                 </div>
 
                 {selectedLevelModal.konsepKunci && (
                   <div className="p-3 rounded-lg bg-[#FEF7EE] border border-[#F6D8B8] text-xs text-[#261C14]">
                     <strong className="text-[#D97E26] block font-semibold mb-0.5">Konsep Inti:</strong>
-                    <span className="whitespace-pre-line leading-relaxed block">
-                      {selectedLevelModal.konsepKunci.replace(/\[h(?:orizontal)?\]\s*/gi, '')}
-                    </span>
+                    <div
+                      className="whitespace-pre-line leading-relaxed block"
+                      dangerouslySetInnerHTML={{
+                        __html: formatMath(selectedLevelModal.konsepKunci),
+                      }}
+                    />
                   </div>
                 )}
 
@@ -1799,9 +1823,14 @@ const Materi = () => {
                   </div>
 
                   {/* Pertanyaan */}
-                  <h4 className="text-xs sm:text-sm font-semibold text-[#261C14] leading-relaxed whitespace-pre-line">
-                    {jumpChallengeBab.soalLatihan[jumpQuizIndex].pertanyaan}
-                  </h4>
+                  <div
+                    className="text-xs sm:text-sm font-semibold text-[#261C14] leading-relaxed whitespace-pre-line"
+                    dangerouslySetInnerHTML={{
+                      __html: formatMath(
+                        jumpChallengeBab.soalLatihan[jumpQuizIndex].pertanyaan
+                      ),
+                    }}
+                  />
 
                   {/* Opsi Jawaban */}
                   <div className="space-y-2">
@@ -1832,7 +1861,11 @@ const Materi = () => {
                               : 'bg-white border-[#E6DFD5] text-[#261C14] hover:bg-[#FAF7F2]'
                           }`}
                         >
-                          <span>{opt}</span>
+                          <span
+                            dangerouslySetInnerHTML={{
+                              __html: formatMath(opt),
+                            }}
+                          />
                           <div
                             className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-semibold transition-colors ${
                               isWrongSubmitted
@@ -1857,9 +1890,14 @@ const Materi = () => {
                       <HelpCircle className="w-4 h-4 text-[#D97E26] flex-shrink-0 mt-0.5" />
                       <div>
                         <strong className="block font-semibold">Petunjuk:</strong>
-                        <span className="text-[#261C14] leading-relaxed">
-                          {jumpChallengeBab.soalLatihan[jumpQuizIndex].hint}
-                        </span>
+                        <span
+                          className="text-[#261C14] leading-relaxed"
+                          dangerouslySetInnerHTML={{
+                            __html: formatMath(
+                              jumpChallengeBab.soalLatihan[jumpQuizIndex].hint
+                            ),
+                          }}
+                        />
                       </div>
                     </div>
                   )}
