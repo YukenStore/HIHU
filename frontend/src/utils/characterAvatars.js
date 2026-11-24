@@ -91,14 +91,14 @@ export const CHARACTER_AVATARS = [
     requirement: 'Buka Peti Materi 4 Matematika (Paket Anak Petualang & Ceria)',
   },
 
-  // 4. KATEGORI PAHLAWAN (Peti & Piala Latihan Soal Matematika)
+  // 4. KATEGORI PAHLAWAN (Peti & Piala Materi / Latihan Soal Matematika)
   {
     id: 'knight',
     name: 'Ksatria Tangguh',
     category: 'Pahlawan',
     image: knightGif,
-    rewardSource: 'Peti Latihan 4 Matematika',
-    requirement: 'Buka Peti Latihan 4 Matematika',
+    rewardSource: 'Piala Puncak Materi 12 MTK',
+    requirement: 'Raih Piala Puncak Materi Matematika (Kumpulkan seluruh 36 Bintang)',
   },
   {
     id: 'ninja',
@@ -114,7 +114,7 @@ export const CHARACTER_AVATARS = [
     category: 'Pahlawan',
     image: cowboyGif,
     rewardSource: 'Piala Puncak Latihan 10 MTK',
-    requirement: 'Raih Piala Puncak Latihan 10 Matematika',
+    requirement: 'Raih Piala Puncak Latihan Matematika (Kumpulkan seluruh 30 Bintang)',
   },
 
   // 5. PAKET HADIAH 3: Raja dan Ratu (Piala Puncak Materi 21 Bahasa Indonesia)
@@ -126,7 +126,7 @@ export const CHARACTER_AVATARS = [
     bundleId: 'bundle_raja_ratu',
     bundleName: 'Paket Raja & Ratu',
     rewardSource: 'Piala Puncak Materi 21 B. Indo',
-    requirement: 'Raih Piala Puncak Materi 21 Bahasa Indonesia (Paket Raja & Ratu)',
+    requirement: 'Raih Piala Puncak Materi Bahasa Indonesia (Kumpulkan seluruh 63 Bintang)',
   },
   {
     id: 'queen',
@@ -136,7 +136,7 @@ export const CHARACTER_AVATARS = [
     bundleId: 'bundle_raja_ratu',
     bundleName: 'Paket Raja & Ratu',
     rewardSource: 'Piala Puncak Materi 21 B. Indo',
-    requirement: 'Raih Piala Puncak Materi 21 Bahasa Indonesia (Paket Raja & Ratu)',
+    requirement: 'Raih Piala Puncak Materi Bahasa Indonesia (Kumpulkan seluruh 63 Bintang)',
   },
 
   // 6. KATEGORI HEWAN (Peti & Piala Materi/Latihan B. Indo & Matematika)
@@ -169,8 +169,8 @@ export const CHARACTER_AVATARS = [
     name: 'Katak Lincah',
     category: 'Hewan',
     image: frogGif,
-    rewardSource: 'Piala Puncak Materi 12 MTK',
-    requirement: 'Raih Piala Puncak Materi 12 Matematika',
+    rewardSource: 'Peti Latihan 4 Matematika',
+    requirement: 'Buka Peti Latihan 4 Matematika',
   },
   {
     id: 'cow',
@@ -194,7 +194,7 @@ export const CHARACTER_AVATARS = [
     category: 'Hewan',
     image: pandaGif,
     rewardSource: 'Piala Puncak Latihan 10 B. Indo',
-    requirement: 'Raih Piala Puncak Latihan 10 Bahasa Indonesia',
+    requirement: 'Raih Piala Puncak Latihan Bahasa Indonesia (Kumpulkan seluruh 30 Bintang)',
   },
 
   // 7. KATEGORI FANTASI (SPESIAL GACHA TRYOUT MINIMAL 80% BENAR)

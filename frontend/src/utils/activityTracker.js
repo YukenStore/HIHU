@@ -747,10 +747,20 @@ export const checkAndUnlockAvatars = (data) => {
   const legitUnlocked = new Set(['baby-boy', 'baby-girl', ...existingGacha]);
 
   const materiCompleted = data.materiCompleted || [];
+  const materiStars = data.materiStars || {};
   const biMateriCount = materiCompleted.filter((id) => id.startsWith('bi_')).length;
   const mtkMateriCount = materiCompleted.filter((id) => id.startsWith('mtk_')).length;
 
+  // Jumlah materi yang meraih bintang penuh (3 Bintang)
+  const biMateri3StarCount = materiCompleted.filter(
+    (id) => id.startsWith('bi_') && (materiStars[id] !== undefined ? materiStars[id] : 3) >= 3
+  ).length;
+  const mtkMateri3StarCount = materiCompleted.filter(
+    (id) => id.startsWith('mtk_') && (materiStars[id] !== undefined ? materiStars[id] : 3) >= 3
+  ).length;
+
   const latihanCompleted = data.latihanCompleted || [];
+  const latihanStars = data.latihanStars || {};
   const latihanHistory = data.latihanHistory || [];
 
   const biLatihanCount = Math.max(
@@ -767,19 +777,13 @@ export const checkAndUnlockAvatars = (data) => {
     ).length
   );
 
-  const biPerfectScore = latihanHistory.some(
-    (l) =>
-      (l.subject?.toLowerCase().includes('indonesia') || l.subject?.toLowerCase().includes('bi')) &&
-      (l.score || 0) >= 100
-  );
-
-  const mtkPerfectScore = latihanHistory.some(
-    (l) =>
-      (l.subject?.toLowerCase().includes('mat') || l.subject?.toLowerCase().includes('mtk')) &&
-      (l.score || 0) >= 100
-  );
-
-  const level = calculateLevelInfo(data.exp || 0).level;
+  // Jumlah latihan yang meraih bintang penuh (3 Bintang)
+  const biLatihan3StarCount = latihanCompleted.filter(
+    (id) => id.startsWith('bi_') && (latihanStars[id] !== undefined ? latihanStars[id] : 3) >= 3
+  ).length;
+  const mtkLatihan3StarCount = latihanCompleted.filter(
+    (id) => id.startsWith('mtk_') && (latihanStars[id] !== undefined ? latihanStars[id] : 3) >= 3
+  ).length;
 
   // 1. Peti Materi 5 Bahasa Indonesia: Paket Siswa dan Siswi ('boy' & 'girl')
   if (biMateriCount >= 5) {
@@ -797,8 +801,8 @@ export const checkAndUnlockAvatars = (data) => {
     legitUnlocked.add('red-wolf');
   }
 
-  // 4. Piala Puncak Materi 21 Bahasa Indonesia: Paket Raja dan Ratu ('king' & 'queen')
-  if (biMateriCount >= 21) {
+  // 4. Piala Puncak Materi 21 Bahasa Indonesia (Semua 63 Bintang): Paket Raja dan Ratu ('king' & 'queen')
+  if (biMateri3StarCount >= 21) {
     legitUnlocked.add('king');
     legitUnlocked.add('queen');
   }
@@ -814,14 +818,14 @@ export const checkAndUnlockAvatars = (data) => {
     legitUnlocked.add('sheep');
   }
 
-  // 7. Piala Puncak Materi 12 Matematika: Katak Lincah ('frog')
-  if (mtkMateriCount >= 12) {
-    legitUnlocked.add('frog');
+  // 7. Piala Puncak Materi 12 Matematika (Semua 36 Bintang): Ksatria Tangguh ('knight')
+  if (mtkMateri3StarCount >= 12) {
+    legitUnlocked.add('knight');
   }
 
-  // 8. Peti Latihan 4 Matematika: Ksatria Tangguh ('knight')
+  // 8. Peti Latihan 4 Matematika: Katak Lincah ('frog')
   if (mtkLatihanCount >= 4) {
-    legitUnlocked.add('knight');
+    legitUnlocked.add('frog');
   }
 
   // 9. Peti Latihan 7 Matematika: Ninja Gesit ('ninja')
@@ -829,8 +833,8 @@ export const checkAndUnlockAvatars = (data) => {
     legitUnlocked.add('ninja');
   }
 
-  // 10. Piala Puncak Latihan 10 Matematika: Koboi Cilik ('cowboy')
-  if (mtkLatihanCount >= 10) {
+  // 10. Piala Puncak Latihan 10 Matematika (Semua 30 Bintang): Koboi Cilik ('cowboy')
+  if (mtkLatihan3StarCount >= 10) {
     legitUnlocked.add('cowboy');
   }
 
@@ -844,8 +848,8 @@ export const checkAndUnlockAvatars = (data) => {
     legitUnlocked.add('teddy-bear-heart');
   }
 
-  // 13. Piala Puncak Latihan 10 Bahasa Indonesia: Panda Lucu ('panda')
-  if (biLatihanCount >= 10) {
+  // 13. Piala Puncak Latihan 10 Bahasa Indonesia (Semua 30 Bintang): Panda Lucu ('panda')
+  if (biLatihan3StarCount >= 10) {
     legitUnlocked.add('panda');
   }
 
@@ -937,14 +941,16 @@ export const markMateriComplete = (babId, stars = 3) => {
   if (!data.materiStars) data.materiStars = {};
   const prevStars = data.materiStars[babId] || 0;
   data.materiStars[babId] = Math.max(prevStars, Math.max(1, Math.min(3, stars)));
+  checkAndUnlockAvatars(data);
   saveActivityData(data);
 
   // EXP hanya diberikan saat materi pertama kali diselesaikan (mencegah farming EXP saat pelajari ulang materi)
   const materiExp = isFirstTime ? (60 + stars * 10) : 0;
   if (isFirstTime && materiExp > 0) {
     recordUserActivity('materi', materiExp);
+  } else {
+    notifyProfileUpdate();
   }
-  checkAndUnlockAvatars(data);
   return { isFirstTime, expEarned: materiExp };
 };
 
@@ -974,14 +980,16 @@ export const markLatihanComplete = (latihanId, stars = 3, awardExp = true) => {
   if (!data.latihanStars) data.latihanStars = {};
   const prevStars = data.latihanStars[latihanId] || 0;
   data.latihanStars[latihanId] = Math.max(prevStars, Math.max(1, Math.min(3, stars)));
+  checkAndUnlockAvatars(data);
   saveActivityData(data);
 
   // Berikan EXP hanya jika awardExp bernilai true dan ini pertama kali tuntas (mencegah farming EXP saat kerjakan ulang latihan)
   const expEarned = (awardExp && isFirstTime) ? (80 + stars * 15) : 0;
   if (expEarned > 0) {
     recordUserActivity('latihan', expEarned);
+  } else {
+    notifyProfileUpdate();
   }
-  checkAndUnlockAvatars(data);
   return { isFirstTime, expEarned };
 };
 

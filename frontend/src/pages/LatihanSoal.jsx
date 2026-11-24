@@ -107,9 +107,9 @@ const SUBJECTS_CONFIG = {
         avatarIds: ['teddy-bear-heart'],
       },
       10: {
-        title: 'Piala Maestro Bahasa Indonesia TKA SD',
+        title: 'Piala Puncak Bahasa Indonesia TKA SD',
         requiredLevel: 10,
-        desc: 'Piala kebanggaan tertinggi setelah menuntaskan seluruh 10 Tingkat Latihan Soal Bahasa Indonesia Kemendikdasmen RI.',
+        desc: 'Piala kebanggaan tertinggi setelah mengumpulkan seluruh 30 Bintang (3 bintang di semua 10 Tingkat Latihan Soal) Bahasa Indonesia Kemendikdasmen RI.',
         reward: '👑 Foto Profil: Panda Lucu',
         avatarIds: ['panda'],
       },
@@ -147,8 +147,8 @@ const SUBJECTS_CONFIG = {
         title: 'Peti Bintang Fondasi Numerasi',
         requiredLevel: 4,
         desc: 'Pencapaian menuntaskan 4 Latihan Pertama Matematika.',
-        reward: '🎁 Foto Profil: Ksatria Tangguh',
-        avatarIds: ['knight'],
+        reward: '👑 Foto Profil: Katak Lincah',
+        avatarIds: ['frog'],
       },
       7: {
         title: 'Peti Perak Logika & Geometri',
@@ -158,9 +158,9 @@ const SUBJECTS_CONFIG = {
         avatarIds: ['ninja'],
       },
       10: {
-        title: 'Piala Maestro Matematika TKA SD',
+        title: 'Piala Puncak Matematika TKA SD',
         requiredLevel: 10,
-        desc: 'Piala kebanggaan tertinggi setelah menuntaskan seluruh 10 Tingkat Latihan Soal Matematika Kemendikdasmen RI.',
+        desc: 'Piala kebanggaan tertinggi setelah mengumpulkan seluruh 30 Bintang (3 bintang di semua 10 Tingkat Latihan Soal) Matematika Kemendikdasmen RI.',
         reward: '👑 Foto Profil: Koboi Cilik',
         avatarIds: ['cowboy'],
       },
@@ -603,8 +603,11 @@ const LatihanSoal = () => {
     setSelectedLevelModal(null);
   };
 
-  // Hitung jumlah tuntas mapel aktif
+  // Hitung jumlah tuntas & total bintang mapel aktif
   const completedCount = currentLevels.filter((l) => isLevelCompleted(l.id)).length;
+  const totalEarnedStars = currentLevels.reduce((acc, l) => acc + getLevelStars(l.id), 0);
+  const totalMaxStars = currentLevels.length * 3;
+  const isAllStarsEarned = currentLevels.length > 0 && totalEarnedStars >= totalMaxStars;
   const progressPercent = currentLevels.length
     ? Math.round((completedCount / currentLevels.length) * 100)
     : 0;
@@ -2128,16 +2131,18 @@ const LatihanSoal = () => {
                           </div>
                         )}
 
-                        {/* --- GRAND TROPHY (Puncak Akhir Mapel) --- */}
+                        {/* --- GRAND TROPHY (Puncak Akhir Mapel - Terbuka jika seluruh bintang terkumpul) --- */}
                         {isFinalLevel && (
                           <div
                             onClick={() =>
                               setMilestoneModal({
-                                title: milestoneItem?.title || `Piala Juara ${currentSubject.title}`,
-                                desc: milestoneItem?.desc || `Piala kebanggaan setelah menuntaskan seluruh ${currentLevels.length} Latihan ${currentSubject.title}.`,
+                                title: milestoneItem?.title || `Piala Puncak ${currentSubject.title}`,
+                                desc: milestoneItem?.desc || `Piala kebanggaan tertinggi setelah mengumpulkan seluruh ${totalMaxStars} Bintang (3 bintang di semua ${currentLevels.length} Latihan ${currentSubject.title}).`,
                                 requiredLevel: currentLevels.length,
-                                unlocked: completedCount === currentLevels.length,
-                                reward: milestoneItem?.reward || `👑 Gelar Maestro ${currentSubject.title} TKA SD 100%`,
+                                requiredStars: totalMaxStars,
+                                isGrandTrophy: true,
+                                unlocked: isAllStarsEarned,
+                                reward: milestoneItem?.reward || `🏆 Piala Puncak ${currentSubject.title} TKA SD 100%`,
                                 avatarIds: milestoneItem?.avatarIds || [],
                               })
                             }
@@ -2145,7 +2150,7 @@ const LatihanSoal = () => {
                           >
                             <div
                               className={`w-16 h-16 rounded-2xl flex items-center justify-center border-2 transition-all duration-150 cursor-pointer ${
-                                completedCount === currentLevels.length
+                                isAllStarsEarned
                                   ? 'bg-amber-100 border-amber-400 text-amber-800 shadow-[0_6px_0_0_#B8731E] hover:shadow-[0_7px_0_0_#B8731E] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none ring-4 ring-amber-300/40'
                                   : 'bg-[#F2ECE4] border-[#E6DFD5] text-[#8C7E72] shadow-[0_4px_0_0_#D8CDC2] hover:bg-[#EAE2D8] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none'
                               }`}
@@ -2155,14 +2160,14 @@ const LatihanSoal = () => {
                             <div className="mt-2 text-center">
                               <span
                                 className={`text-xs font-bold px-3 py-1 rounded-full border shadow-2xs inline-block transition-transform group-hover:scale-105 ${
-                                  completedCount === currentLevels.length
+                                  isAllStarsEarned
                                     ? 'bg-amber-50 text-amber-900 border-amber-300'
                                     : 'bg-[#F2ECE4] text-[#6E6258] border-[#E6DFD5]'
                                 }`}
                               >
-                                {completedCount === currentLevels.length
-                                  ? `👑 MAESTRO ${currentSubject.title.toUpperCase()}`
-                                  : `Piala Puncak (Latihan ${currentLevels.length} Selesai)`}
+                                {isAllStarsEarned
+                                  ? `🏆 Piala Puncak ${currentSubject.title}`
+                                  : `Piala Puncak (${totalEarnedStars}/${totalMaxStars} Bintang)`}
                               </span>
                             </div>
                           </div>
@@ -2645,7 +2650,7 @@ const LatihanSoal = () => {
                 </span>
                 <div>
                   <strong className="block text-[#261C14] font-semibold">Milestone Peti & Piala Puncak</strong>
-                  Kumpulkan 3 bintang di setiap latihan dan buka peti bonus di setiap tahapan, hingga Piala Maestro di puncak latihan terakhir.
+                  Kumpulkan 3 bintang di setiap latihan dan buka peti bonus di setiap tahapan, hingga mendapat Piala Puncak di akhir latihan terakhir.
                 </div>
               </div>
 
@@ -2711,6 +2716,11 @@ const LatihanSoal = () => {
                 <div className="text-[#286657]">
                   <span>Status: <strong>Terbuka!</strong></span>
                   <div className="text-[11px] text-[#6E6258] mt-0.5">{milestoneModal.reward}</div>
+                </div>
+              ) : milestoneModal.isGrandTrophy ? (
+                <div className="text-[#6E6258]">
+                  <span>Perlu mengumpulkan seluruh <strong>{milestoneModal.requiredStars} Bintang (3 ⭐ di semua {milestoneModal.requiredLevel} Latihan)</strong> untuk membuka Piala Puncak!</span>
+                  <div className="text-[11px] text-[#8C7E72] mt-0.5">Saat ini: {totalEarnedStars} / {milestoneModal.requiredStars} Bintang</div>
                 </div>
               ) : (
                 <div className="text-[#6E6258]">
