@@ -1722,7 +1722,7 @@ const LatihanSoal = () => {
                     {/* Tombol Buku Panduan - Sesuai Mata Pelajaran */}
                     <button
                       onClick={() => setShowGuideModal(true)}
-                      className={`w-full sm:w-auto px-3.5 py-2 rounded-lg text-xs font-bold transition-all duration-300 flex items-center justify-center space-x-2 border-2 cursor-pointer shadow-xs ${
+                      className={`w-full sm:w-auto min-w-[165px] px-3.5 py-2 rounded-lg text-xs font-bold transition-all duration-300 flex items-center justify-center space-x-2 border-2 cursor-pointer shadow-xs ${
                         selectedSubject === 'matematika'
                           ? 'bg-[#FFF1F2] hover:bg-[#FFE4E6] text-[#881337] border-[#881337]'
                           : 'bg-[#ECFDF5] hover:bg-[#D1FAE5] text-[#047857] border-[#047857]'
