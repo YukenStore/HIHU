@@ -1,7 +1,5 @@
 /**
- * Data Simulasi Tryout Akbar TKA SD
- * Sumber Resmi: Pusmendik Kemendikdasmen RI & SK Kepala BSKAP No 047/H/AN/2025
- * Diadopsi langsung dari Bank Soal Standar sd.onedumind.com
+ * Data Paket Tryout MyAkademika
  * 
  * 5 Paket Tryout Matematika (30 Soal per paket: PG, PG Kompleks, Benar/Salah)
  * 5 Paket Tryout Bahasa Indonesia (30 Soal per paket: PG, PG Kompleks, Benar/Salah)
@@ -12,13 +10,13 @@ export const PUSMENDIK_TRYOUT = {
   "matematika": {
     "nama": "Matematika",
     "icon": "Calculator",
-    "deskripsi": "5 Paket Tryout Akbar Numerasi (30 Soal HOTS & Standar Pusmendik Kemendikdasmen RI).",
+    "deskripsi": "5 paket tryout Matematika (30 soal pilihan ganda & isian singkat).",
     "paket": [
       {
         "nomorPaket": 1,
         "namaPaket": "Paket 1",
         "kode": "TO-MTK-01",
-        "deskripsi": "Simulasi Ujian TKA Matematika SD (Paket 1) - 30 Soal Standar Pusmendik.",
+        "deskripsi": "Paket 1 Tryout Matematika — 30 soal campuran dari mudah sampai menantang.",
         "durasiMenit": 60,
         "soal": [
           {
@@ -679,7 +677,7 @@ export const PUSMENDIK_TRYOUT = {
         "nomorPaket": 2,
         "namaPaket": "Paket 2",
         "kode": "TO-MTK-02",
-        "deskripsi": "Simulasi Ujian TKA Matematika SD (Paket 2) - 30 Soal Standar Pusmendik.",
+        "deskripsi": "Paket 2 Tryout Matematika — 30 soal campuran dari mudah sampai menantang.",
         "durasiMenit": 60,
         "soal": [
           {
@@ -1380,7 +1378,7 @@ export const PUSMENDIK_TRYOUT = {
         "nomorPaket": 3,
         "namaPaket": "Paket 3",
         "kode": "TO-MTK-03",
-        "deskripsi": "Simulasi Ujian TKA Matematika SD (Paket 3) - 30 Soal Standar Pusmendik.",
+        "deskripsi": "Paket 3 Tryout Matematika — 30 soal campuran dari mudah sampai menantang.",
         "durasiMenit": 60,
         "soal": [
           {
@@ -2077,7 +2075,7 @@ export const PUSMENDIK_TRYOUT = {
         "nomorPaket": 4,
         "namaPaket": "Paket 4",
         "kode": "TO-MTK-04",
-        "deskripsi": "Simulasi Ujian TKA Matematika SD (Paket 4) - 30 Soal Standar Pusmendik.",
+        "deskripsi": "Paket 4 Tryout Matematika — 30 soal campuran dari mudah sampai menantang.",
         "durasiMenit": 60,
         "soal": [
           {
@@ -2768,7 +2766,7 @@ export const PUSMENDIK_TRYOUT = {
         "nomorPaket": 5,
         "namaPaket": "Paket 5",
         "kode": "TO-MTK-05",
-        "deskripsi": "Simulasi Ujian TKA Matematika SD (Paket 5) - 30 Soal Standar Pusmendik.",
+        "deskripsi": "Paket 5 Tryout Matematika — 30 soal campuran dari mudah sampai menantang.",
         "durasiMenit": 60,
         "soal": [
           {
@@ -3474,13 +3472,13 @@ export const PUSMENDIK_TRYOUT = {
   "bahasa_indonesia": {
     "nama": "Bahasa Indonesia",
     "icon": "BookOpen",
-    "deskripsi": "5 Paket Tryout Akbar Literasi (30 Soal HOTS & Standar Pusmendik Kemendikdasmen RI).",
+    "deskripsi": "5 paket tryout Bahasa Indonesia (30 soal pilihan ganda & isian singkat).",
     "paket": [
       {
         "nomorPaket": 1,
         "namaPaket": "Paket 1",
         "kode": "TO-BI-01",
-        "deskripsi": "Simulasi Ujian TKA Bahasa Indonesia SD (Paket 1) - 30 Soal Standar Pusmendik.",
+        "deskripsi": "Paket 1 Tryout Bahasa Indonesia — 30 soal campuran dari mudah sampai menantang.",
         "durasiMenit": 60,
         "soal": [
           {
@@ -4156,7 +4154,7 @@ export const PUSMENDIK_TRYOUT = {
         "nomorPaket": 2,
         "namaPaket": "Paket 2",
         "kode": "TO-BI-02",
-        "deskripsi": "Simulasi Ujian TKA Bahasa Indonesia SD (Paket 2) - 30 Soal Standar Pusmendik.",
+        "deskripsi": "Paket 2 Tryout Bahasa Indonesia — 30 soal campuran dari mudah sampai menantang.",
         "durasiMenit": 60,
         "soal": [
           {
@@ -4915,7 +4913,7 @@ export const PUSMENDIK_TRYOUT = {
         "nomorPaket": 3,
         "namaPaket": "Paket 3",
         "kode": "TO-BI-03",
-        "deskripsi": "Simulasi Ujian TKA Bahasa Indonesia SD (Paket 3) - 30 Soal Standar Pusmendik.",
+        "deskripsi": "Paket 3 Tryout Bahasa Indonesia — 30 soal campuran dari mudah sampai menantang.",
         "durasiMenit": 60,
         "soal": [
           {
@@ -5664,7 +5662,7 @@ export const PUSMENDIK_TRYOUT = {
         "nomorPaket": 4,
         "namaPaket": "Paket 4",
         "kode": "TO-BI-04",
-        "deskripsi": "Simulasi Ujian TKA Bahasa Indonesia SD (Paket 4) - 30 Soal Standar Pusmendik.",
+        "deskripsi": "Paket 4 Tryout Bahasa Indonesia — 30 soal campuran dari mudah sampai menantang.",
         "durasiMenit": 60,
         "soal": [
           {
@@ -6299,7 +6297,7 @@ export const PUSMENDIK_TRYOUT = {
         "nomorPaket": 5,
         "namaPaket": "Paket 5",
         "kode": "TO-BI-05",
-        "deskripsi": "Simulasi Ujian TKA Bahasa Indonesia SD (Paket 5) - 30 Soal Standar Pusmendik.",
+        "deskripsi": "Paket 5 Tryout Bahasa Indonesia — 30 soal campuran dari mudah sampai menantang.",
         "durasiMenit": 60,
         "soal": [
           {

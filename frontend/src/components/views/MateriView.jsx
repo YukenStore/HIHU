@@ -15,16 +15,13 @@ import {
 } from 'lucide-react';
 
 /**
- * Komponen Alur Pembelajaran Materi TKA SD
+ * Komponen Alur Pembelajaran Materi
  * 
  * Alur:
  * 1. Pilih Mapel (Bahasa Indonesia / Matematika)
- * 2. Tampilan Persebaran Materi berdasarkan Kurikulum Pusmendik
+ * 2. Tampilan daftar materi belajar
  * 3. Membaca Materi Pelajaran dengan MaterialReader yang rapi & visual
- * 4. Sesi 3 Soal Latihan di akhir:
- *    - Jika Benar: Kembali ke tampilan persebaran materi mapel terkait (Bab ditandai Tuntas)
- *    - Jika Salah: Mendapat HINT/petunjuk agar dipermudah, jika sudah benar baru bisa kembali
- *    - Jika Tidak Bisa Menjawab: Tombol "Kembali Membaca Materi" untuk memahami kembali
+ * 4. Sesi 3 Soal Latihan di akhir
  */
 const MateriView = ({ isOpen, onClose }) => {
   const [selectedSubject, setSelectedSubject] = useState(null); // 'bahasa_indonesia' | 'matematika' | null
@@ -103,14 +100,14 @@ const MateriView = ({ isOpen, onClose }) => {
           <div className="flex items-center space-x-3">
             <div>
               <h2 className="text-base sm:text-lg font-bold text-slate-900 flex items-center space-x-2">
-                <span>📚 Modul Materi Pembelajaran TKA SD</span>
+                <span>📚 Materi Belajar</span>
               </h2>
               <p className="text-xs text-slate-500">
                 {activeBab
                   ? activeBab.judul
                   : selectedSubject
-                  ? `Persebaran Materi ${PUSMENDIK_MATERI[selectedSubject].title}`
-                  : 'Pilih Mata Pelajaran Resmi Pusmendik'}
+                  ? `Daftar Materi ${PUSMENDIK_MATERI[selectedSubject].title}`
+                  : 'Pilih Mata Pelajaran'}
               </p>
             </div>
           </div>
@@ -130,13 +127,13 @@ const MateriView = ({ isOpen, onClose }) => {
             <div className="max-w-2xl mx-auto py-6">
               <div className="text-center mb-8">
                 <span className="px-3.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200">
-                  Kerangka Asesmen Pusmendik Kemendikdasmen
+                  Materi Belajar SD
                 </span>
                 <h3 className="text-2xl font-bold text-slate-900 mt-3">
-                  Pilih Mata Pelajaran Wajib SD
+                  Pilih Mata Pelajaran
                 </h3>
                 <p className="text-sm text-slate-600 mt-1">
-                  Sesuai standar TKA SD, materi difokuskan pada keterampilan literasi membaca dan numerasi matematika.
+                  Fokus belajar membaca pemahaman (Bahasa Indonesia) dan berhitung (Matematika).
                 </p>
               </div>
 
@@ -184,16 +181,16 @@ const MateriView = ({ isOpen, onClose }) => {
             </div>
           )}
 
-          {/* TAHAP 2: Tampilan Persebaran Materi dari Website Pusmendik */}
+          {/* TAHAP 2: Tampilan Daftar Materi */}
           {selectedSubject && !activeBab && (
             <div className="space-y-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
                 <div>
                   <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">
-                    Persebaran Kompetensi Resmi
+                    Daftar Topik
                   </span>
                   <h3 className="text-lg font-bold text-slate-900">
-                    Matriks Asesmen {PUSMENDIK_MATERI[selectedSubject].title}
+                    Materi {PUSMENDIK_MATERI[selectedSubject].title}
                   </h3>
                   <p className="text-xs text-slate-600 mt-0.5">
                     {PUSMENDIK_MATERI[selectedSubject].deskripsi}

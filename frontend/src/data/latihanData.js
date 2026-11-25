@@ -1,20 +1,18 @@
 /**
- * Bank Soal Latihan Resmi TKA SD Pusmendik Kemendikdasmen RI
- * Terintegrasi Lengkap dari https://sd.onedumind.com/
+ * Bank Soal Latihan MyAkademika
  * 
  * Mencakup:
  * 1. Mode Berjenjang (Level 1 - 10):
- *    - Level 1 - 3: 5 Soal (Fondasi Dasar)
- *    - Level 4 - 7: 10 Soal (Penguatan Konsep)
- *    - Level 8 - 10: 20 Soal (Mahir, Penalaran HOTS)
- * 2. Mode Latihan Per Topik / Modul Kurikulum:
- *    - Matematika: 21 Topik Kurikulum Standar Pusmendik (Paket 1, 2, 3)
- *    - Bahasa Indonesia: 10 Topik Kurikulum Standar Pusmendik (Paket 1, 2, 3)
+ *    - Level 1 - 3: 5 Soal (Dasar)
+ *    - Level 4 - 7: 10 Soal (Menengah)
+ *    - Level 8 - 10: 20 Soal (Lanjutan & Penalaran)
+ * 2. Mode Latihan Per Topik:
+ *    - Matematika & Bahasa Indonesia
  * 3. Tipe Soal:
  *    - Pilihan Ganda Tunggal (mcq)
  *    - Pilihan Ganda Kompleks (mcma)
  *    - Benar / Salah (category)
- *    - Dilengkapi Stimulus, Indikator Kemendikdasmen, dan Pembahasan Komprehensif
+ *    - Dilengkapi pengantar soal, indikator, dan pembahasan
  */
 
 export const PUSMENDIK_LATIHAN = {
@@ -27,7 +25,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 1",
     "targetSoal": 5,
     "subjudul": "Tahap Fondasi Dasar I",
-    "deskripsi": "Pemahaman konsep dasar dan identifikasi eksplisit (5 Soal Standar Pusmendik)",
+    "deskripsi": "Pengenalan dasar dan latihan soal ringan (5 Soal)",
     "soal": [
       {
         "id": "bi_lvl1_q1",
@@ -150,7 +148,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 2",
     "targetSoal": 5,
     "subjudul": "Tahap Fondasi Dasar II",
-    "deskripsi": "Penguatan konsep dasar dan perhitungan terstruktur (5 Soal Standar Pusmendik)",
+    "deskripsi": "Memantapkan pemahaman dasar lewat soal terarah (5 Soal)",
     "soal": [
       {
         "id": "bi_lvl2_q1",
@@ -280,7 +278,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 3",
     "targetSoal": 5,
     "subjudul": "Tahap Penerapan Konsep I",
-    "deskripsi": "Penerapan konsep pada situasi rutin terarah (5 Soal Standar Pusmendik)",
+    "deskripsi": "Latihan penerapan materi pada soal sehari-hari (5 Soal)",
     "soal": [
       {
         "id": "bi_lvl3_q1",
@@ -398,7 +396,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 4",
     "targetSoal": 10,
     "subjudul": "Tahap Penguatan Konsep I",
-    "deskripsi": "Penerapan konsep variatif dan pemecahan masalah sederhana (10 Soal Standar Pusmendik)",
+    "deskripsi": "Soal bervariasi dengan tingkat kesulitan ringan sampai sedang (10 Soal)",
     "soal": [
       {
         "id": "bi_lvl4_q1",
@@ -631,7 +629,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 5",
     "targetSoal": 10,
     "subjudul": "Tahap Penguatan Konsep II",
-    "deskripsi": "Analisis soal menengah dan penalaran berbasis stimulus (10 Soal Standar Pusmendik)",
+    "deskripsi": "Latihan soal menengah dengan bacaan dan kasus sederhana (10 Soal)",
     "soal": [
       {
         "id": "bi_lvl5_q1",
@@ -875,7 +873,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 6",
     "targetSoal": 10,
     "subjudul": "Tahap Penerapan Lanjut I",
-    "deskripsi": "Kombinasi penalaran dan analisis hubungan konsep (10 Soal Standar Pusmendik)",
+    "deskripsi": "Soal gabungan beberapa konsep untuk melatih ketelitian (10 Soal)",
     "soal": [
       {
         "id": "bi_lvl6_q1",
@@ -1119,7 +1117,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 7",
     "targetSoal": 10,
     "subjudul": "Tahap Penerapan Lanjut II",
-    "deskripsi": "Eksplorasi soal kontekstual dan inferensi (10 Soal Standar Pusmendik)",
+    "deskripsi": "Soal cerita kontekstual dan menarik kesimpulan (10 Soal)",
     "soal": [
       {
         "id": "bi_lvl7_q1",
@@ -1352,7 +1350,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 8",
     "targetSoal": 20,
     "subjudul": "Tahap Mahir & HOTS I",
-    "deskripsi": "Penalaran kritis, analisis multi-langkah, dan soal HOTS (20 Soal Standar Pusmendik)",
+    "deskripsi": "Soal penalaran bertahap yang lebih menantang (20 Soal)",
     "soal": [
       {
         "id": "bi_lvl8_q1",
@@ -1803,7 +1801,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 9",
     "targetSoal": 20,
     "subjudul": "Tahap Mahir & HOTS II",
-    "deskripsi": "Simulasi evaluasi mendalam dan pemecahan masalah kompleks (20 Soal Standar Pusmendik)",
+    "deskripsi": "Latihan soal gabungan tingkat lanjut untuk menguji ketelitian (20 Soal)",
     "soal": [
       {
         "id": "bi_lvl9_q1",
@@ -2261,7 +2259,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 10",
     "targetSoal": 20,
     "subjudul": "Tahap Master TKA SD",
-    "deskripsi": "Puncak penalaran tingkat tinggi dan pemikiran kritis nasional (20 Soal Standar Pusmendik)",
+    "deskripsi": "Tantangan akhir dengan soal penalaran tingkat tinggi (20 Soal)",
     "soal": [
       {
         "id": "bi_lvl10_q1",
@@ -9575,7 +9573,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 1",
     "targetSoal": 5,
     "subjudul": "Tahap Fondasi Dasar I",
-    "deskripsi": "Pemahaman konsep dasar dan identifikasi eksplisit (5 Soal Standar Pusmendik)",
+    "deskripsi": "Pengenalan dasar dan latihan soal ringan (5 Soal)",
     "soal": [
       {
         "id": "mtk_lvl1_q1",
@@ -9698,7 +9696,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 2",
     "targetSoal": 5,
     "subjudul": "Tahap Fondasi Dasar II",
-    "deskripsi": "Penguatan konsep dasar dan perhitungan terstruktur (5 Soal Standar Pusmendik)",
+    "deskripsi": "Memantapkan pemahaman dasar lewat soal terarah (5 Soal)",
     "soal": [
       {
         "id": "mtk_lvl2_q1",
@@ -9828,7 +9826,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 3",
     "targetSoal": 5,
     "subjudul": "Tahap Penerapan Konsep I",
-    "deskripsi": "Penerapan konsep pada situasi rutin terarah (5 Soal Standar Pusmendik)",
+    "deskripsi": "Latihan penerapan materi pada soal sehari-hari (5 Soal)",
     "soal": [
       {
         "id": "mtk_lvl3_q1",
@@ -9944,7 +9942,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 4",
     "targetSoal": 10,
     "subjudul": "Tahap Penguatan Konsep I",
-    "deskripsi": "Penerapan konsep variatif dan pemecahan masalah sederhana (10 Soal Standar Pusmendik)",
+    "deskripsi": "Soal bervariasi dengan tingkat kesulitan ringan sampai sedang (10 Soal)",
     "soal": [
       {
         "id": "mtk_lvl4_q1",
@@ -10169,7 +10167,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 5",
     "targetSoal": 10,
     "subjudul": "Tahap Penguatan Konsep II",
-    "deskripsi": "Analisis soal menengah dan penalaran berbasis stimulus (10 Soal Standar Pusmendik)",
+    "deskripsi": "Latihan soal menengah dengan bacaan dan kasus sederhana (10 Soal)",
     "soal": [
       {
         "id": "mtk_lvl5_q1",
@@ -10413,7 +10411,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 6",
     "targetSoal": 10,
     "subjudul": "Tahap Penerapan Lanjut I",
-    "deskripsi": "Kombinasi penalaran dan analisis hubungan konsep (10 Soal Standar Pusmendik)",
+    "deskripsi": "Soal gabungan beberapa konsep untuk melatih ketelitian (10 Soal)",
     "soal": [
       {
         "id": "mtk_lvl6_q1",
@@ -10663,7 +10661,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 7",
     "targetSoal": 10,
     "subjudul": "Tahap Penerapan Lanjut II",
-    "deskripsi": "Eksplorasi soal kontekstual dan inferensi (10 Soal Standar Pusmendik)",
+    "deskripsi": "Soal cerita kontekstual dan menarik kesimpulan (10 Soal)",
     "soal": [
       {
         "id": "mtk_lvl7_q1",
@@ -10907,7 +10905,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 8",
     "targetSoal": 20,
     "subjudul": "Tahap Mahir & HOTS I",
-    "deskripsi": "Penalaran kritis, analisis multi-langkah, dan soal HOTS (20 Soal Standar Pusmendik)",
+    "deskripsi": "Soal penalaran bertahap yang lebih menantang (20 Soal)",
     "soal": [
       {
         "id": "mtk_lvl8_q1",
@@ -11356,7 +11354,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 9",
     "targetSoal": 20,
     "subjudul": "Tahap Mahir & HOTS II",
-    "deskripsi": "Simulasi evaluasi mendalam dan pemecahan masalah kompleks (20 Soal Standar Pusmendik)",
+    "deskripsi": "Latihan soal gabungan tingkat lanjut untuk menguji ketelitian (20 Soal)",
     "soal": [
       {
         "id": "mtk_lvl9_q1",
@@ -11802,7 +11800,7 @@ export const PUSMENDIK_LATIHAN = {
     "namaLevel": "Level 10",
     "targetSoal": 20,
     "subjudul": "Tahap Master TKA SD",
-    "deskripsi": "Puncak penalaran tingkat tinggi dan pemikiran kritis nasional (20 Soal Standar Pusmendik)",
+    "deskripsi": "Tantangan akhir dengan soal penalaran tingkat tinggi (20 Soal)",
     "soal": [
       {
         "id": "mtk_lvl10_q1",

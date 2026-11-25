@@ -311,10 +311,10 @@ const ProfileModal = ({ isOpen, onClose, user, profileStats, onProfileUpdated, o
             </div>
 
             <p className="text-[11px] text-blue-100 leading-relaxed bg-[#162E5B] p-3 rounded-lg border-2 border-blue-900/60">
-              💡 <strong>Tips Naik Level:</strong> Selesaikan materi, latihan soal, dan tryout untuk mengumpulkan EXP dan menaikkan levelmu!
+              💡 <strong>Cara Naik Level:</strong> Selesaikan materi, latihan soal, dan tryout supaya EXP bertambah dan levelmu naik.
             </p>
 
-            {/* Tombol Preview Simulasi Animasi Pop-up Duolingo */}
+            {/* Tombol Preview Simulasi Animasi Pop-up */}
             <button
               onClick={() => {
                 onClose();
@@ -330,13 +330,13 @@ const ProfileModal = ({ isOpen, onClose, user, profileStats, onProfileUpdated, o
                   leveledUp: simNew.level > simPrev.level,
                   streak: { count: streak?.count || 1 },
                   actionType: 'latihan',
-                  newTitlesUnlocked: [{ name: 'Pakar Hitung Cepat', icon: '🔢' }],
+                  newTitlesUnlocked: [{ name: 'Jago Hitung Cepat', icon: '🔢' }],
                 });
               }}
               className="w-full text-center py-2 px-3 rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 text-amber-900 text-[11px] font-bold border border-amber-200 transition-all flex items-center justify-center space-x-1.5 cursor-pointer shadow-xs active:scale-98"
             >
               <Sparkles className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
-              <span>Pratinjau Notifikasi Perolehan EXP / Naik Level 🌟</span>
+              <span>Lihat Contoh Animasi Naik Level 🌟</span>
             </button>
           </div>
 
@@ -357,7 +357,7 @@ const ProfileModal = ({ isOpen, onClose, user, profileStats, onProfileUpdated, o
                     Streak: {streak.count} Hari
                   </h4>
                   <span className="text-[11px] text-blue-200 font-medium">
-                    Konsistensi Belajar Harian
+                    Kebiasaan Belajar Harian
                   </span>
                 </div>
               </div>
@@ -374,11 +374,11 @@ const ProfileModal = ({ isOpen, onClose, user, profileStats, onProfileUpdated, o
 
             <div className="p-3 rounded-lg bg-[#162E5B] border-2 border-blue-900/60 text-xs text-blue-100 leading-relaxed space-y-1.5">
               <p>
-                <strong>Aturan Reset Jam 12 Malam:</strong> Streak akan reset ke 0 jika melewati pukul <strong>24:00 (12 malam)</strong> tanpa aktivitas belajar.
+                <strong>Info Streak:</strong> Kalau seharian belum belajar sampai lewat jam <strong>12 malam</strong>, hitungan streak akan mulai dari 0 lagi.
               </p>
               {!streak.activeToday && (
                 <div className="mt-1 text-amber-300 font-medium bg-[#0F2042] p-2 rounded-md text-[11px] border-2 border-amber-500">
-                  Kerjakan 1 materi, latihan soal, atau tryout hari ini sebelum jam 12 malam untuk menyalakan streak!
+                  Selesaikan 1 materi, latihan soal, atau tryout hari ini biar streak kamu tetap lanjut!
                 </div>
               )}
             </div>

@@ -92,7 +92,7 @@ const InteractiveDropdownList = ({ items, defaultOpenAll = null }) => {
             onClick={toggleAll}
             className="text-blue-600 hover:text-blue-700 font-bold hover:underline transition-colors cursor-pointer text-[11px] flex items-center space-x-1 bg-blue-50/70 hover:bg-blue-100/70 px-2.5 py-1 rounded-lg border border-blue-200/60"
           >
-            <span>{allOpen ? 'Tutup Semua Dropdown' : 'Buka Semua Dropdown'}</span>
+            <span>{allOpen ? 'Tutup Semua' : 'Buka Semua'}</span>
           </button>
         </div>
       )}
@@ -185,7 +185,7 @@ const EnhancedContentRenderer = ({ content }) => {
   const rawLines = cleanedContent.split('\n');
 
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-1.5 rich-content-display">
       {rawLines.map((rawLine, lineIndex) => {
         const trimmed = rawLine.trim();
         if (!trimmed) {
@@ -539,7 +539,7 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
         <div className="pb-3 border-b border-slate-100">
           <div className="flex items-center space-x-2 text-xs font-bold text-blue-700 uppercase tracking-wider mb-1.5">
             <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-            <span>Materi {bab.no} Standar Pusmendik</span>
+            <span>Materi {bab.no}</span>
           </div>
           <h3 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
             {bab.judul}
@@ -549,7 +549,7 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
             dangerouslySetInnerHTML={{
               __html: formatMath(
                 bab.ringkasan ||
-                  'Mari kita pelajari materi ini bersama langkah demi langkah dengan penjelasan yang mudah dan menyenangkan!'
+                  'Yuk pelajari materi ini pelan-pelan bareng contoh soalnya!'
               ),
             }}
           />
@@ -563,7 +563,7 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
             </div>
             <div className="space-y-0.5 flex-1">
               <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 block">
-                Misi Pembelajaran Hari Ini:
+                Yang Akan Kamu Pelajari:
               </span>
               <div
                 className="text-xs sm:text-sm text-slate-700 font-medium leading-relaxed whitespace-pre-line"
@@ -577,7 +577,7 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
         <div className="p-3.5 rounded-xl bg-slate-50/70 border border-slate-200 text-xs text-slate-600 flex items-center space-x-2.5">
           <Info className="w-4 h-4 text-slate-500 flex-shrink-0" />
           <p className="leading-relaxed">
-            Gunakan tombol <strong>"Lanjut Slide Berikutnya"</strong> di bawah untuk membaca materi secara perlahan. Pahami setiap contoh sebelum lanjut ya!
+            Klik tombol <strong>"Lanjut"</strong> di bawah untuk pindah ke halaman berikutnya. Baca pelan-pelan dan pahami contohnya ya.
           </p>
         </div>
       </div>
@@ -589,8 +589,8 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
     slides.push({
       id: 'konsep_kunci',
       badge: `Materi ${bab.no} • Bagian 2`,
-      title: 'Konsep Kunci yang Wajib Dipahami',
-      subtitle: 'Pondasi Utama Materi',
+      title: 'Poin Penting Materi',
+      subtitle: 'Dasar yang Perlu Diingat',
       icon: Lightbulb,
       render: () => (
         <div className="p-5 sm:p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-4 animate-fade-in">
@@ -601,10 +601,10 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
             </div>
             <div>
               <span className="text-[11px] font-bold text-amber-700 uppercase tracking-wider block">
-                Kaidah Pokok Materi
+                Inti Materi
               </span>
               <h4 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
-                Kunci Utama {bab.judul}
+                Ringkasan {bab.judul}
               </h4>
             </div>
           </div>
@@ -618,7 +618,7 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
           <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700 flex items-start space-x-2.5">
             <Info className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
             <span className="leading-relaxed">
-              <strong className="text-slate-900">Mengapa konsep ini penting?</strong> Aturan baku ini adalah pondasi yang akan selalu digunakan saat mengerjakan soal-soal latihan dan ujian!
+              <strong className="text-slate-900">Catatan:</strong> Pahami bagian ini baik-baik karena bakal sering dipakai waktu mengerjakan latihan soal dan tryout.
             </span>
           </div>
         </div>
@@ -636,7 +636,7 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
         id: `uraian_${idx}`,
         badge: `Materi ${bab.no} • Bagian ${idx + 3}`,
         title: item.subjudul || `Pembahasan Bagian ${idx + 1}`,
-        subtitle: 'Penjelasan & Contoh Detail',
+        subtitle: 'Penjelasan & Contoh',
         icon: Layers,
         render: () => (
           <div className="p-5 sm:p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-4 animate-fade-in">
@@ -672,10 +672,10 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
               <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 flex items-center space-x-1.5">
                   <Calculator className="w-3.5 h-3.5 text-blue-600" />
-                  <span>Rumus / Kaidah Pokok:</span>
+                  <span>Rumus / Aturan Penting:</span>
                 </span>
-                <div className="bg-white p-2.5 rounded-lg border border-slate-200/90 text-blue-950 font-mono text-xs sm:text-sm font-bold shadow-2xs">
-                  <span dangerouslySetInnerHTML={{ __html: formatMath(item.rumus) }} />
+                <div className="bg-white p-2.5 rounded-lg border border-slate-200/90 text-blue-950 font-mono text-xs sm:text-sm font-bold shadow-2xs rich-content-display">
+                  <div dangerouslySetInnerHTML={{ __html: formatMath(item.rumus) }} />
                 </div>
               </div>
             )}
@@ -691,7 +691,7 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
                   <div className="flex items-center space-x-2 text-emerald-800">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                     <span className="text-xs sm:text-sm font-bold">
-                      Contoh Soal & Pembahasan Langkah demi Langkah
+                      Contoh Soal & Cara Mengerjakannya
                     </span>
                   </div>
                   <div className="flex items-center space-x-1.5 text-xs text-slate-500 flex-shrink-0">
@@ -710,8 +710,8 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
 
                 {isContohOpen && (
                   <div className="p-3.5 pt-1 border-t border-slate-100 bg-slate-50/40 animate-fade-in">
-                    <div className="p-3 rounded-lg bg-white border border-slate-200 text-xs sm:text-sm text-slate-800 leading-relaxed font-medium">
-                      <span dangerouslySetInnerHTML={{ __html: formatMath(item.contoh) }} />
+                    <div className="p-3 rounded-lg bg-white border border-slate-200 text-xs sm:text-sm text-slate-800 leading-relaxed font-medium rich-content-display">
+                      <div dangerouslySetInnerHTML={{ __html: formatMath(item.contoh) }} />
                     </div>
                   </div>
                 )}
@@ -753,19 +753,19 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
 
     slides.push({
       id: 'daftar_baku',
-      badge: 'Eksplorasi Kosakata',
+      badge: 'Daftar Kosakata',
       title: 'Kosakata Baku vs Tidak Baku',
-      subtitle: 'Standar Kamus Besar Bahasa Indonesia (KBBI)',
+      subtitle: 'Berdasarkan KBBI',
       icon: FileText,
       render: () => (
         <div className="p-5 sm:p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-4 animate-fade-in">
           <div className="pb-3 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
               <span className="text-[11px] font-bold text-blue-700 uppercase tracking-wider block">
-                Kamus Pembelajaran
+                Daftar Kata
               </span>
               <h4 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
-                Kosakata Baku (EYD/KBBI) vs Tidak Baku
+                Kosakata Baku (KBBI) vs Tidak Baku
               </h4>
             </div>
 
@@ -776,14 +776,14 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
                 type="text"
                 value={searchBaku}
                 onChange={(e) => setSearchBaku(e.target.value)}
-                placeholder="Cari kata di sini..."
+                placeholder="Cari kata..."
                 className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-800 outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100 transition-all bg-slate-50/60"
               />
             </div>
           </div>
 
           <p className="text-xs text-slate-600 leading-relaxed">
-            Perhatikan daftar kata berikut! Kata di sebelah kiri adalah kata <strong>Baku</strong> (sesuai kaidah KBBI), sedangkan kata di sebelah kanan adalah kata <strong>Tidak Baku</strong> yang sering keliru digunakan.
+            Cek perbedaannya di bawah ini. Yang kiri adalah kata <strong>baku</strong> (sesuai KBBI), sedangkan yang kanan adalah bentuk <strong>tidak baku</strong> yang sering keliru ditulis.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[360px] overflow-y-auto slate-scrollbar pr-1">
@@ -820,9 +820,9 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
 
     slides.push({
       id: 'contoh_soal',
-      badge: 'Simulasi Soal Nyata',
-      title: 'Bedah Contoh Soal Asesmen TKA SD',
-      subtitle: 'Analisis & Cara Penyelesaian Rinci',
+      badge: 'Contoh Soal',
+      title: 'Pembahasan Contoh Soal',
+      subtitle: 'Soal & Cara Mengerjakannya',
       icon: HelpCircle,
       render: () => (
         <div className="p-5 sm:p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-4 animate-fade-in">
@@ -833,10 +833,10 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
               </span>
               <div>
                 <span className="text-[11px] font-bold text-blue-700 uppercase tracking-wider block">
-                  Model Asesmen TKA SD
+                  Contoh Soal
                 </span>
                 <h4 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
-                  Bedah Contoh Soal & Analisis
+                  Soal & Langkah Penyelesaian
                 </h4>
               </div>
             </div>
@@ -848,10 +848,10 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
           {/* Kotak Pertanyaan */}
           <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
-              Pertanyaan Soal:
+              Soal:
             </span>
-            <p
-              className="text-xs sm:text-sm font-bold text-slate-900 leading-relaxed"
+            <div
+              className="text-xs sm:text-sm font-bold text-slate-900 leading-relaxed rich-content-display"
               dangerouslySetInnerHTML={{ __html: formatMath(bab.contohSoal.soal) }}
             />
           </div>
@@ -866,7 +866,7 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
               <div className="flex items-center space-x-2 text-emerald-800">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                 <span className="text-xs sm:text-sm font-bold">
-                  Cara Berpikir & Langkah Penyelesaian Rinci
+                  Cara Mengerjakan & Pembahasan
                 </span>
               </div>
               <div className="flex items-center space-x-1.5 text-xs text-slate-500 flex-shrink-0">
@@ -900,12 +900,12 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
   slides.push({
     id: 'summary',
     badge: 'Langkah Terakhir',
-    title: 'Rangkuman & Kuis Pemahaman',
-    subtitle: 'Siap Meraih 3 Bintang Emas!',
+    title: 'Rangkuman & Kuis',
+    subtitle: 'Waktunya Cek Pemahaman!',
     icon: Award,
     render: () => (
       <div className="p-5 sm:p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-4 animate-fade-in">
-        {/* Tips Juara */}
+        {/* Tips Belajar */}
         {bab.tipsJuara && (
           <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200/80 flex items-start space-x-3">
             <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 border border-amber-300 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -913,10 +913,10 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
             </div>
             <div className="space-y-0.5">
               <strong className="text-amber-900 block font-bold text-xs uppercase tracking-wider">
-                Tips Juara TKA SD:
+                Tips Ingat Cepat:
               </strong>
-              <p
-                className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium"
+              <div
+                className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium rich-content-display"
                 dangerouslySetInnerHTML={{ __html: formatMath(bab.tipsJuara) }}
               />
             </div>
@@ -927,20 +927,20 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
         <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
           <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center space-x-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-            <span>Checklist Pemahaman Kamu:</span>
+            <span>Yang Sudah Kamu Pelajari:</span>
           </h4>
           <div className="space-y-1.5 text-xs text-slate-700">
             <div className="flex items-center space-x-2 p-2 rounded-lg bg-white border border-slate-200/80">
               <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" />
-              <span>Memahami konsep dasar dan aturan <strong>{bab.judul}</strong>.</span>
+              <span>Sudah paham dasar materi <strong>{bab.judul}</strong>.</span>
             </div>
             <div className="flex items-center space-x-2 p-2 rounded-lg bg-white border border-slate-200/80">
               <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" />
-              <span>Mempelajari contoh soal dan pembahasan langkah demi langkah.</span>
+              <span>Sudah melihat contoh soal dan cara mengerjakannya.</span>
             </div>
             <div className="flex items-center space-x-2 p-2 rounded-lg bg-white border border-slate-200/80">
               <Check className="w-3.5 h-3.5 text-emerald-600 stroke-[3]" />
-              <span>Siap menyelesaikan kuis untuk membuka materi selanjutnya.</span>
+              <span>Siap mengerjakan kuis untuk membuka materi berikutnya.</span>
             </div>
           </div>
         </div>
@@ -959,13 +959,13 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
                   : 'bg-[#065F46] text-emerald-100 border-[#059669]'
               }`}
             >
-              Uji 3 Bintang Emas
+              Kuis Singkat
             </span>
             <h4 className="text-sm sm:text-base font-bold">
-              Materi Selesai Dipelajari! Siap Uji Pemahaman?
+              Sudah selesai baca? Yuk coba kuisnya!
             </h4>
             <p className={`text-xs mt-0.5 leading-relaxed ${isMath ? 'text-rose-100' : 'text-emerald-100'}`}>
-              Jawab 3 soal kuis pemahaman materi ini untuk meraih Bintang Emas!
+              Jawab 3 soal kuis di materi ini buat kumpulkan bintang.
             </p>
           </div>
 
@@ -977,7 +977,7 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
                 : 'text-[#047857] hover:bg-emerald-50'
             }`}
           >
-            <span>Mulai 3 Soal Kuis</span>
+            <span>Mulai Kuis (3 Soal)</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

@@ -77,10 +77,10 @@ const AvatarPickerModal = ({
             </div>
             <div>
               <h3 className="text-base sm:text-lg font-bold text-white tracking-tight flex items-center gap-1.5">
-                Pilih Foto Profil Karakter
+                Pilih Karakter Profil
               </h3>
               <p className="text-xs text-blue-200">
-                Pilih karakter animasi unik untuk mempercantik profilmu!
+                Ganti foto profilmu pakai karakter yang sudah kamu buka.
               </p>
             </div>
           </div>
@@ -188,7 +188,7 @@ const AvatarPickerModal = ({
                   </p>
                   <p className="text-slate-200">
                     {activePreview.isGachaFantasy
-                      ? 'Kerjakan paket Tryout dengan nilai minimal 80% benar untuk memicu Gacha Fantasi acak dan membuka karakter ini!'
+                      ? 'Selesaikan paket tryout dengan nilai minimal 80% untuk membuka hadiah gacha karakter Fantasi secara acak.'
                       : activePreview.requirement}
                   </p>
                 </div>

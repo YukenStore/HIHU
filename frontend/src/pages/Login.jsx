@@ -106,7 +106,7 @@ const Login = () => {
 
       navigate('/dashboard');
     } catch (err) {
-      const errMsg = err.message || 'Username/Gmail atau password salah.';
+      const errMsg = err.message || 'Username, email, atau password belum sesuai.';
       setServerError(errMsg);
       if (errMsg.toLowerCase().includes('password')) {
         setErrors((prev) => ({ ...prev, password: errMsg }));
@@ -126,15 +126,15 @@ const Login = () => {
           <div className="inline-flex items-center justify-center mb-3 p-2 bg-white rounded-2xl shadow-md border border-white/30">
             <img
               src="/logo.png"
-              alt="Logo EDU TKA"
+              alt="Logo MyAkademika"
               className="h-14 w-auto object-contain"
             />
           </div>
           <h1 className="text-2xl font-bold text-white tracking-tight drop-shadow-sm">
-            Portal TKA SD
+            Masuk ke MyAkademika
           </h1>
           <p className="text-teal-50/90 text-sm mt-1 font-medium">
-            Masuk untuk mengakses latihan Tes Kemampuan Akademik
+            Masuk dulu buat lanjut belajar dan latihan soal.
           </p>
         </div>
 
@@ -160,11 +160,11 @@ const Login = () => {
           <div className="animate-fade-in">
             <form onSubmit={handleStandardSubmit} noValidate>
               <InputField
-                label="Username atau Alamat Email"
+                label="Username atau Email"
                 id="login-identifier"
                 name="identifier"
                 type="text"
-                placeholder="contoh: Siswa123 atau siswa@gmail.com"
+                placeholder="Ketik username atau email"
                 value={formData.identifier}
                 onChange={handleChange}
                 error={errors.identifier}
@@ -178,7 +178,7 @@ const Login = () => {
                 id="login-password"
                 name="password"
                 type="password"
-                placeholder="Masukkan password Anda"
+                placeholder="Ketik password kamu"
                 value={formData.password}
                 onChange={handleChange}
                 error={errors.password}
@@ -220,9 +220,9 @@ const Login = () => {
                   variant="primary"
                   fullWidth
                   isLoading={isLoading}
-                  loadingText="Memproses Masuk..."
+                  loadingText="Sebentar ya..."
                 >
-                  Masuk ke Akun
+                  Masuk
                 </Button>
 
                 <button
@@ -232,7 +232,7 @@ const Login = () => {
                   className="w-full py-2.5 px-4 rounded-lg border-2 border-[#162E5B]/30 hover:border-[#162E5B] bg-slate-100 hover:bg-blue-50 text-[#162E5B] font-bold text-sm transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-2xs active:scale-[0.99]"
                 >
                   <UserCheck className="w-4 h-4 text-[#1E3A8A]" />
-                  <span>Masuk sebagai Guest</span>
+                  <span>Coba sebagai Tamu</span>
                 </button>
               </div>
             </form>
@@ -245,7 +245,7 @@ const Login = () => {
                   to="/register"
                   className="font-bold text-[#1E3A8A] hover:text-[#172554] hover:underline transition-colors"
                 >
-                  Daftar di sini
+                  Daftar dulu
                 </Link>
               </p>
             </div>
@@ -254,7 +254,7 @@ const Login = () => {
 
         {/* Footer info */}
         <p className="text-center text-xs text-white mt-6">
-          &copy; {new Date().getFullYear()} TKA SD. Seluruh hak cipta dilindungi.
+          &copy; {new Date().getFullYear()} MyAkademika
         </p>
       </div>
     </div>

@@ -355,7 +355,7 @@ const RewardModal = () => {
                 : 'bg-[#286657] hover:bg-[#1E5044]'
             }`}
           >
-            {leveledUp ? 'Lanjutkan Perjuangan 🚀' : 'Keren, Lanjutkan! 👍'}
+            {leveledUp ? 'Lanjut Belajar 🚀' : 'Mantap, Lanjut! 👍'}
           </button>
         </div>
 

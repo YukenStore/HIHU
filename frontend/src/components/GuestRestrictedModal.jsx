@@ -61,15 +61,15 @@ const GuestRestrictedModal = () => {
 
           <div className="inline-flex items-center space-x-1.5 px-3 py-0.5 rounded-full bg-[#0F2042] border border-amber-400/50 text-amber-300 text-[11px] font-bold">
             <Sparkles className="w-3 h-3" />
-            <span>Batas Akses Mode Guest (Tamu)</span>
+            <span>Batas Mode Tamu</span>
           </div>
 
           <h3 className="text-lg sm:text-xl font-bold text-white leading-snug">
-            Daftar atau Login untuk Membuka {featureName}
+            Masuk atau Daftar untuk Membuka {featureName}
           </h3>
 
           <p className="text-xs sm:text-sm text-blue-100 leading-relaxed">
-            Saat ini kamu menggunakan akun simulasi <strong>Guest</strong> yang hanya dapat mencoba <strong>Materi 1</strong>, <strong>Latihan 1</strong>, dan <strong>Tryout Paket 1</strong>.
+            Saat ini kamu sedang mencoba mode <strong>Tamu</strong>, jadi baru bisa membuka <strong>Materi 1</strong>, <strong>Latihan 1</strong>, dan <strong>Tryout Paket 1</strong>.
           </p>
         </div>
 
@@ -77,19 +77,19 @@ const GuestRestrictedModal = () => {
         <div className="px-6">
           <div className="p-3.5 rounded-xl bg-[#0F2042] border border-blue-500/40 space-y-2 text-xs text-blue-100">
             <p className="font-bold text-amber-300 text-[11px] uppercase tracking-wider">
-              Keuntungan Memiliki Akun Resmi:
+              Kalau Punya Akun, Kamu Bisa:
             </p>
             <div className="flex items-center space-x-2">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-              <span>Akses penuh seluruh Materi, 10 Level Latihan, & 5 Paket Tryout</span>
+              <span>Buka semua materi, 10 level latihan soal, dan 5 paket tryout</span>
             </div>
             <div className="flex items-center space-x-2">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-              <span>Progres EXP, Level, Streak & Karakter tersimpan permanen</span>
+              <span>Simpan EXP, level, streak belajar, dan koleksi karaktermu</span>
             </div>
             <div className="flex items-center space-x-2">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 flex-shrink-0" />
-              <span>Terdaftar resmi di Papan Peringkat (Leaderboard) Nasional</span>
+              <span>Ikut tampil di Papan Peringkat bareng teman-teman lain</span>
             </div>
           </div>
         </div>
@@ -102,7 +102,7 @@ const GuestRestrictedModal = () => {
             className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-md active:scale-98"
           >
             <UserPlus className="w-4 h-4" />
-            <span>Daftar Akun Gratis Sekarang</span>
+            <span>Buat Akun Gratis</span>
           </button>
 
           <button
@@ -111,7 +111,7 @@ const GuestRestrictedModal = () => {
             className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-sm active:scale-98"
           >
             <LogIn className="w-4 h-4" />
-            <span>Sudah Punya Akun? Login di Sini</span>
+            <span>Sudah Punya Akun? Masuk</span>
           </button>
 
           <button
@@ -119,7 +119,7 @@ const GuestRestrictedModal = () => {
             onClick={() => setIsOpen(false)}
             className="w-full py-2 rounded-xl bg-transparent hover:bg-[#0F2042] text-blue-300 hover:text-white font-semibold text-xs transition-colors cursor-pointer"
           >
-            Lanjutkan Mode Guest
+            Nanti Saja
           </button>
         </div>
       </div>

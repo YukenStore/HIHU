@@ -25,7 +25,7 @@ import {
  * Ketentuan:
  * - Mapel: Bahasa Indonesia & Matematika
  * - Total 5 Tryout (Paket 1 - 5)
- * - Standar TKA SD Nasional (30 Soal, 60 Menit)
+ * - Format paket: 30 Soal, 60 Menit
  * - Tipe kesulitan HOTS, Mudah, Sedang diacak posisinya
  * - Format: Sebagian besar Pilihan Ganda (PG) dan beberapa soal Isian Singkat
  * - Timer hitung mundur, lembar navigasi nomor, skor & pembahasan
@@ -203,13 +203,13 @@ const TryoutView = ({ isOpen, onClose }) =>
             <div className="max-w-2xl mx-auto py-6">
               <div className="text-center mb-8">
                 <span className="px-3.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300">
-                  Simulasi Ujian Nasional TKA SD
+                  Latihan Tryout SD
                 </span>
                 <h3 className="text-2xl font-bold text-slate-900 mt-3">
                   Pilih Mata Pelajaran Tryout
                 </h3>
                 <p className="text-sm text-slate-500 mt-1">
-                  Masing-masing mapel memiliki 5 Paket Tryout lengkap berstandar Pusmendik.
+                  Setiap mata pelajaran punya 5 paket latihan tryout lengkap.
                 </p>
               </div>
 
@@ -264,7 +264,7 @@ const TryoutView = ({ isOpen, onClose }) =>
                     Pilihan 5 Paket Tryout {PUSMENDIK_TRYOUT[selectedSubject].nama}
                   </h3>
                   <p className="text-xs text-slate-500 mt-0.5">
-                    Standar TKA SD Nasional: 30 Soal (PG + Isian), 60 Menit.
+                    30 soal (PG & Isian), waktu pengerjaan 60 menit.
                   </p>
                 </div>
               </div>

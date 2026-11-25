@@ -37,7 +37,7 @@ const getStatusBadge = (status) => {
  * - Pembacaan Materi
  * - Latihan Soal Berjenjang
  * - Simulasi Tryout Nasional
- * - Pemetaan Penguasaan Matriks Asesmen Pusmendik
+ * - Pemetaan Penguasaan Topik Materi
  */
 const RaporView = ({ isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState('ringkasan'); // 'ringkasan' | 'tryout' | 'latihan'
@@ -207,21 +207,21 @@ const RaporView = ({ isOpen, onClose }) => {
                     Sangat Baik (A)
                   </div>
                   <span className="text-[11px] text-slate-500 mt-1 block">
-                    Standar TKA Nasional
+                    Hasil Belajar
                   </span>
                 </div>
               </div>
 
-              {/* Matriks Asesmen Penguasaan Kompetensi Pusmendik */}
+              {/* Pemetaan Penguasaan Topik */}
               <div className="p-5 rounded-2xl bg-slate-50/70 border-2 border-slate-300 space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-sm font-bold text-slate-900 flex items-center space-x-2">
                       <BarChart3 className="w-4 h-4 text-blue-600" />
-                      <span>Pemetaan Kompetensi Berdasarkan Asesmen Pusmendik</span>
+                      <span>Pemahaman per Topik</span>
                     </h3>
                     <p className="text-xs text-slate-500 mt-0.5">
-                      Tingkat penguasaan elemen materi Bahasa Indonesia dan Matematika
+                      Perkembangan materi Bahasa Indonesia dan Matematika
                     </p>
                   </div>
                 </div>

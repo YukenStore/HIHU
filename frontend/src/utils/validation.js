@@ -8,44 +8,44 @@ export const validateRegisterForm = ({ username, email, password, confirmPasswor
 
   // Validasi Username
   if (!username || !username.trim()) {
-    errors.username = 'Username wajib diisi.';
+    errors.username = 'Username belum diisi.';
   } else {
     const trimmedUser = username.trim();
     if (trimmedUser.includes('@')) {
-      errors.username = 'Username tidak boleh berupa alamat email (jangan gunakan tanda @). Gunakan nama panggilan.';
+      errors.username = 'Username jangan pakai alamat email ya (tanpa tanda @).';
     } else if (email && trimmedUser.toLowerCase() === email.trim().toLowerCase()) {
-      errors.username = 'Username tidak boleh sama dengan alamat email.';
+      errors.username = 'Username harus beda dari alamat email.';
     } else {
       const userRegex = /^[a-zA-Z0-9._-]{3,20}$/;
       if (!userRegex.test(trimmedUser)) {
-        errors.username = 'Username harus 3-20 karakter (huruf, angka, titik, atau underscore tanpa spasi).';
+        errors.username = 'Username minimal 3–20 karakter (huruf, angka, titik, atau underscore tanpa spasi).';
       }
     }
   }
 
   // Validasi Email (Bebas domain apapun)
   if (!email || !email.trim()) {
-    errors.email = 'Alamat email wajib diisi.';
+    errors.email = 'Email belum diisi.';
   } else {
     const trimmed = email.trim().toLowerCase();
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailRegex.test(trimmed)) {
-      errors.email = 'Format email tidak valid (contoh: siswa@sekolah.id atau nama@gmail.com).';
+      errors.email = 'Format email belum sesuai (contoh: nama@gmail.com).';
     }
   }
 
   // Validasi Password
   if (!password) {
-    errors.password = 'Password wajib diisi.';
+    errors.password = 'Password belum diisi.';
   } else if (password.length < 8) {
-    errors.password = 'Password minimal harus 8 karakter.';
+    errors.password = 'Password minimal 8 karakter ya.';
   }
 
   // Validasi Konfirmasi Password
   if (!confirmPassword) {
-    errors.confirmPassword = 'Konfirmasi password wajib diisi.';
+    errors.confirmPassword = 'Tulis ulang password di kolom konfirmasi.';
   } else if (password !== confirmPassword) {
-    errors.confirmPassword = 'Konfirmasi password tidak cocok dengan password.';
+    errors.confirmPassword = 'Kedua password belum sama.';
   }
 
   return {
@@ -63,11 +63,11 @@ export const validateLoginForm = ({ identifier, password }) => {
   const errors = {};
 
   if (!identifier || !identifier.trim()) {
-    errors.identifier = 'Username atau Email wajib diisi.';
+    errors.identifier = 'Username atau email belum diisi.';
   }
 
   if (!password) {
-    errors.password = 'Password wajib diisi.';
+    errors.password = 'Password belum diisi.';
   }
 
   return {

@@ -13,6 +13,18 @@ export function formatMath(text) {
     .replace(/\[h(?:orizontal)?\]\s*/gi, '')
     .replace(/\r\n/g, '\n');
 
+  // Lindungi semua tag HTML valid (seperti <img ...>, <span ...>, <b>, <div>, <br />)
+  // tanpa menyentuh tanda perbandingan matematika seperti "<" dan ">" (misal: $\frac{2}{5} < \frac{3}{5}$).
+  const protectedHtmlTags = [];
+  result = result.replace(
+    /<\/?[a-zA-Z][a-zA-Z0-9-]*(?:\s[^<>]*?)?\/?>/g,
+    (tagMatch) => {
+      const token = `__HTML_TAG_TOKEN_${protectedHtmlTags.length}__`;
+      protectedHtmlTags.push(tagMatch);
+      return token;
+    }
+  );
+
   // 1. Render display math $$ ... $$
   result = result.replace(/\$\$([^$]+)\$\$/g, (match, formula) => {
     try {
@@ -57,6 +69,11 @@ export function formatMath(text) {
 
   // 6. Konversi newline \n menjadi <br /> agar baris baru sesuai dengan ketikan di Admin Panel
   result = result.replace(/\n/g, '<br />');
+
+  // Kembalikan seluruh tag HTML (<img>, <span>, <div>, dll.) secara utuh
+  result = result.replace(/__HTML_TAG_TOKEN_(\d+)__/g, (_, idx) => {
+    return protectedHtmlTags[Number(idx)] ?? '';
+  });
 
   return result;
 }

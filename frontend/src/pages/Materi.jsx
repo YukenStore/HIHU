@@ -72,7 +72,7 @@ const SUBJECTS_CONFIG = {
       return this.levels.length;
     },
     get tagline() {
-      return `${this.levels.length} Topik Materi Standar Pusmendik`;
+      return `${this.levels.length} Topik Materi`;
     },
     deskripsi: 'Ejaan, huruf kapital, kata depan, tanda baca, kalimat efektif, sastra (puisi & prosa), hingga analisis teks.',
     icon: BookOpen,
@@ -92,29 +92,29 @@ const SUBJECTS_CONFIG = {
       5: {
         title: 'Peti Bintang Ejaan & Tata Bahasa',
         requiredLevel: 5,
-        desc: 'Pencapaian menuntaskan 5 Materi Pertama Bahasa Indonesia.',
-        reward: '🎁 Foto Profil: Paket Siswa & Siswi (Siswa Hebat & Siswi Bintang)',
+        desc: 'Hadiah setelah selesai mempelajari 5 materi pertama Bahasa Indonesia.',
+        reward: '🎁 Foto Profil: Bocil Cowo & Bocil Cewe',
         avatarIds: ['boy', 'girl'],
       },
       10: {
         title: 'Peti Perak Makna & Kalimat Efektif',
         requiredLevel: 10,
-        desc: 'Pencapaian menuntaskan 10 Materi Bahasa Indonesia.',
-        reward: '🎁 Foto Profil: Rubah Cerdas',
+        desc: 'Hadiah setelah selesai mempelajari 10 materi Bahasa Indonesia.',
+        reward: '🎁 Foto Profil: Rubah',
         avatarIds: ['fox'],
       },
       15: {
         title: 'Peti Emas Sastra, Prosa & Puisi',
         requiredLevel: 15,
-        desc: 'Pencapaian menuntaskan 15 Materi Bahasa Indonesia.',
-        reward: '🎁 Foto Profil: Serigala Berani',
+        desc: 'Hadiah setelah selesai mempelajari 15 materi Bahasa Indonesia.',
+        reward: '🎁 Foto Profil: Serigala',
         avatarIds: ['red-wolf'],
       },
       21: {
-        title: 'Piala Puncak Bahasa Indonesia TKA SD',
+        title: 'Piala Puncak Bahasa Indonesia',
         requiredLevel: 21,
-        desc: 'Piala kebanggaan tertinggi setelah mengumpulkan seluruh 63 Bintang (3 bintang di semua 21 Materi) Bahasa Indonesia Pusmendik Kemendikdasmen RI.',
-        reward: '👑 Foto Profil: Paket Raja & Ratu (Raja Bijak & Ratu Anggun)',
+        desc: 'Didapat kalau kamu berhasil mengumpulkan semua 63 bintang (3 bintang di semua 21 materi Bahasa Indonesia).',
+        reward: '👑 Foto Profil: Raja & Ratu',
         avatarIds: ['king', 'queen'],
       },
     },
@@ -126,7 +126,7 @@ const SUBJECTS_CONFIG = {
       return this.levels.length;
     },
     get tagline() {
-      return `${this.levels.length} Topik Materi Standar Pusmendik`;
+      return `${this.levels.length} Topik Materi`;
     },
     deskripsi: 'Operasi hitung, skala, KPK/FPB, bilangan pangkat, kecepatan, geometri, sudut, dan pengolahan data.',
     icon: Calculator,
@@ -146,22 +146,22 @@ const SUBJECTS_CONFIG = {
       4: {
         title: 'Peti Bintang Dasar Numerasi',
         requiredLevel: 4,
-        desc: 'Peti pencapaian untuk menuntaskan 4 Materi Pertama Matematika.',
-        reward: '🎁 Foto Profil: Paket Anak Petualang & Anak Ceria',
+        desc: 'Hadiah setelah selesai mempelajari 4 materi pertama Matematika.',
+        reward: '🎁 Foto Profil: Anak Cowo & Anak Cewe',
         avatarIds: ['child-boy', 'child-girl'],
       },
       8: {
         title: 'Peti Emas Geometri & Pengukuran',
         requiredLevel: 8,
-        desc: 'Peti pencapaian untuk menuntaskan 8 Materi Matematika.',
-        reward: '🎁 Foto Profil: Domba Lembut',
+        desc: 'Hadiah setelah selesai mempelajari 8 materi Matematika.',
+        reward: '🎁 Foto Profil: Domba',
         avatarIds: ['sheep'],
       },
       12: {
-        title: 'Piala Puncak Matematika TKA SD',
+        title: 'Piala Puncak Matematika',
         requiredLevel: 12,
-        desc: 'Piala kebanggaan tertinggi setelah mengumpulkan seluruh 36 Bintang (3 bintang di semua 12 Materi) Matematika Pusmendik Kemendikdasmen RI.',
-        reward: '🎁 Foto Profil: Ksatria Tangguh',
+        desc: 'Didapat kalau kamu berhasil mengumpulkan semua 36 bintang (3 bintang di semua 12 materi Matematika).',
+        reward: '🎁 Foto Profil: Ksatria',
         avatarIds: ['knight'],
       },
     },
@@ -314,7 +314,7 @@ const Materi = () => {
       title: meta.title,
       category: meta.category || 'pilihan',
       totalLevels: levels.length,
-      tagline: `${levels.length} Topik Materi Standar Pusmendik`,
+      tagline: `${levels.length} Topik Materi`,
       deskripsi: meta.deskripsiMateri,
       icon: BookOpen,
       levels,
@@ -562,7 +562,7 @@ const Materi = () => {
                 !selectedSubject ? 'text-white font-bold' : 'text-blue-200'
               }`}
             >
-              Modul Materi Pembelajaran
+              Materi Belajar
             </button>
             {selectedSubject && (
               <>
@@ -625,7 +625,7 @@ const Materi = () => {
                 Pilih Mata Pelajaran
               </h2>
               <p className="text-xs sm:text-sm text-blue-100/90 max-w-md mx-auto">
-                Pilih mata pelajaran untuk melihat peta materi terstruktur dan latihan berjenjang.
+                Pilih mata pelajaran dulu untuk mulai belajar materi dari awal sampai tuntas.
               </p>
             </div>
 
@@ -817,7 +817,7 @@ const Materi = () => {
               </div>
 
               <div className="text-right hidden sm:block">
-                <span className="text-xs text-slate-500">Materi Standar Pusmendik</span>
+                <span className="text-xs text-slate-500">Materi {currentSubject?.title}</span>
               </div>
             </div>
 
@@ -871,7 +871,7 @@ const Materi = () => {
                         <Trophy className="w-7 h-7" />
                       </div>
                       <h4 className="text-lg font-bold text-slate-900">
-                        Materi {activeBab.no} Tuntas!
+                        Materi {activeBab.no} Selesai!
                       </h4>
 
                       {/* Tampilan Bintang yang Didapatkan */}
@@ -902,25 +902,25 @@ const Materi = () => {
 
                       <p className="text-xs sm:text-sm font-semibold text-amber-800">
                         {quizMistakes === 0
-                          ? 'Sempurna! Kamu meraih 3 Bintang Emas.'
+                          ? 'Keren banget! Kamu dapat 3 bintang penuh.'
                           : quizMistakes === 1
-                          ? 'Hebat! Kamu meraih 2 Bintang Emas.'
-                          : 'Bagus! Kamu berhasil meraih 1 Bintang.'}
+                          ? 'Bagus! Kamu dapat 2 bintang.'
+                          : 'Mantap, dapat 1 bintang! Boleh coba lagi buat kejar 3 bintang.'}
                       </p>
 
                       <p className="text-xs sm:text-sm text-slate-600 max-w-sm mx-auto leading-relaxed">
-                        Kamu berhasil menjawab semua soal dengan tepat. Materi berikutnya kini telah terbuka di peta materi!
+                        Semua soal sudah benar. Materi selanjutnya sekarang sudah terbuka!
                       </p>
 
                       <div className="pt-2">
                         {quizExpResult?.isFirstTime && quizExpResult?.expEarned > 0 ? (
                           <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0] text-xs font-bold shadow-2xs">
                             <Sparkles className="w-3.5 h-3.5 text-[#047857]" />
-                            <span>+{quizExpResult.expEarned} EXP Didapatkan (Materi Selesai)!</span>
+                            <span>+{quizExpResult.expEarned} EXP masuk!</span>
                           </span>
                         ) : (
                           <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300 text-xs font-medium">
-                            <span>0 EXP (Materi Diulang - Tidak Menambah EXP)</span>
+                            <span>Materi ini sudah pernah diselesaikan (tidak menambah EXP)</span>
                           </span>
                         )}
                       </div>
@@ -928,7 +928,7 @@ const Materi = () => {
                   ) : (
                     <>
                       <div
-                        className="text-sm sm:text-base font-semibold text-slate-900 leading-relaxed mb-4 whitespace-pre-line"
+                        className="text-sm sm:text-base font-semibold text-slate-900 leading-relaxed mb-4 whitespace-pre-line rich-content-display"
                         dangerouslySetInnerHTML={{
                           __html: formatMath(
                             activeBab.soalLatihan[currentQuizIndex].pertanyaan
@@ -936,57 +936,75 @@ const Materi = () => {
                         }}
                       />
 
-                      {/* Pilihan Jawaban */}
-                      <div className="space-y-2">
-                        {activeBab.soalLatihan[currentQuizIndex].pilihan.map((opt, idx) => {
-                          const isSelected = selectedAnswer === idx;
-                          const isWrongSubmitted = hasSubmittedAnswer && !isAnswerCorrect && selectedAnswer === idx;
-                          const isLocked = isQuizTransitioning || (hasSubmittedAnswer && isAnswerCorrect);
+                      {/* Pilihan Jawaban (Grid 2 Kolom Otomatis Jika Ada Gambar) */}
+                      {(() => {
+                        const quizOpts =
+                          activeBab.soalLatihan[currentQuizIndex].pilihan || [];
+                        const hasImgOpt = quizOpts.some((o) =>
+                          /<img\b/i.test(String(o || ''))
+                        );
+                        return (
+                          <div
+                            className={
+                              hasImgOpt
+                                ? 'grid grid-cols-1 sm:grid-cols-2 gap-2.5'
+                                : 'space-y-2'
+                            }
+                          >
+                            {quizOpts.map((opt, idx) => {
+                              const isSelected = selectedAnswer === idx;
+                              const isWrongSubmitted = hasSubmittedAnswer && !isAnswerCorrect && selectedAnswer === idx;
+                              const isLocked = isQuizTransitioning || (hasSubmittedAnswer && isAnswerCorrect);
 
-                          return (
-                            <button
-                              key={idx}
-                              disabled={isLocked}
-                              onClick={() => {
-                                if (isLocked) return;
-                                setSelectedAnswer(idx);
-                                setHasSubmittedAnswer(false);
-                                setIsAnswerCorrect(false);
-                              }}
-                              className={`w-full p-3 rounded-lg text-left text-xs sm:text-sm font-medium border transition-all duration-300 flex items-center justify-between ${
-                                isLocked ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
-                              } ${
-                                isWrongSubmitted
-                                  ? 'bg-red-50 border-red-500 text-red-900'
-                                  : isSelected
-                                  ? selectedSubject === 'bahasa_indonesia'
-                                    ? 'bg-[#ECFDF5] border-[#047857] text-[#064E3B]'
-                                    : 'bg-[#FFF1F2] border-[#881337] text-[#4C0519]'
-                                  : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
-                              }`}
-                            >
-                              <span
-                                dangerouslySetInnerHTML={{
-                                  __html: formatMath(opt),
-                                }}
-                              />
-                              <div
-                                className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-semibold transition-colors ${
-                                  isWrongSubmitted
-                                    ? 'border-red-500 bg-red-600 text-white'
-                                    : isSelected
-                                    ? selectedSubject === 'bahasa_indonesia'
-                                      ? 'border-[#047857] bg-[#047857] text-white'
-                                      : 'border-[#881337] bg-[#881337] text-white'
-                                    : 'border-slate-300 text-slate-400'
-                                }`}
-                              >
-                                {String.fromCharCode(65 + idx)}
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
+                              return (
+                                <button
+                                  key={idx}
+                                  disabled={isLocked}
+                                  onClick={() => {
+                                    if (isLocked) return;
+                                    setSelectedAnswer(idx);
+                                    setHasSubmittedAnswer(false);
+                                    setIsAnswerCorrect(false);
+                                  }}
+                                  className={`w-full p-3 rounded-lg text-left text-xs sm:text-sm font-medium border transition-all duration-300 flex ${
+                                    hasImgOpt ? 'items-start' : 'items-center'
+                                  } justify-between gap-2 ${
+                                    isLocked ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
+                                  } ${
+                                    isWrongSubmitted
+                                      ? 'bg-red-50 border-red-500 text-red-900'
+                                      : isSelected
+                                      ? selectedSubject === 'bahasa_indonesia'
+                                        ? 'bg-[#ECFDF5] border-[#047857] text-[#064E3B]'
+                                        : 'bg-[#FFF1F2] border-[#881337] text-[#4C0519]'
+                                      : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-50'
+                                  }`}
+                                >
+                                  <div
+                                    className="flex-1 min-w-0 rich-content-display"
+                                    dangerouslySetInnerHTML={{
+                                      __html: formatMath(opt),
+                                    }}
+                                  />
+                                  <div
+                                    className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-semibold flex-shrink-0 transition-colors ${
+                                      isWrongSubmitted
+                                        ? 'border-red-500 bg-red-600 text-white'
+                                        : isSelected
+                                        ? selectedSubject === 'bahasa_indonesia'
+                                          ? 'border-[#047857] bg-[#047857] text-white'
+                                          : 'border-[#881337] bg-[#881337] text-white'
+                                        : 'border-slate-300 text-slate-400'
+                                    }`}
+                                  >
+                                    {String.fromCharCode(65 + idx)}
+                                  </div>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        );
+                      })()}
 
                       {/* Petunjuk jika salah */}
                       {(showQuizHint || (hasSubmittedAnswer && !isAnswerCorrect)) && (
@@ -1010,7 +1028,7 @@ const Materi = () => {
                       {hasSubmittedAnswer && isAnswerCorrect && (
                         <div className="mt-4 p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs animate-fade-in flex items-center space-x-2">
                           <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                          <span className="font-semibold">Jawaban Benar! Melanjutkan ke soal berikutnya...</span>
+                          <span className="font-semibold">Benar! Lanjut ke soal berikutnya...</span>
                         </div>
                       )}
 
@@ -1088,11 +1106,11 @@ const Materi = () => {
                     <p className="text-xs sm:text-sm text-[#6E6258] max-w-xl mt-0.5 leading-relaxed">
                       {isAdmin ? (
                         <>
-                          Pelajari materi secara bertahap atau buka lebih awal dengan{' '}
-                          <strong className={`transition-colors ${selectedSubject === 'bahasa_indonesia' ? 'text-[#047857]' : 'text-[#881337]'}`}>Tantangan Lompat Materi (Khusus Admin)</strong>.
+                          Baca materi satu per satu, atau buka lebih cepat pakai{' '}
+                          <strong className={`transition-colors ${selectedSubject === 'bahasa_indonesia' ? 'text-[#047857]' : 'text-[#881337]'}`}>Lompat Materi (Khusus Admin)</strong>.
                         </>
                       ) : (
-                        'Pelajari setiap topik materi secara bertahap dan raih bintang maksimal di kuis pemahaman.'
+                        'Pelajari materinya satu per satu dan kumpulkan 3 bintang di setiap kuis.'
                       )}
                     </p>
                   </div>
@@ -1351,7 +1369,7 @@ const Materi = () => {
                     Peta Belajar {currentLevels.length} Materi • {currentSubject.title}
                   </span>
                   <p className="text-xs text-slate-600 mt-0.5">
-                    Klik materi untuk belajar bertahap, atau raih 3 bintang di setiap kuis pemahaman.
+                    Pilih materi di bawah untuk mulai belajar dan kumpulkan bintang dari kuisnya.
                   </p>
                 </div>
 
@@ -1527,12 +1545,12 @@ const Materi = () => {
                             onClick={() =>
                               setMilestoneModal({
                                 title: milestoneItem?.title || `Piala Puncak ${currentSubject.title}`,
-                                desc: milestoneItem?.desc || `Piala penghargaan tertinggi setelah mengumpulkan seluruh ${totalMaxStars} Bintang (3 bintang di semua ${currentLevels.length} Materi ${currentSubject.title}).`,
+                                desc: milestoneItem?.desc || `Didapat setelah kamu mengumpulkan semua ${totalMaxStars} bintang (3 bintang di semua ${currentLevels.length} materi ${currentSubject.title}).`,
                                 requiredLevel: currentLevels.length,
                                 requiredStars: totalMaxStars,
                                 isGrandTrophy: true,
                                 unlocked: isAllStarsEarned,
-                                reward: milestoneItem?.reward || `🏆 Piala Puncak ${currentSubject.title} TKA SD 100%`,
+                                reward: milestoneItem?.reward || `🏆 Piala Puncak ${currentSubject.title} (100% Bintang)`,
                                 avatarIds: milestoneItem?.avatarIds || [],
                               })
                             }
@@ -1673,7 +1691,7 @@ const Materi = () => {
                     Ringkasan Materi
                   </h5>
                   <div
-                    className="text-xs sm:text-sm text-[#261C14] mt-1 leading-relaxed whitespace-pre-line"
+                    className="text-xs sm:text-sm text-[#261C14] mt-1 leading-relaxed whitespace-pre-line rich-content-display"
                     dangerouslySetInnerHTML={{
                       __html: formatMath(selectedLevelModal.ringkasan),
                     }}
@@ -1684,7 +1702,7 @@ const Materi = () => {
                   <div className="p-3 rounded-lg bg-[#FEF7EE] border border-[#F6D8B8] text-xs text-[#261C14] max-h-52 overflow-y-auto amber-scrollbar">
                     <strong className="text-[#D97E26] block font-semibold mb-0.5">Konsep Inti:</strong>
                     <div
-                      className="whitespace-pre-line leading-relaxed block"
+                      className="whitespace-pre-line leading-relaxed block rich-content-display"
                       dangerouslySetInnerHTML={{
                         __html: formatMath(selectedLevelModal.konsepKunci),
                       }}
@@ -1703,13 +1721,13 @@ const Materi = () => {
                         </strong>
                         {isAdmin ? (
                           <p className="mt-0.5 text-[#6E6258] leading-relaxed">
-                            Selesaikan Materi {prevBab?.no} ({prevBab?.judul}) terlebih dahulu,{' '}
-                            <strong className={selectedSubject === 'bahasa_indonesia' ? 'text-[#047857]' : 'text-[#881337]'}>atau sebagai Admin kamu dapat langsung melompat</strong>{' '}
-                            ke materi ini dengan menjawab tantangan soal pemahaman materi!
+                            Selesaikan dulu Materi {prevBab?.no} ({prevBab?.judul}),{' '}
+                            <strong className={selectedSubject === 'bahasa_indonesia' ? 'text-[#047857]' : 'text-[#881337]'}>atau sebagai Admin kamu bisa langsung melompat</strong>{' '}
+                            ke materi ini lewat tantangan soal.
                           </p>
                         ) : (
                           <p className="mt-0.5 text-[#6E6258] leading-relaxed">
-                            Selesaikan Materi {prevBab?.no} ({prevBab?.judul}) beserta kuis pemahamannya terlebih dahulu untuk membuka materi ini.
+                            Selesaikan dulu Materi {prevBab?.no} ({prevBab?.judul}) beserta kuisnya biar materi ini terbuka.
                           </p>
                         )}
                       </div>
@@ -1789,10 +1807,10 @@ const Materi = () => {
                   </div>
                   <div>
                     <h4 className="text-lg font-bold text-[#261C14]">
-                      Tantangan Berhasil Dituntaskan!
+                      Berhasil Terbuka!
                     </h4>
                     <p className="text-xs sm:text-sm text-[#6E6258] max-w-sm mx-auto mt-1 leading-relaxed">
-                      Kamu telah membuktikan kemampuanmu. <strong>Materi {jumpChallengeBab.no} ({jumpChallengeBab.judul})</strong> kini resmi <strong>TERBUKA</strong> untukmu!
+                      <strong>Materi {jumpChallengeBab.no} ({jumpChallengeBab.judul})</strong> sekarang sudah <strong>TERBUKA</strong> dan bisa langsung dibaca.
                     </p>
                   </div>
 
@@ -1846,7 +1864,7 @@ const Materi = () => {
 
                   {/* Pertanyaan */}
                   <div
-                    className="text-xs sm:text-sm font-semibold text-[#261C14] leading-relaxed whitespace-pre-line"
+                    className="text-xs sm:text-sm font-semibold text-[#261C14] leading-relaxed whitespace-pre-line rich-content-display"
                     dangerouslySetInnerHTML={{
                       __html: formatMath(
                         jumpChallengeBab.soalLatihan[jumpQuizIndex].pertanyaan
@@ -1855,7 +1873,15 @@ const Materi = () => {
                   />
 
                   {/* Opsi Jawaban */}
-                  <div className="space-y-2">
+                  <div
+                    className={
+                      (jumpChallengeBab.soalLatihan[jumpQuizIndex].pilihan || []).some((o) =>
+                        /<img\b/i.test(String(o || ''))
+                      )
+                        ? 'grid grid-cols-1 sm:grid-cols-2 gap-2'
+                        : 'space-y-2'
+                    }
+                  >
                     {jumpChallengeBab.soalLatihan[jumpQuizIndex].pilihan.map((opt, idx) => {
                       const isSelected = jumpSelectedAnswer === idx;
                       const isWrongSubmitted = jumpHasSubmitted && !jumpIsCorrect && jumpSelectedAnswer === idx;
@@ -1871,7 +1897,7 @@ const Materi = () => {
                             setJumpHasSubmitted(false);
                             setJumpIsCorrect(false);
                           }}
-                          className={`w-full p-3 rounded-lg text-left text-xs sm:text-sm font-medium border transition-all duration-300 flex items-center justify-between ${
+                          className={`w-full p-3 rounded-lg text-left text-xs sm:text-sm font-medium border transition-all duration-300 flex items-start justify-between gap-2 ${
                             isLocked ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
                           } ${
                             isWrongSubmitted
@@ -1883,13 +1909,14 @@ const Materi = () => {
                               : 'bg-white border-[#E6DFD5] text-[#261C14] hover:bg-[#FAF7F2]'
                           }`}
                         >
-                          <span
+                          <div
+                            className="flex-1 min-w-0 rich-content-display"
                             dangerouslySetInnerHTML={{
                               __html: formatMath(opt),
                             }}
                           />
                           <div
-                            className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-semibold transition-colors ${
+                            className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-semibold flex-shrink-0 transition-colors ${
                               isWrongSubmitted
                                 ? 'border-[#C93B3B] bg-[#C93B3B] text-white'
                                 : isSelected
@@ -2011,7 +2038,7 @@ const Materi = () => {
                 <span>Buku Panduan {currentSubject?.title || 'Materi'}</span>
               </h3>
               <p className="text-xs text-white/80 mt-0.5">
-                Aturan & Cara Menuntaskan Materi Pembelajaran {currentSubject?.title || 'TKA SD'}
+                Cara belajar di halaman materi {currentSubject?.title || ''}
               </p>
             </div>
 
@@ -2025,8 +2052,8 @@ const Materi = () => {
                   1
                 </span>
                 <div>
-                  <strong className="block text-[#261C14] font-semibold">Posisi Awal Belajar</strong>
-                  Hanya <strong>Materi 1</strong> pada masing-masing mata pelajaran yang terbuka di awal. Materi selanjutnya masih terkunci.
+                  <strong className="block text-[#261C14] font-semibold">Mulai dari Materi 1</strong>
+                  Di awal, baru <strong>Materi 1</strong> yang terbuka. Materi lainnya akan terbuka setelah kamu menyelesaikan materi sebelumnya.
                 </div>
               </div>
 
@@ -2039,8 +2066,8 @@ const Materi = () => {
                   2
                 </span>
                 <div>
-                  <strong className="block text-[#261C14] font-semibold">Membuka Materi Berurutan</strong>
-                  Untuk membuka materi berikutnya secara bertahap, pelajari slide materi dan selesaikan 3 soal kuis pemahaman di akhir materi hingga benar.
+                  <strong className="block text-[#261C14] font-semibold">Selesaikan Kuis untuk Lanjut</strong>
+                  Baca materinya sampai selesai, lalu jawab 3 soal kuis di akhir. Kalau sudah benar semua, materi berikutnya otomatis terbuka.
                 </div>
               </div>
 
@@ -2054,8 +2081,8 @@ const Materi = () => {
                     3
                   </span>
                   <div>
-                    <strong className="block text-[#261C14] font-semibold">Fitur Tantangan Lompat Materi (Khusus Admin)</strong>
-                    Sebagai Admin, kamu bisa membuka materi lebih awal dengan menyelesaikan <strong>Tantangan Kuis</strong> dari materi yang dituju!
+                    <strong className="block text-[#261C14] font-semibold">Lompat Materi (Khusus Admin)</strong>
+                    Khusus akun Admin, kamu bisa membuka materi tertentu lebih dulu dengan menjawab <strong>kuis tantangannya</strong>.
                   </div>
                 </div>
               )}
@@ -2069,8 +2096,8 @@ const Materi = () => {
                   {isAdmin ? '4' : '3'}
                 </span>
                 <div>
-                  <strong className="block text-[#261C14] font-semibold">Milestone Peti & Piala Puncak</strong>
-                  Kumpulkan 3 bintang di setiap materi dan buka peti bonus di setiap tahapan, hingga mendapat piala di puncak materi terakhir!
+                  <strong className="block text-[#261C14] font-semibold">Peti Hadiah & Piala Puncak</strong>
+                  Kumpulkan bintang sebanyak mungkin untuk membuka peti hadiah avatar, dan raih semua bintang untuk membuka Piala Puncak.
                 </div>
               </div>
 
@@ -2083,7 +2110,7 @@ const Materi = () => {
                       : 'bg-[#881337] hover:bg-[#700D2B]'
                   }`}
                 >
-                  Saya Mengerti, Lanjutkan Petualangan
+                  Oke, Paham!
                 </button>
               </div>
             </div>
@@ -2107,7 +2134,7 @@ const Materi = () => {
 
             <div>
               <span className="text-[10px] font-semibold uppercase tracking-wider text-[#6E6258]">
-                Pencapaian Milestone
+                Hadiah Pencapaian
               </span>
               <h3 className="text-base font-bold text-[#261C14] mt-0.5">{milestoneModal.title}</h3>
               <p className="text-xs text-[#6E6258] mt-1 leading-relaxed">{milestoneModal.desc}</p>
@@ -2139,12 +2166,12 @@ const Materi = () => {
                 </div>
               ) : milestoneModal.isGrandTrophy ? (
                 <div className="text-[#6E6258]">
-                  <span>Perlu mengumpulkan seluruh <strong>{milestoneModal.requiredStars} Bintang (3 ⭐ di semua {milestoneModal.requiredLevel} Materi)</strong> untuk membuka Piala Puncak!</span>
+                  <span>Kumpulkan semua <strong>{milestoneModal.requiredStars} bintang (3 ⭐ di semua {milestoneModal.requiredLevel} materi)</strong> buat membuka Piala Puncak.</span>
                   <div className="text-[11px] text-[#8C7E72] mt-0.5">Saat ini: {totalEarnedStars} / {milestoneModal.requiredStars} Bintang</div>
                 </div>
               ) : (
                 <div className="text-[#6E6258]">
-                  <span>Perlu menyelesaikan minimal <strong>{milestoneModal.requiredLevel} Materi</strong> untuk membuka!</span>
+                  <span>Selesaikan dulu <strong>{milestoneModal.requiredLevel} materi</strong> buat membuka peti ini.</span>
                   <div className="text-[11px] text-[#8C7E72] mt-0.5">Saat ini: {completedCount} / {milestoneModal.requiredLevel} Materi</div>
                 </div>
               )}
@@ -2173,7 +2200,7 @@ const Materi = () => {
                 Reset Progres {currentSubject?.title || 'Belajar'}?
               </h4>
               <p className="text-xs text-[#6E6258] mt-1 leading-relaxed">
-                Tindakan ini akan mengunci kembali Materi 2 sampai {currentLevels.length} pada mata pelajaran ini, dan mengembalikan status ke Materi 1 awal.
+                Materi 2 sampai {currentLevels.length} bakal terkunci lagi dan progresmu balik ke Materi 1. Yakin mau reset?
               </p>
             </div>
 

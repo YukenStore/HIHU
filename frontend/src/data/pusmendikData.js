@@ -1,6 +1,5 @@
 /**
- * Data Resmi Materi Pembelajaran TKA SD
- * Sumber Silabus Buku & Kurikulum Pusmendik Kemendikdasmen RI
+ * Data Materi Belajar MyAkademika
  * 
  * Terdiri dari:
  * a. Matematika (12 Materi):
@@ -45,7 +44,7 @@ export const PUSMENDIK_MATERI = {
   matematika: {
     title: 'Matematika',
     icon: 'Calculator',
-    deskripsi: '12 Materi Pokok Standar TKA SD: Bilangan, Operasi, Pengukuran, Geometri, dan Pengolahan Data.',
+    deskripsi: '12 topik Matematika: bilangan, operasi hitung, pengukuran, geometri, dan pengolahan data.',
     elemen: [
       {
         id: 'mtk_bilangan_operasi',
@@ -616,7 +615,7 @@ export const PUSMENDIK_MATERI = {
   bahasa_indonesia: {
     title: 'Bahasa Indonesia',
     icon: 'BookOpen',
-    deskripsi: '21 Materi Pokok Standar TKA SD: Ejaan, Tata Bahasa, Kosakata, Sastra, dan Pemahaman Analisis Teks.',
+    deskripsi: '21 topik Bahasa Indonesia: ejaan, tata bahasa, kosakata, sastra, dan membaca pemahaman.',
     elemen: [
       {
         id: 'bi_ejaan_tatabahasa',
@@ -920,11 +919,11 @@ export const PUSMENDIK_MATERI = {
             no: 7,
             judul: 'Ungkapan',
             ringkasan: 'Kumpulan ungkapan tradisional (idiom) bahasa Indonesia beserta arti dan penerapannya.',
-            tujuan: 'Murid memahami arti ungkapan populer yang sering muncul pada soal cerita fiksi TKA SD.',
+            tujuan: 'Memahami arti ungkapan sehari-hari yang sering muncul dalam cerita atau bacaan.',
             konsepKunci: '-> Contoh Ungkapan Populer: Buah tangan (Oleh-oleh) | Buah bibir (Bahan pembicaraan) | Kutu buku (Gemar membaca) | Panjang tangan (Suka mencuri) | Lapang dada (Ikhlas / Sabar) | Gulung tikar (Bangkrut)',
             uraianMateri: [
               {
-                subjudul: 'Daftar Ungkapan Populer TKA SD',
+                subjudul: 'Daftar Ungkapan yang Sering Dipakai',
                 konten: 'Hafalkan makna ungkapan tradisional yang sering muncul pada soal cerita:\n-> Daftar Ungkapan Populer: Buah tangan = Oleh-oleh | Buah bibir = Bahan pembicaraan | Kutu buku = Gemar membaca | Panjang tangan = Suka mencuri | Lapang dada = Ikhlas / Sabar | Gulung tikar = Bangkrut'
               }
             ],

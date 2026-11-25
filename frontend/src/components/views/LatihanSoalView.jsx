@@ -129,13 +129,13 @@ const LatihanSoalView = ({ isOpen, onClose }) => {
             <div className="max-w-2xl mx-auto py-6">
               <div className="text-center mb-8">
                 <span className="px-3.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                  Sistem Leveling Kompetensi
+                  Latihan Bertahap
                 </span>
                 <h3 className="text-2xl font-bold text-slate-900 mt-3">
                   Pilih Mata Pelajaran Latihan
                 </h3>
                 <p className="text-sm text-slate-600 mt-1">
-                  Kerjakan soal bertahap dari Level 1 sampai Level 10 dengan tipe pilihan ganda standar TKA SD.
+                  Kerjakan soal bertahap dari Level 1 sampai Level 10 untuk menguji pemahamanmu.
                 </p>
               </div>
 

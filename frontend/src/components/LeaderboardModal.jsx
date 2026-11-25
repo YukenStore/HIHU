@@ -67,10 +67,10 @@ const LeaderboardModal = ({ isOpen, onClose, user, profileStats }) => {
             </div>
             <div>
               <h3 className="text-base sm:text-lg font-bold text-[#261C14] tracking-tight">
-                Leaderboard Siswa TKA SD
+                Papan Peringkat
               </h3>
               <p className="text-xs text-[#6E6258]">
-                Peringkat murid berdasarkan Level, EXP, dan gelar aktif
+                Urutan peringkat berdasarkan Level dan total EXP
               </p>
             </div>
           </div>
@@ -93,13 +93,13 @@ const LeaderboardModal = ({ isOpen, onClose, user, profileStats }) => {
                 </div>
                 <div>
                   <span className="text-xs font-extrabold text-amber-800 uppercase tracking-wider">
-                    Mode Guest (Tamu)
+                    Mode Tamu
                   </span>
                   <h4 className="text-sm font-bold text-[#261C14]">
-                    Akun Guest Tidak Terdaftar di Leaderboard
+                    Akun Tamu Belum Masuk Papan Peringkat
                   </h4>
                   <p className="text-xs text-[#6E6258] mt-0.5">
-                    Daftar atau login akun resmi agar EXP, Level, dan namamu tercatat di Papan Peringkat Nasional!
+                    Buat akun atau masuk dulu supaya EXP, level, dan namamu muncul di papan peringkat.
                   </p>
                 </div>
               </div>

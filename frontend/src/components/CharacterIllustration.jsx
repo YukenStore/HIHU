@@ -104,7 +104,7 @@ const CharacterIllustration = () => {
       <div className="relative z-10 w-full flex justify-center">
         <img
           src={processedSrc || originalImage}
-          alt="Karakter Siswa Pintar TKA SD"
+          alt="Ilustrasi Siswa MyAkademika"
           className="w-auto h-[175px] xs:h-[215px] sm:h-[350px] md:h-[440px] lg:h-[490px] object-contain transition-all duration-200 max-w-full drop-shadow-sm pointer-events-none"
           draggable="false"
         />

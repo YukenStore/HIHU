@@ -485,13 +485,35 @@ const AdminPanel = () => {
     setErrorMessage('');
     setSelectedLatihanLevel(lvl.level);
     setOpenQuestionIdx(0);
+    const clonedSoal = Array.isArray(lvl.soal)
+      ? JSON.parse(JSON.stringify(lvl.soal)).map((q) => {
+          if ((q.type || 'mcq') === 'mcq') {
+            const opts = Array.isArray(q.pilihan) ? q.pilihan : ['', '', '', ''];
+            let resolvedIdx =
+              typeof q.answerIndex === 'number' && opts[q.answerIndex] !== undefined
+                ? q.answerIndex
+                : opts.findIndex((o) => o === q.jawabanBenar);
+            if (resolvedIdx === -1 && typeof q.jawabanBenar === 'number') {
+              resolvedIdx = q.jawabanBenar;
+            }
+            if (resolvedIdx === -1) resolvedIdx = 0;
+            return {
+              ...q,
+              answerIndex: resolvedIdx,
+              jawabanBenar: opts[resolvedIdx] ?? q.jawabanBenar ?? '',
+            };
+          }
+          return q;
+        })
+      : [];
+
     setLatihanForm({
       level: lvl.level,
       namaLevel: lvl.namaLevel || `Level ${lvl.level}`,
       subjudul: lvl.subjudul || '',
       deskripsi: lvl.deskripsi || '',
-      targetSoal: Array.isArray(lvl.soal) ? lvl.soal.length : lvl.targetSoal || 5,
-      soal: Array.isArray(lvl.soal) ? JSON.parse(JSON.stringify(lvl.soal)) : [],
+      targetSoal: clonedSoal.length || lvl.targetSoal || 5,
+      soal: clonedSoal,
     });
   };
 
@@ -591,14 +613,17 @@ const AdminPanel = () => {
 
       if (qType === 'mcq') {
         const opts = Array.isArray(q.pilihan) ? q.pilihan : ['', '', '', ''];
-        const foundIdx = opts.findIndex((o) => o === jawabanBenar);
-        if (foundIdx !== -1) {
-          answerIndex = foundIdx;
-        } else if (typeof answerIndex === 'number' && opts[answerIndex] !== undefined) {
-          jawabanBenar = opts[answerIndex];
+        if (typeof q.answerIndex === 'number' && opts[q.answerIndex] !== undefined) {
+          answerIndex = q.answerIndex;
+          jawabanBenar = opts[q.answerIndex];
         } else {
-          answerIndex = 0;
-          jawabanBenar = opts[0] || '';
+          const foundIdx = opts.findIndex((o) => o === jawabanBenar);
+          if (foundIdx !== -1) {
+            answerIndex = foundIdx;
+          } else {
+            answerIndex = 0;
+            jawabanBenar = opts[0] || '';
+          }
         }
       } else if (qType === 'mcma') {
         if (!Array.isArray(jawabanBenar)) {
@@ -747,7 +772,7 @@ const AdminPanel = () => {
           <div className="space-y-1">
             <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[11px] font-bold">
               <Sparkles className="w-3 h-3" />
-              <span>Mode Pengelola Konten Web (Tersembunyi dari Siswa)</span>
+              <span>Panel Pengelola Konten (Khusus Admin)</span>
             </div>
             <h1 className="text-lg sm:text-2xl font-bold text-white tracking-tight">
               Admin Panel Materi & Latihan Soal
@@ -1583,58 +1608,71 @@ const AdminPanel = () => {
                               />
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                              {(q.pilihan || ['', '', '', '']).map((opt, oIdx) => (
-                                <div
-                                  key={oIdx}
-                                  className={`p-2 rounded-lg border flex items-center space-x-2 ${
-                                    Number(q.jawabanBenar) === oIdx
-                                      ? 'bg-emerald-950/60 border-emerald-400'
-                                      : 'bg-[#0F2042] border-blue-500/30'
-                                  }`}
-                                >
-                                  <input
-                                    type="radio"
-                                    name={`materi_quiz_ans_${qIdx}`}
-                                    checked={Number(q.jawabanBenar) === oIdx}
-                                    onChange={() => {
-                                      const next = [...materiForm.soalLatihan];
-                                      next[qIdx] = {
-                                        ...next[qIdx],
-                                        jawabanBenar: oIdx,
-                                      };
-                                      setMateriForm({
-                                        ...materiForm,
-                                        soalLatihan: next,
-                                      });
-                                    }}
-                                    title="Pilih sebagai kunci jawaban benar"
-                                    className="cursor-pointer"
-                                  />
-                                  <span className="text-xs font-bold text-blue-300">
-                                    {String.fromCharCode(65 + oIdx)}.
-                                  </span>
-                                  <input
-                                    type="text"
-                                    value={opt}
-                                    onChange={(e) => {
-                                      const next = [...materiForm.soalLatihan];
-                                      const nextOpts = [...(next[qIdx].pilihan || [])];
-                                      nextOpts[oIdx] = e.target.value;
-                                      next[qIdx] = {
-                                        ...next[qIdx],
-                                        pilihan: nextOpts,
-                                      };
-                                      setMateriForm({
-                                        ...materiForm,
-                                        soalLatihan: next,
-                                      });
-                                    }}
-                                    className="flex-1 bg-transparent text-white text-xs focus:outline-none"
-                                    placeholder={`Opsi ${String.fromCharCode(65 + oIdx)}`}
-                                  />
-                                </div>
-                              ))}
+                            <div className="space-y-2.5">
+                              <label className="block text-[11px] font-semibold text-emerald-300">
+                                Pilihan Jawaban Kuis (Bisa diisi teks, rumus, maupun gambar)
+                              </label>
+                              <div className="grid grid-cols-1 gap-2.5">
+                                {(q.pilihan || ['', '', '', '']).map((opt, oIdx) => (
+                                  <div
+                                    key={oIdx}
+                                    className={`p-2.5 rounded-xl border space-y-2 ${
+                                      Number(q.jawabanBenar) === oIdx
+                                        ? 'bg-emerald-950/60 border-emerald-400'
+                                        : 'bg-[#0F2042] border-blue-500/30'
+                                    }`}
+                                  >
+                                    <label className="flex items-center space-x-2 cursor-pointer">
+                                      <input
+                                        type="radio"
+                                        name={`materi_quiz_ans_${qIdx}`}
+                                        checked={Number(q.jawabanBenar) === oIdx}
+                                        onChange={() => {
+                                          const next = [...materiForm.soalLatihan];
+                                          next[qIdx] = {
+                                            ...next[qIdx],
+                                            jawabanBenar: oIdx,
+                                          };
+                                          setMateriForm({
+                                            ...materiForm,
+                                            soalLatihan: next,
+                                          });
+                                        }}
+                                        title="Pilih sebagai kunci jawaban benar"
+                                        className="cursor-pointer"
+                                      />
+                                      <span className="text-xs font-bold text-blue-300">
+                                        Opsi {String.fromCharCode(65 + oIdx)}
+                                      </span>
+                                      {Number(q.jawabanBenar) === oIdx && (
+                                        <span className="px-1.5 py-0.5 rounded bg-emerald-600/90 text-white text-[10px] font-bold">
+                                          Kunci Jawaban
+                                        </span>
+                                      )}
+                                    </label>
+                                    <RichTextEditor
+                                      compact
+                                      rows={1}
+                                      value={opt || ''}
+                                      onChange={(e) => {
+                                        const next = [...materiForm.soalLatihan];
+                                        const nextOpts = [...(next[qIdx].pilihan || [])];
+                                        nextOpts[oIdx] = e.target.value;
+                                        next[qIdx] = {
+                                          ...next[qIdx],
+                                          pilihan: nextOpts,
+                                        };
+                                        setMateriForm({
+                                          ...materiForm,
+                                          soalLatihan: next,
+                                        });
+                                      }}
+                                      bgClass="bg-[#162E5B]"
+                                      placeholder={`Ketik jawaban ${String.fromCharCode(65 + oIdx)} atau klik tombol Gambar / Ctrl+V...`}
+                                    />
+                                  </div>
+                                ))}
+                              </div>
                             </div>
 
                             <div>
@@ -1849,11 +1887,35 @@ const AdminPanel = () => {
                                       ? 'Benar / Salah'
                                       : 'Pilihan Ganda'}
                                   </span>
-                                  <span className="text-xs text-blue-100 truncate">
-                                    {(q.pertanyaan || '')
+                                  {(() => {
+                                    const hasImageInQ =
+                                      /<img\b/i.test(q.pertanyaan || '') ||
+                                      /<img\b/i.test(q.stimulus || '') ||
+                                      (q.pilihan || []).some((o) =>
+                                        /<img\b/i.test(o || '')
+                                      ) ||
+                                      (q.statements || []).some((s) =>
+                                        /<img\b/i.test(s?.text || '')
+                                      );
+                                    const plainQ = (q.pertanyaan || '')
                                       .replace(/<[^>]*>/g, '')
-                                      .trim() || '(Pertanyaan belum diisi)'}
-                                  </span>
+                                      .trim();
+                                    return (
+                                      <>
+                                        {hasImageInQ && (
+                                          <span className="px-1.5 py-0.5 rounded bg-emerald-900/80 border border-emerald-400/50 text-emerald-200 text-[10px] font-bold flex-shrink-0">
+                                            🖼️ Gambar
+                                          </span>
+                                        )}
+                                        <span className="text-xs text-blue-100 truncate">
+                                          {plainQ ||
+                                            (hasImageInQ
+                                              ? '(Soal dengan ilustrasi gambar)'
+                                              : '(Pertanyaan belum diisi)')}
+                                        </span>
+                                      </>
+                                    );
+                                  })()}
                                 </div>
 
                                 <div className="flex items-center space-x-2 flex-shrink-0">
@@ -2030,50 +2092,59 @@ const AdminPanel = () => {
 
                                   {/* Opsi Jawaban untuk MCQ */}
                                   {qType === 'mcq' && (
-                                    <div className="space-y-2">
+                                    <div className="space-y-2.5">
                                       <label className="block text-[11px] font-semibold text-emerald-300">
-                                        Pilihan Jawaban (Klik bulatan radio untuk menentukan Kunci Jawaban Benar)
+                                        Pilihan Jawaban (Klik bulatan radio untuk Kunci Jawaban • Mendukung teks, rumus, & gambar)
                                       </label>
                                       {(q.pilihan || ['', '', '', '']).map(
                                         (opt, oIdx) => {
                                           const isCorrect =
-                                            q.jawabanBenar === opt ||
-                                            q.answerIndex === oIdx;
+                                            typeof q.answerIndex === 'number'
+                                              ? q.answerIndex === oIdx
+                                              : q.jawabanBenar === opt;
                                           return (
                                             <div
                                               key={oIdx}
-                                              className={`p-2 rounded-lg border flex items-center space-x-2 ${
+                                              className={`p-2.5 rounded-xl border space-y-2 ${
                                                 isCorrect
                                                   ? 'bg-emerald-950/60 border-emerald-400'
                                                   : 'bg-[#0F2042] border-blue-500/30'
                                               }`}
                                             >
-                                              <input
-                                                type="radio"
-                                                name={`lat_mcq_${qIdx}`}
-                                                checked={isCorrect}
-                                                onChange={() => {
-                                                  const next = [
-                                                    ...latihanForm.soal,
-                                                  ];
-                                                  next[qIdx] = {
-                                                    ...next[qIdx],
-                                                    jawabanBenar: opt,
-                                                    answerIndex: oIdx,
-                                                  };
-                                                  setLatihanForm({
-                                                    ...latihanForm,
-                                                    soal: next,
-                                                  });
-                                                }}
-                                                className="cursor-pointer"
-                                              />
-                                              <span className="text-xs font-bold text-blue-300">
-                                                {String.fromCharCode(65 + oIdx)}.
-                                              </span>
-                                              <input
-                                                type="text"
-                                                value={opt}
+                                              <label className="flex items-center space-x-2 cursor-pointer">
+                                                <input
+                                                  type="radio"
+                                                  name={`lat_mcq_${qIdx}`}
+                                                  checked={isCorrect}
+                                                  onChange={() => {
+                                                    const next = [
+                                                      ...latihanForm.soal,
+                                                    ];
+                                                    next[qIdx] = {
+                                                      ...next[qIdx],
+                                                      jawabanBenar: opt,
+                                                      answerIndex: oIdx,
+                                                    };
+                                                    setLatihanForm({
+                                                      ...latihanForm,
+                                                      soal: next,
+                                                    });
+                                                  }}
+                                                  className="cursor-pointer"
+                                                />
+                                                <span className="text-xs font-bold text-blue-300">
+                                                  Pilihan {String.fromCharCode(65 + oIdx)}
+                                                </span>
+                                                {isCorrect && (
+                                                  <span className="px-1.5 py-0.5 rounded bg-emerald-600/90 text-white text-[10px] font-bold">
+                                                    Kunci Jawaban Benar
+                                                  </span>
+                                                )}
+                                              </label>
+                                              <RichTextEditor
+                                                compact
+                                                rows={1}
+                                                value={opt || ''}
                                                 onChange={(e) => {
                                                   const newVal = e.target.value;
                                                   const next = [
@@ -2084,10 +2155,12 @@ const AdminPanel = () => {
                                                       []),
                                                   ];
                                                   const wasCorrect =
-                                                    next[qIdx].jawabanBenar ===
-                                                      opt ||
-                                                    next[qIdx].answerIndex ===
-                                                      oIdx;
+                                                    typeof next[qIdx]
+                                                      .answerIndex === 'number'
+                                                      ? next[qIdx]
+                                                          .answerIndex === oIdx
+                                                      : next[qIdx]
+                                                          .jawabanBenar === opt;
                                                   nextOpts[oIdx] = newVal;
                                                   next[qIdx] = {
                                                     ...next[qIdx],
@@ -2102,7 +2175,8 @@ const AdminPanel = () => {
                                                     soal: next,
                                                   });
                                                 }}
-                                                className="flex-1 bg-transparent text-white text-xs focus:outline-none"
+                                                bgClass="bg-[#162E5B]"
+                                                placeholder={`Tulis jawaban ${String.fromCharCode(65 + oIdx)} atau klik tombol Gambar / Ctrl+V...`}
                                               />
                                             </div>
                                           );
@@ -2113,9 +2187,9 @@ const AdminPanel = () => {
 
                                   {/* Opsi Jawaban untuk MCMA */}
                                   {qType === 'mcma' && (
-                                    <div className="space-y-2">
+                                    <div className="space-y-2.5">
                                       <label className="block text-[11px] font-semibold text-emerald-300">
-                                        Pilihan Jawaban Kompleks (Centang semua kunci jawaban yang benar)
+                                        Pilihan Jawaban Kompleks (Centang semua kunci jawaban benar • Mendukung gambar)
                                       </label>
                                       {(q.pilihan || ['', '', '', '']).map(
                                         (opt, oIdx) => {
@@ -2129,42 +2203,50 @@ const AdminPanel = () => {
                                           return (
                                             <div
                                               key={oIdx}
-                                              className={`p-2 rounded-lg border flex items-center space-x-2 ${
+                                              className={`p-2.5 rounded-xl border space-y-2 ${
                                                 isChecked
                                                   ? 'bg-emerald-950/60 border-emerald-400'
                                                   : 'bg-[#0F2042] border-blue-500/30'
                                               }`}
                                             >
-                                              <input
-                                                type="checkbox"
-                                                checked={isChecked}
-                                                onChange={(e) => {
-                                                  const next = [
-                                                    ...latihanForm.soal,
-                                                  ];
-                                                  const nextCorrect = e.target
-                                                    .checked
-                                                    ? [...currentCorrect, opt]
-                                                    : currentCorrect.filter(
-                                                        (item) => item !== opt
-                                                      );
-                                                  next[qIdx] = {
-                                                    ...next[qIdx],
-                                                    jawabanBenar: nextCorrect,
-                                                  };
-                                                  setLatihanForm({
-                                                    ...latihanForm,
-                                                    soal: next,
-                                                  });
-                                                }}
-                                                className="cursor-pointer"
-                                              />
-                                              <span className="text-xs font-bold text-blue-300">
-                                                {String.fromCharCode(65 + oIdx)}.
-                                              </span>
-                                              <input
-                                                type="text"
-                                                value={opt}
+                                              <label className="flex items-center space-x-2 cursor-pointer">
+                                                <input
+                                                  type="checkbox"
+                                                  checked={isChecked}
+                                                  onChange={(e) => {
+                                                    const next = [
+                                                      ...latihanForm.soal,
+                                                    ];
+                                                    const nextCorrect = e.target
+                                                      .checked
+                                                      ? [...currentCorrect, opt]
+                                                      : currentCorrect.filter(
+                                                          (item) => item !== opt
+                                                        );
+                                                    next[qIdx] = {
+                                                      ...next[qIdx],
+                                                      jawabanBenar: nextCorrect,
+                                                    };
+                                                    setLatihanForm({
+                                                      ...latihanForm,
+                                                      soal: next,
+                                                    });
+                                                  }}
+                                                  className="cursor-pointer"
+                                                />
+                                                <span className="text-xs font-bold text-blue-300">
+                                                  Pilihan {String.fromCharCode(65 + oIdx)}
+                                                </span>
+                                                {isChecked && (
+                                                  <span className="px-1.5 py-0.5 rounded bg-emerald-600/90 text-white text-[10px] font-bold">
+                                                    Termasuk Kunci Benar
+                                                  </span>
+                                                )}
+                                              </label>
+                                              <RichTextEditor
+                                                compact
+                                                rows={1}
+                                                value={opt || ''}
                                                 onChange={(e) => {
                                                   const newVal = e.target.value;
                                                   const next = [
@@ -2189,7 +2271,8 @@ const AdminPanel = () => {
                                                     soal: next,
                                                   });
                                                 }}
-                                                className="flex-1 bg-transparent text-white text-xs focus:outline-none"
+                                                bgClass="bg-[#162E5B]"
+                                                placeholder={`Tulis jawaban ${String.fromCharCode(65 + oIdx)} atau sisipkan gambar...`}
                                               />
                                             </div>
                                           );
@@ -2200,10 +2283,10 @@ const AdminPanel = () => {
 
                                   {/* Pernyataan Benar / Salah untuk Category */}
                                   {qType === 'category' && (
-                                    <div className="space-y-2">
+                                    <div className="space-y-2.5">
                                       <div className="flex items-center justify-between">
                                         <label className="block text-[11px] font-semibold text-emerald-300">
-                                          Daftar Pernyataan Benar / Salah
+                                          Daftar Pernyataan Benar / Salah (Mendukung teks, rumus, & gambar)
                                         </label>
                                         <button
                                           type="button"
@@ -2238,10 +2321,79 @@ const AdminPanel = () => {
                                         (stmt, sIdx) => (
                                           <div
                                             key={sIdx}
-                                            className="p-2 rounded-lg bg-[#0F2042] border border-blue-500/30 flex items-center gap-2"
+                                            className="p-2.5 rounded-xl bg-[#0F2042] border border-blue-500/30 space-y-2"
                                           >
-                                            <input
-                                              type="text"
+                                            <div className="flex items-center justify-between gap-2">
+                                              <span className="text-[11px] font-bold text-blue-300">
+                                                Pernyataan #{sIdx + 1}
+                                              </span>
+                                              <div className="flex items-center space-x-2">
+                                                <button
+                                                  type="button"
+                                                  onClick={() => {
+                                                    const next = [
+                                                      ...latihanForm.soal,
+                                                    ];
+                                                    const stmts = [
+                                                      ...(next[qIdx]
+                                                        .statements || []),
+                                                    ];
+                                                    stmts[sIdx] = {
+                                                      ...stmts[sIdx],
+                                                      answer:
+                                                        !stmts[sIdx].answer,
+                                                    };
+                                                    next[qIdx] = {
+                                                      ...next[qIdx],
+                                                      statements: stmts,
+                                                    };
+                                                    setLatihanForm({
+                                                      ...latihanForm,
+                                                      soal: next,
+                                                    });
+                                                  }}
+                                                  className={`px-2.5 py-1 rounded text-[11px] font-bold cursor-pointer ${
+                                                    stmt.answer
+                                                      ? 'bg-emerald-600 text-white'
+                                                      : 'bg-rose-600 text-white'
+                                                  }`}
+                                                >
+                                                  Kunci: {stmt.answer ? 'Benar' : 'Salah'}
+                                                </button>
+                                                {(q.statements || []).length >
+                                                  1 && (
+                                                  <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                      const next = [
+                                                        ...latihanForm.soal,
+                                                      ];
+                                                      const stmts = (
+                                                        next[qIdx].statements ||
+                                                        []
+                                                      ).filter(
+                                                        (_, i) => i !== sIdx
+                                                      );
+                                                      next[qIdx] = {
+                                                        ...next[qIdx],
+                                                        statements: stmts,
+                                                      };
+                                                      setLatihanForm({
+                                                        ...latihanForm,
+                                                        soal: next,
+                                                      });
+                                                    }}
+                                                    className="text-rose-400 hover:text-rose-200 cursor-pointer"
+                                                    title="Hapus Pernyataan"
+                                                  >
+                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                  </button>
+                                                )}
+                                              </div>
+                                            </div>
+                                            <RichTextEditor
+                                              compact
+                                              rows={1}
                                               value={stmt.text || ''}
                                               onChange={(e) => {
                                                 const next = [
@@ -2264,65 +2416,9 @@ const AdminPanel = () => {
                                                   soal: next,
                                                 });
                                               }}
-                                              className="flex-1 bg-transparent text-white text-xs focus:outline-none"
+                                              bgClass="bg-[#162E5B]"
+                                              placeholder={`Tulis pernyataan #${sIdx + 1} atau sisipkan gambar...`}
                                             />
-                                            <button
-                                              type="button"
-                                              onClick={() => {
-                                                const next = [
-                                                  ...latihanForm.soal,
-                                                ];
-                                                const stmts = [
-                                                  ...(next[qIdx].statements ||
-                                                    []),
-                                                ];
-                                                stmts[sIdx] = {
-                                                  ...stmts[sIdx],
-                                                  answer: !stmts[sIdx].answer,
-                                                };
-                                                next[qIdx] = {
-                                                  ...next[qIdx],
-                                                  statements: stmts,
-                                                };
-                                                setLatihanForm({
-                                                  ...latihanForm,
-                                                  soal: next,
-                                                });
-                                              }}
-                                              className={`px-2.5 py-1 rounded text-[11px] font-bold cursor-pointer ${
-                                                stmt.answer
-                                                  ? 'bg-emerald-600 text-white'
-                                                  : 'bg-rose-600 text-white'
-                                              }`}
-                                            >
-                                              {stmt.answer ? 'Benar' : 'Salah'}
-                                            </button>
-                                            {(q.statements || []).length > 1 && (
-                                              <button
-                                                type="button"
-                                                onClick={() => {
-                                                  const next = [
-                                                    ...latihanForm.soal,
-                                                  ];
-                                                  const stmts = (
-                                                    next[qIdx].statements || []
-                                                  ).filter(
-                                                    (_, i) => i !== sIdx
-                                                  );
-                                                  next[qIdx] = {
-                                                    ...next[qIdx],
-                                                    statements: stmts,
-                                                  };
-                                                  setLatihanForm({
-                                                    ...latihanForm,
-                                                    soal: next,
-                                                  });
-                                                }}
-                                                className="text-rose-400 hover:text-rose-200 cursor-pointer"
-                                              >
-                                                <Trash2 className="w-3.5 h-3.5" />
-                                              </button>
-                                            )}
                                           </div>
                                         )
                                       )}

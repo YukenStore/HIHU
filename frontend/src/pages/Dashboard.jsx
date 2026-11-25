@@ -127,7 +127,7 @@ const Dashboard = () => {
                   </div>
 
                   <p className="text-[11px] sm:text-xs lg:text-sm text-blue-200/90 mt-1.5 leading-relaxed">
-                    Siap belajar hari ini? Kumpulkan EXP dan raih prestasi!
+                    Mau belajar apa hari ini? Yuk kumpulkan EXP dan naik level!
                   </p>
 
                 </div>
@@ -151,7 +151,7 @@ const Dashboard = () => {
                   </span>
 
                   <span className="text-[10px] sm:text-xs text-blue-300 font-medium whitespace-nowrap">
-                    {profileStats.progressPercent}% selesai
+                    {profileStats.progressPercent}% tercapai
                   </span>
 
                 </div>
@@ -189,7 +189,7 @@ const Dashboard = () => {
                     </div>
 
                     <p className="text-[9px] sm:text-[10px] text-blue-300/80 mt-1.5">
-                      Terus tingkatkan kemampuanmu!
+                      Sedikit lagi naik level, semangat!
                     </p>
 
                   </div>

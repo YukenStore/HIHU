@@ -34,7 +34,7 @@ import {
  * Ketentuan:
  * - Mapel: Bahasa Indonesia & Matematika
  * - Total 5 Tryout (Paket 1 - 5)
- * - Standar TKA SD Nasional (30 Soal, 60 Menit)
+ * - Format paket: 30 Soal, 60 Menit
  * - Tipe kesulitan HOTS, Mudah, Sedang diacak posisinya
  * - Format: Sebagian besar Pilihan Ganda (PG) dan beberapa soal Isian Singkat
  * - Timer hitung mundur, lembar navigasi nomor, skor & pembahasan
@@ -462,7 +462,7 @@ const Tryout = () => {
       if (isExamRunning && !isFinished) {
         if (
           !window.confirm(
-            'Simulasi Tryout sedang berjalan. Jika Anda kembali sekarang, progres pengerjaan saat ini tidak akan tersimpan. Yakin ingin kembali ke daftar paket tryout?'
+            'Tryout masih berjalan. Kalau keluar sekarang, jawabanmu belum tersimpan. Yakin mau balik ke daftar paket?'
           )
         ) {
           return;
@@ -494,7 +494,7 @@ const Tryout = () => {
                 if (isExamRunning && !isFinished) {
                   if (
                     !window.confirm(
-                      'Simulasi Tryout sedang berjalan. Jika Anda keluar sekarang, progres saat ini akan hilang. Yakin ingin kembali ke Dashboard?'
+                      'Tryout masih berjalan. Kalau keluar sekarang, progresmu akan hilang. Yakin mau balik ke Dashboard?'
                     )
                   ) {
                     return;
@@ -513,7 +513,7 @@ const Tryout = () => {
                 if (isExamRunning && !isFinished) {
                   if (
                     !window.confirm(
-                      'Simulasi Tryout sedang berjalan. Yakin ingin kembali ke pilihan mata pelajaran?'
+                      'Tryout masih berjalan. Yakin mau balik ke pilihan mata pelajaran?'
                     )
                   ) {
                     return;
@@ -527,7 +527,7 @@ const Tryout = () => {
                 !selectedSubject ? 'text-white font-bold' : 'text-blue-200'
               }`}
             >
-              Simulasi Tryout
+              Tryout
             </button>
             {selectedSubject && (
               <>
@@ -537,7 +537,7 @@ const Tryout = () => {
                     if (isExamRunning && !isFinished) {
                       if (
                         !window.confirm(
-                          'Simulasi Tryout sedang berjalan. Yakin ingin kembali ke daftar paket tryout?'
+                          'Tryout masih berjalan. Yakin mau keluar ke daftar paket?'
                         )
                       ) {
                         return;
@@ -604,7 +604,7 @@ const Tryout = () => {
             <div className="flex items-center space-x-3">
               <div>
                 <h2 className="text-base font-semibold text-[#261C14] flex items-center space-x-2">
-                  <span>Simulasi Tryout TKA SD</span>
+                  <span>Tryout</span>
                 </h2>
                 <p className="text-xs text-[#6E6258]">
                   {activePackage
@@ -635,7 +635,7 @@ const Tryout = () => {
                     Pilih Mata Pelajaran Tryout
                   </h3>
                   <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-lg mx-auto">
-                    Pilih mata pelajaran untuk melihat 5 paket simulasi ujian berstandar AKM dan TKA SD Nasional.
+                    Pilih mata pelajaran dulu untuk melihat 5 paket latihan tryout yang tersedia.
                   </p>
                 </div>
 
@@ -674,7 +674,7 @@ const Tryout = () => {
                               <BookOpen className="w-6 h-6" />
                             </div>
                             <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0] transition-all duration-300 group-hover:scale-105 shadow-2xs">
-                              5 Paket Simulasi
+                              5 Paket Soal
                             </span>
                           </div>
 
@@ -683,7 +683,7 @@ const Tryout = () => {
                             Tryout Bahasa Indonesia
                           </h4>
                           <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                            Simulasi literasi membaca, kaidah kebahasaan, teks naratif, puisi, dan analisis inferensial sesuai standar AKM Pusmendik.
+                            Latihan membaca pemahaman, ejaan, teks bacaan, puisi, dan menyimpulkan isi teks.
                           </p>
 
                           {/* Grid Layout Spesifikasi Tryout */}
@@ -691,7 +691,7 @@ const Tryout = () => {
                             <div className="flex items-center space-x-2 text-slate-700">
                               <Clock className="w-4 h-4 text-[#047857] flex-shrink-0" />
                               <div>
-                                <p className="text-[10px] text-slate-500 font-medium">Durasi Ujian</p>
+                                <p className="text-[10px] text-slate-500 font-medium">Waktu</p>
                                 <p className="font-semibold text-slate-800">60 Menit</p>
                               </div>
                             </div>
@@ -705,15 +705,15 @@ const Tryout = () => {
                             <div className="flex items-center space-x-2 text-slate-700">
                               <Sparkles className="w-4 h-4 text-[#047857] flex-shrink-0" />
                               <div>
-                                <p className="text-[10px] text-slate-500 font-medium">Standar Ujian</p>
-                                <p className="font-semibold text-slate-800">TKA SD & HOTS</p>
+                                <p className="text-[10px] text-slate-500 font-medium">Tingkat Soal</p>
+                                <p className="font-semibold text-slate-800">Mudah s.d. HOTS</p>
                               </div>
                             </div>
                             <div className="flex items-center space-x-2 text-slate-700">
                               <Trophy className="w-4 h-4 text-[#047857] flex-shrink-0" />
                               <div>
-                                <p className="text-[10px] text-slate-500 font-medium">Penilaian</p>
-                                <p className="font-semibold text-slate-800">Skor & Pembahasan</p>
+                                <p className="text-[10px] text-slate-500 font-medium">Hasil</p>
+                                <p className="font-semibold text-slate-800">Nilai & Pembahasan</p>
                               </div>
                             </div>
                           </div>
@@ -782,7 +782,7 @@ const Tryout = () => {
                               <Calculator className="w-6 h-6" />
                             </div>
                             <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#FFF1F2] text-[#881337] border border-[#FECDD3] transition-all duration-300 group-hover:scale-105 shadow-2xs">
-                              5 Paket Simulasi
+                              5 Paket Soal
                             </span>
                           </div>
 
@@ -791,7 +791,7 @@ const Tryout = () => {
                             Tryout Matematika
                           </h4>
                           <p className="text-xs text-slate-600 mt-1.5 leading-relaxed">
-                            Simulasi numerasi: hitung campuran, KPK/FPB, geometri, perbandingan skala, dan problem solving nyata.
+                            Latihan berhitung campuran, KPK/FPB, bangun datar dan ruang, skala, serta soal cerita.
                           </p>
 
                           {/* Grid Layout Spesifikasi Tryout */}
@@ -799,7 +799,7 @@ const Tryout = () => {
                             <div className="flex items-center space-x-2 text-slate-700">
                               <Clock className="w-4 h-4 text-[#881337] flex-shrink-0" />
                               <div>
-                                <p className="text-[10px] text-slate-500 font-medium">Durasi Ujian</p>
+                                <p className="text-[10px] text-slate-500 font-medium">Waktu</p>
                                 <p className="font-semibold text-slate-800">60 Menit</p>
                               </div>
                             </div>
@@ -813,15 +813,15 @@ const Tryout = () => {
                             <div className="flex items-center space-x-2 text-slate-700">
                               <Sparkles className="w-4 h-4 text-[#881337] flex-shrink-0" />
                               <div>
-                                <p className="text-[10px] text-slate-500 font-medium">Standar Ujian</p>
-                                <p className="font-semibold text-slate-800">TKA SD & HOTS</p>
+                                <p className="text-[10px] text-slate-500 font-medium">Tingkat Soal</p>
+                                <p className="font-semibold text-slate-800">Mudah s.d. HOTS</p>
                               </div>
                             </div>
                             <div className="flex items-center space-x-2 text-slate-700">
                               <Trophy className="w-4 h-4 text-[#881337] flex-shrink-0" />
                               <div>
-                                <p className="text-[10px] text-slate-500 font-medium">Penilaian</p>
-                                <p className="font-semibold text-slate-800">Skor & Pembahasan</p>
+                                <p className="text-[10px] text-slate-500 font-medium">Hasil</p>
+                                <p className="font-semibold text-slate-800">Nilai & Pembahasan</p>
                               </div>
                             </div>
                           </div>
@@ -871,7 +871,7 @@ const Tryout = () => {
                     Pilihan Paket Tryout {PUSMENDIK_TRYOUT[selectedSubject].nama}
                   </h3>
                   <p className="text-xs text-slate-600 mt-0.5">
-                    Standar TKA SD Nasional: 30 Soal (PG + Isian), Durasi 60 Menit.
+                    Isi paket: 30 soal pilihan ganda & isian singkat, waktu pengerjaan 60 menit.
                   </p>
                 </div>
 
@@ -937,10 +937,10 @@ const Tryout = () => {
                           </div>
 
                           <h4 className="text-sm sm:text-base font-bold text-slate-800">
-                            Simulasi TKA SD
+                            Paket Tryout
                           </h4>
                           <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                            {pkg.totalSoal || pkg.soal.length} Soal campuran tingkat HOTS, Sedang, Mudah (PG & Isian).
+                            {pkg.totalSoal || pkg.soal.length} soal campuran dari mudah sampai menantang (PG & Isian).
                           </p>
                         </div>
 
@@ -1113,7 +1113,7 @@ const Tryout = () => {
                         <div className="p-3.5 rounded-xl border-2 border-l-4 border-[#F4D3C4] border-l-[#C25E38] bg-[#FAECE6]/60 text-[#261C14] text-xs sm:text-sm leading-relaxed space-y-1">
                           <div className="flex items-center space-x-1.5 font-semibold text-xs text-[#C25E38]">
                             <BookOpen className="w-3.5 h-3.5 text-[#C25E38]" />
-                            <span>Konteks Bacaan / Stimulus:</span>
+                            <span>Bacaan / Pengantar:</span>
                           </div>
                           <div
                             className="text-[#261C14] leading-relaxed font-normal"
@@ -1165,7 +1165,7 @@ const Tryout = () => {
                         <div className="space-y-2 pt-1">
                           <div className="p-2.5 rounded-lg border-2 border-[#F4D3C4] bg-[#FAECE6] text-[#C25E38] text-xs font-medium flex items-center space-x-2">
                             <CheckCircle2 className="w-4 h-4 text-[#C25E38] flex-shrink-0" />
-                            <span>Pilihan Ganda Kompleks: Anda dapat memilih lebih dari satu jawaban yang benar.</span>
+                            <span>Kamu boleh memilih lebih dari satu jawaban yang benar.</span>
                           </div>
                           {options.map((opt, oIdx) => {
                             const selectedList = Array.isArray(currentAnswer) ? currentAnswer : [];
@@ -1206,7 +1206,7 @@ const Tryout = () => {
                         <div className="space-y-2.5 pt-1">
                           <div className="p-2.5 rounded-lg border-2 border-[#F4D3C4] bg-[#FAECE6] text-[#C25E38] text-xs font-medium flex items-center space-x-2">
                             <HelpCircle className="w-4 h-4 text-[#C25E38] flex-shrink-0" />
-                            <span>Tentukan apakah setiap pernyataan berikut bernilai <strong>Benar</strong> atau <strong>Salah</strong>.</span>
+                            <span>Pilih <strong>Benar</strong> atau <strong>Salah</strong> untuk tiap pernyataan di bawah ini.</span>
                           </div>
                           <div className="divide-y divide-[#E6DFD5] border-2 border-[#C25E38] rounded-xl overflow-hidden bg-white">
                             {currentQ.statements?.map((stmt, sIdx) => {
@@ -1268,7 +1268,7 @@ const Tryout = () => {
                       {qType === 'isian' && (
                         <div className="space-y-1.5 pt-1">
                           <label className="block text-xs font-medium text-[#261C14]">
-                            Ketik jawaban singkat Anda di bawah ini:
+                            Tulis jawaban singkatmu di sini:
                           </label>
                           <input
                             type="text"
@@ -1313,7 +1313,7 @@ const Tryout = () => {
                                 if (unanswered > 0) {
                                   if (
                                     window.confirm(
-                                      `Perhatian: Masih ada ${unanswered} soal yang belum kamu jawab!\n\nSesuai sistem kenaikan level, jika kamu TIDAK MENJAWAB SEMUA SOAL (${activePackage.soal.length}/${activePackage.soal.length}), kamu TIDAK AKAN MENDAPATKAN EXP.\n\nApakah kamu tetap ingin mengumpulkan lembar ujian sekarang?`
+                                      `Masih ada ${unanswered} soal yang belum dijawab.\n\nKalau belum semua soal diisi (${activePackage.soal.length}/${activePackage.soal.length}), kamu tidak akan mendapat EXP.\n\nTetap mau kumpulkan sekarang?`
                                     )
                                   ) {
                                     handleFinishExam();
@@ -1321,7 +1321,7 @@ const Tryout = () => {
                                 } else {
                                   if (
                                     window.confirm(
-                                      'Hebat! Seluruh soal telah terjawab. Apakah Anda yakin ingin mengumpulkan lembar jawaban Tryout sekarang?'
+                                      'Semua soal sudah terisi! Yakin mau kumpulkan jawaban tryout sekarang?'
                                     )
                                   ) {
                                     handleFinishExam();
@@ -1351,10 +1351,10 @@ const Tryout = () => {
 
                   <div>
                     <span className="text-xs font-semibold uppercase tracking-wider text-[#C25E38]">
-                      Hasil Tryout Nasional
+                      Hasil Tryout
                     </span>
                     <h3 className="text-xl font-bold text-[#261C14] mt-0.5">
-                      Skor {activePackage.namaPaket}
+                      Nilai {activePackage.namaPaket}
                     </h3>
                   </div>
 
@@ -1370,11 +1370,11 @@ const Tryout = () => {
                       {scoreResult?.isCompletedAll ? (
                         <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#E8F2EF] text-[#286657] border border-[#BCD9D0] text-xs font-bold shadow-2xs">
                           <Sparkles className="w-3.5 h-3.5 text-[#286657]" />
-                          <span>+{scoreResult?.expEarned} EXP Didapatkan! (Semua Soal Terjawab)</span>
+                          <span>+{scoreResult?.expEarned} EXP masuk! (Semua soal terisi)</span>
                         </span>
                       ) : (
                         <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#FDF1F1] text-[#C93B3B] border border-[#F4C7C7] text-xs font-medium">
-                          <span>0 EXP (EXP hanya didapat jika menjawab semua {scoreResult?.totalCount} soal)</span>
+                          <span>Belum dapat EXP (isi semua {scoreResult?.totalCount} soal untuk dapat EXP)</span>
                         </span>
                       )}
                     </div>
@@ -1426,7 +1426,7 @@ const Tryout = () => {
                       Pembahasan 30 Soal {activePackage.namaPaket}
                     </h3>
                     <p className="text-xs text-[#6E6258]">
-                      Simak solusi langkah demi langkah untuk setiap nomor soal.
+                      Cek kunci jawaban dan cara pengerjaan tiap soal di bawah ini.
                     </p>
                   </div>
                   <button
@@ -1477,7 +1477,7 @@ const Tryout = () => {
                         {/* Stimulus jika ada */}
                         {q.stimulus && (
                           <div className="p-3 rounded-lg bg-[#FAF7F2] border border-[#E6DFD5] text-xs text-[#261C14] mb-3 leading-relaxed">
-                            <strong className="text-[#261C14] block text-xs mb-1 font-semibold">Konteks Bacaan / Stimulus:</strong>
+                            <strong className="text-[#261C14] block text-xs mb-1 font-semibold">Bacaan / Pengantar:</strong>
                             <div dangerouslySetInnerHTML={{ __html: formatMath(q.stimulus) }} />
                           </div>
                         )}
@@ -1518,7 +1518,7 @@ const Tryout = () => {
                                   statusTag = (
                                     <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-[#286657] bg-[#E8F2EF] border border-[#C5DDD6] px-2 py-0.5 rounded">
                                       <Check className="w-3 h-3 stroke-[2.5]" />
-                                      <span>Pilihan Anda (Benar)</span>
+                                      <span>Pilihan Kamu (Benar)</span>
                                     </span>
                                   );
                                 } else if (isKey && !isUserChoice) {
@@ -1536,7 +1536,7 @@ const Tryout = () => {
                                   statusTag = (
                                     <span className="inline-flex items-center space-x-1 text-[11px] font-semibold text-[#C93B3B] bg-[#FDF1F1] border border-[#F4C7C7] px-2 py-0.5 rounded">
                                       <X className="w-3 h-3 stroke-[2.5]" />
-                                      <span>Pilihan Anda (Salah)</span>
+                                      <span>Pilihan Kamu (Salah)</span>
                                     </span>
                                   );
                                 }
@@ -1585,7 +1585,7 @@ const Tryout = () => {
                                       dangerouslySetInnerHTML={{ __html: formatMath(stmt.text) }}
                                     />
                                     <span className="font-medium flex-shrink-0">
-                                      Anda:{' '}
+                                      Kamu:{' '}
                                       <strong className={isStmtCorrect ? 'text-[#286657]' : 'text-[#C93B3B]'}>
                                         {uPick === true
                                           ? 'Benar'
@@ -1605,7 +1605,7 @@ const Tryout = () => {
                           ) : (
                             <div className="space-y-1">
                               <div className="flex items-center space-x-1.5 flex-wrap">
-                                <span className="text-[#6E6258] font-medium">Jawaban Anda:</span>
+                                <span className="text-[#6E6258] font-medium">Jawaban Kamu:</span>
                                 <strong
                                   className={`inline-flex items-center space-x-1 ${
                                     isCorrect ? 'text-[#286657]' : 'text-[#C93B3B]'
@@ -1632,7 +1632,7 @@ const Tryout = () => {
                           )}
                         </div>
 
-                        {/* Indikator Pusmendik */}
+                        {/* Indikator Soal */}
                         {q.indicator && (
                           <div className="p-2 rounded-lg bg-[#FAECE6] border border-[#F4D3C4] text-xs text-[#C25E38] mb-2">
                             <strong>Indikator: </strong>

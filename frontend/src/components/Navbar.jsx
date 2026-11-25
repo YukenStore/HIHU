@@ -80,7 +80,7 @@ const Navbar = () => {
             >
               <img
                 src="/logo.png"
-                alt="Logo EDU TKA"
+                alt="Logo MyAkademika"
                 className="h-8 sm:h-9 w-auto object-contain rounded-md"
               />
               <span className="font-bold text-sm sm:text-base text-slate-800 tracking-tight">
@@ -99,8 +99,8 @@ const Navbar = () => {
                 }`}
                 title={
                   profileStats.streak.activeToday
-                    ? `Streak aktif! ${profileStats.streak.count} hari berturut-turut`
-                    : `Streak ${profileStats.streak.count} hari`
+                    ? `Belajar rutin ${profileStats.streak.count} hari berturut-turut!`
+                    : `Catatan belajar ${profileStats.streak.count} hari`
                 }
               >
                 <span
@@ -128,7 +128,7 @@ const Navbar = () => {
                       ? 'border-blue-400 ring-2 ring-blue-400/30'
                       : 'border-[#1E3A8A]'
                   }`}
-                  title="Buka menu navigasi & profil"
+                  title="Menu & Profil"
                   aria-label="Menu"
                   aria-expanded={isMenuOpen}
                 >

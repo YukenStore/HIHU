@@ -52,14 +52,14 @@ const FantasyGachaModal = () => {
         {/* Badge Header Spesial */}
         <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/60 text-amber-300 text-xs font-bold uppercase tracking-wider mb-3 animate-pulse">
           <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-          <span>Hadiah Gacha Tryout Spesial!</span>
+          <span>Hadiah Gacha Tryout!</span>
         </div>
 
         <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight leading-snug">
-          Selamat! Kamu Mendapatkan Karakter Fantasi! 🎉
+          Yeay! Kamu Dapat Karakter Fantasi! 🎉
         </h3>
         <p className="text-xs text-blue-200 mt-1 max-w-xs leading-relaxed">
-          Skor Tryout kamu mencapai <strong className="text-amber-300">80%+</strong> dan berhasil membuka karakter langka dari kategori Fantasi!
+          Karena nilai tryout kamu mencapai <strong className="text-amber-300">80% ke atas</strong>, kamu dapat hadiah karakter spesial ini!
         </p>
 
         {/* Display Karakter Animasi dengan Lingkaran Kilau Emas */}
@@ -88,7 +88,7 @@ const FantasyGachaModal = () => {
             {wonCharacter.name}
           </h4>
           <span className="inline-block text-[11px] font-semibold text-blue-200 bg-blue-900/60 px-3 py-0.5 rounded-full border border-blue-500/40">
-            Karakter Fantasi Langka • Telah Ditambahkan ke Koleksi
+            Sudah masuk ke koleksi karakter kamu
           </span>
         </div>
 
@@ -96,7 +96,7 @@ const FantasyGachaModal = () => {
         {equippedToast ? (
           <div className="w-full py-3 px-4 rounded-xl bg-emerald-600 text-white font-bold text-xs sm:text-sm flex items-center justify-center space-x-2 animate-fade-in shadow-md">
             <Check className="w-4 h-4 stroke-[3]" />
-            <span>Foto Profil Berhasil Dipasang!</span>
+            <span>Foto profil sudah diganti!</span>
           </div>
         ) : (
           <div className="w-full space-y-2">
@@ -105,13 +105,13 @@ const FantasyGachaModal = () => {
               className="w-full py-2.5 sm:py-3 px-5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black text-xs sm:text-sm tracking-wide transition-all cursor-pointer shadow-lg active:scale-98 flex items-center justify-center space-x-2"
             >
               <Sparkles className="w-4 h-4 text-slate-950" />
-              <span>Pasang Sekarang Sebagai Foto Profil</span>
+              <span>Pakai Sekarang</span>
             </button>
             <button
               onClick={() => setIsOpen(false)}
               className="w-full py-2 px-4 rounded-xl bg-[#0F2042] hover:bg-[#1E3A8A] text-blue-200 hover:text-white font-semibold text-xs transition-all cursor-pointer border border-blue-500/30"
             >
-              Simpan ke Koleksi Foto Profil
+              Simpan Dulu di Koleksi
             </button>
           </div>
         )}

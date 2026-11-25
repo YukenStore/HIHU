@@ -155,8 +155,8 @@ export const AVAILABLE_TITLES = [
     color: 'emerald',
     badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-300',
     badgeClassName: '-top-3 -left-2.5 -rotate-[15deg]',
-    desc: 'Gelar kehormatan untuk murid yang siap menaklukkan Asesmen TKA SD.',
-    requirement: 'Terbuka otomatis untuk seluruh siswa',
+    desc: 'Gelar awal buat kamu yang baru mulai belajar di MyAkademika.',
+    requirement: 'Otomatis terbuka untuk semua siswa',
     isUnlocked: () => true,
   },
   {
@@ -166,7 +166,7 @@ export const AVAILABLE_TITLES = [
     color: 'blue',
     badgeColor: 'bg-blue-50 text-blue-700 border-blue-300',
     badgeClassName: '-top-2.5 -left-2.5 -rotate-[10deg]',
-    desc: 'Menguasai konsep dasar pemahaman teks Bahasa Indonesia.',
+    desc: 'Sudah mulai lancar memahami bacaan Bahasa Indonesia.',
     requirement: 'Selesaikan minimal 1 materi atau latihan Bahasa Indonesia',
     isUnlocked: (data) =>
       (data.materiCompleted || []).some((id) => id.startsWith('bi_')) ||
@@ -174,12 +174,12 @@ export const AVAILABLE_TITLES = [
   },
   {
     id: 'numerasi_dasar',
-    name: 'Pakar Hitung Cepat',
+    name: 'Jago Hitung Cepat',
     icon: '🔢',
     color: 'teal',
     badgeColor: 'bg-teal-50 text-teal-700 border-teal-300',
     badgeClassName: '-top-2 -left-2 -rotate-[8deg]',
-    desc: 'Mahir dalam operasi hitung bilangan dan logika Matematika.',
+    desc: 'Sudah mulai jago berhitung dan memecahkan soal Matematika.',
     requirement: 'Selesaikan minimal 1 materi atau latihan Matematika',
     isUnlocked: (data) =>
       (data.materiCompleted || []).some((id) => id.startsWith('mtk_')) ||
@@ -187,70 +187,70 @@ export const AVAILABLE_TITLES = [
   },
   {
     id: 'pejuang_latihan',
-    name: 'Pejuang Latihan Tangguh',
+    name: 'Rajin Latihan',
     icon: '⚔️',
     color: 'indigo',
     badgeColor: 'bg-indigo-50 text-indigo-700 border-indigo-300',
     badgeClassName: '-top-2.5 -left-2.5 -rotate-[10deg]',
-    desc: 'Menuntaskan banyak variasi butir soal latihan Pusmendik.',
+    desc: 'Sudah rajin mengerjakan berbagai paket latihan soal.',
     requirement: 'Selesaikan minimal 3 sesi Latihan Soal',
     isUnlocked: (data) =>
       (data.latihanCompleted || []).length >= 3 || (data.latihanHistory || []).length >= 3,
   },
   {
     id: 'bintang_tryout',
-    name: 'Bintang Asesmen Pusmendik',
+    name: 'Bintang Tryout',
     icon: '⭐',
     color: 'amber',
     badgeColor: 'bg-amber-50 text-amber-700 border-amber-300',
     badgeClassName: '-top-2.5 -left-2.5 -rotate-[15deg]',
-    desc: 'Menuntaskan simulasi Tryout Asesmen Berstandar Pusmendik.',
-    requirement: 'Selesaikan minimal 1 sesi paket Tryout',
+    desc: 'Sudah menyelesaikan paket tryout dengan tuntas.',
+    requirement: 'Selesaikan minimal 1 paket Tryout',
     isUnlocked: (data) => (data.tryoutHistory || []).length >= 1,
   },
   {
     id: 'streak_master',
-    name: 'Sang Penjaga Api Belajar',
+    name: 'Konsisten Belajar',
     icon: '🔥',
     color: 'orange',
     badgeColor: 'bg-orange-50 text-orange-700 border-orange-300',
     badgeClassName: '-top-3 -left-2 -rotate-[8deg]',
-    desc: 'Konsisten belajar setiap hari berturut-turut tanpa putus.',
-    requirement: 'Capai streak belajar minimal 3 hari',
+    desc: 'Belajar rutin setiap hari tanpa putus.',
+    requirement: 'Jaga streak belajar minimal 3 hari berturut-turut',
     isUnlocked: (data) => (data.streak?.count || 0) >= 3,
   },
   {
     id: 'juara_skor',
-    name: 'Maestro Nilai Sempurna',
+    name: 'Nilai Sempurna',
     icon: '👑',
     color: 'yellow',
     badgeColor: 'bg-yellow-50 text-yellow-800 border-yellow-300',
     badgeClassName: '-top-3.5 -left-2 -rotate-[15deg]',
-    desc: 'Meraih skor sempurna 100 pada Latihan Soal atau Tryout.',
-    requirement: 'Raih nilai 100 pada Latihan Soal atau Tryout',
+    desc: 'Berhasil meraih nilai 100 di latihan soal atau nilai 95+ di tryout.',
+    requirement: 'Raih nilai 100 di Latihan Soal atau minimal 95 di Tryout',
     isUnlocked: (data) =>
       (data.latihanHistory || []).some((l) => (l.score || 0) >= 100) ||
       (data.tryoutHistory || []).some((t) => (t.score || 0) >= 95),
   },
   {
     id: 'cendekiawan_muda',
-    name: 'Cendekiawan Muda TKA',
+    name: 'Pelajar Teladan',
     icon: '🎓',
     color: 'purple',
     badgeColor: 'bg-purple-50 text-purple-700 border-purple-300',
     badgeClassName: '-top-3 -left-2 -rotate-[12deg]',
-    desc: 'Mencapai Level 5 ke atas dari dedikasi belajar konsisten.',
+    desc: 'Berhasil menembus Level 5 berkat rajin belajar.',
     requirement: 'Capai Level 5 (kumpulkan minimal 1.400 EXP)',
     isUnlocked: (data) => calculateLevelInfo(data.exp || 0).level >= 5,
   },
   {
     id: 'legenda_sd',
-    name: 'Legenda Juara Nusantara',
+    name: 'Juara Puncak',
     icon: '🏆',
     color: 'rose',
     badgeColor: 'bg-rose-50 text-rose-700 border-rose-300',
     badgeClassName: '-top-3 -left-2 -rotate-[10deg]',
-    desc: 'Pencapaian master tertinggi di seluruh penjuru Nusantara.',
+    desc: 'Gelar tertinggi buat kamu yang berhasil mencapai Level 10.',
     requirement: 'Capai Level 10 (kumpulkan minimal 9.200 EXP)',
     isUnlocked: (data) => calculateLevelInfo(data.exp || 0).level >= 10,
   },
@@ -729,10 +729,10 @@ export const getUserProfileStats = () => {
 /**
  * Memeriksa dan membuka kunci karakter avatar berdasarkan capaian materi dan latihan soal.
  * Membedakan capaian antara Bahasa Indonesia dan Matematika:
- * - Starter: 'baby-boy' (Adik Pintar) & 'baby-girl' (Adik Manis)
- * - Paket Siswa & Siswi ('boy' & 'girl'): Materi Bahasa Indonesia (min. 1 Bab)
- * - Paket Anak Petualang & Ceria ('child-boy' & 'child-girl'): Materi Matematika (min. 1 Bab)
- * - Paket Raja & Ratu ('king' & 'queen'): Capai Level 5 dari gabungan belajar
+ * - Starter: 'baby-boy' (Bayi Cowo) & 'baby-girl' (Bayi Cewe)
+ * - Paket Bocil Cowo & Cewe ('boy' & 'girl'): Peti Materi 5 Bahasa Indonesia
+ * - Paket Anak Cowo & Cewe ('child-boy' & 'child-girl'): Peti Materi 4 Matematika
+ * - Paket Raja & Ratu ('king' & 'queen'): Piala Puncak Materi 21 Bahasa Indonesia
  * - Pahlawan ('knight', 'ninja', 'cowboy'): Latihan Soal Matematika (1, 3, 5 sesi)
  * - Hewan ('fox', 'red-wolf', 'cow', 'teddy-bear-heart', 'panda', 'sheep', 'frog'): Materi & Latihan B. Indo / Matematika
  * - Fantasi: Spesial Gacha Tryout (min. 80% benar)
@@ -785,72 +785,72 @@ export const checkAndUnlockAvatars = (data) => {
     (id) => id.startsWith('mtk_') && (latihanStars[id] !== undefined ? latihanStars[id] : 3) >= 3
   ).length;
 
-  // 1. Peti Materi 5 Bahasa Indonesia: Paket Siswa dan Siswi ('boy' & 'girl')
+  // 1. Peti Materi 5 Bahasa Indonesia: Paket Bocil Cowo & Cewe ('boy' & 'girl')
   if (biMateriCount >= 5) {
     legitUnlocked.add('boy');
     legitUnlocked.add('girl');
   }
 
-  // 2. Peti Materi 10 Bahasa Indonesia: Rubah Cerdas ('fox')
+  // 2. Peti Materi 10 Bahasa Indonesia: Rubah ('fox')
   if (biMateriCount >= 10) {
     legitUnlocked.add('fox');
   }
 
-  // 3. Peti Materi 15 Bahasa Indonesia: Serigala Berani ('red-wolf')
+  // 3. Peti Materi 15 Bahasa Indonesia: Serigala ('red-wolf')
   if (biMateriCount >= 15) {
     legitUnlocked.add('red-wolf');
   }
 
-  // 4. Piala Puncak Materi 21 Bahasa Indonesia (Semua 63 Bintang): Paket Raja dan Ratu ('king' & 'queen')
+  // 4. Piala Puncak Materi 21 Bahasa Indonesia (Semua 63 Bintang): Paket Raja & Ratu ('king' & 'queen')
   if (biMateri3StarCount >= 21) {
     legitUnlocked.add('king');
     legitUnlocked.add('queen');
   }
 
-  // 5. Peti Materi 4 Matematika: Paket Anak Petualang dan Anak Ceria ('child-boy' & 'child-girl')
+  // 5. Peti Materi 4 Matematika: Paket Anak Cowo & Cewe ('child-boy' & 'child-girl')
   if (mtkMateriCount >= 4) {
     legitUnlocked.add('child-boy');
     legitUnlocked.add('child-girl');
   }
 
-  // 6. Peti Materi 8 Matematika: Domba Lembut ('sheep')
+  // 6. Peti Materi 8 Matematika: Domba ('sheep')
   if (mtkMateriCount >= 8) {
     legitUnlocked.add('sheep');
   }
 
-  // 7. Piala Puncak Materi 12 Matematika (Semua 36 Bintang): Ksatria Tangguh ('knight')
+  // 7. Piala Puncak Materi 12 Matematika (Semua 36 Bintang): Ksatria ('knight')
   if (mtkMateri3StarCount >= 12) {
     legitUnlocked.add('knight');
   }
 
-  // 8. Peti Latihan 4 Matematika: Katak Lincah ('frog')
+  // 8. Peti Latihan 4 Matematika: Katak ('frog')
   if (mtkLatihanCount >= 4) {
     legitUnlocked.add('frog');
   }
 
-  // 9. Peti Latihan 7 Matematika: Ninja Gesit ('ninja')
+  // 9. Peti Latihan 7 Matematika: Panda ('panda')
   if (mtkLatihanCount >= 7) {
-    legitUnlocked.add('ninja');
+    legitUnlocked.add('panda');
   }
 
-  // 10. Piala Puncak Latihan 10 Matematika (Semua 30 Bintang): Koboi Cilik ('cowboy')
+  // 10. Piala Puncak Latihan 10 Matematika (Semua 30 Bintang): Koboi ('cowboy')
   if (mtkLatihan3StarCount >= 10) {
     legitUnlocked.add('cowboy');
   }
 
-  // 11. Peti Latihan 4 Bahasa Indonesia: Sapi Sahabat ('cow')
+  // 11. Peti Latihan 4 Bahasa Indonesia: Sapi ('cow')
   if (biLatihanCount >= 4) {
     legitUnlocked.add('cow');
   }
 
-  // 12. Peti Latihan 7 Bahasa Indonesia: Beruang Manis ('teddy-bear-heart')
+  // 12. Peti Latihan 7 Bahasa Indonesia: Beruang ('teddy-bear-heart')
   if (biLatihanCount >= 7) {
     legitUnlocked.add('teddy-bear-heart');
   }
 
-  // 13. Piala Puncak Latihan 10 Bahasa Indonesia (Semua 30 Bintang): Panda Lucu ('panda')
+  // 13. Piala Puncak Latihan 10 Bahasa Indonesia (Semua 30 Bintang): Ninja ('ninja')
   if (biLatihan3StarCount >= 10) {
-    legitUnlocked.add('panda');
+    legitUnlocked.add('ninja');
   }
 
   const prevList = data.unlockedAvatars || ['baby-boy', 'baby-girl'];
@@ -1191,7 +1191,7 @@ export const getFullStats = () => {
     Math.round((totalPaketTryoutSelesai / totalPaketTryoutTersedia) * 100)
   );
 
-  // 4. Penguasaan Kompetensi Pusmendik (%) Dinamis Tersinkronisasi
+  // 4. Penguasaan Topik Materi (%) Dinamis Tersinkronisasi
   const topicMastery = calculateTopicMastery(data);
 
   return {
@@ -1246,7 +1246,7 @@ export const getFullStats = () => {
 };
 
 /**
- * Definisi Topik Asesmen Pusmendik TKA SD
+ * Definisi Topik Belajar Utama
  * 3 Topik Bahasa Indonesia & 3 Topik Matematika
  */
 export const TOPIC_DEFINITIONS = [
@@ -1313,7 +1313,7 @@ export const TOPIC_DEFINITIONS = [
 ];
 
 /**
- * Menghitung tingkat penguasaan 6 topik asesmen Pusmendik secara dinamis
+ * Menghitung tingkat penguasaan 6 topik belajar secara dinamis
  * berdasarkan sinkronisasi kemajuan Materi, Latihan Soal, dan Tryout
  */
 export const calculateTopicMastery = (data = {}) => {
@@ -1444,10 +1444,10 @@ export const calculateTopicMastery = (data = {}) => {
 
   // 5. Rekomendasi Belajar Dinamis
   const activeTopics = topics.filter((t) => t.nilai > 0);
-  let kuat = 'Belum Ada Aktivitas';
-  let lemah = 'Semua Topik Perlu Dipelajari';
+  let kuat = 'Belum ada catatan';
+  let lemah = 'Yuk mulai dari materi dasar dulu';
   let saranAksi =
-    'Yuk mulai pelajari materi bab pertama atau coba latihan soal untuk membuka rekam penguasaan kompetensimu!';
+    'Coba buka materi pertama atau kerjakan latihan soal ringan supaya perkembangan belajarmu mulai tercatat.';
 
   if (activeTopics.length > 0) {
     const sortedDesc = [...topics].sort((a, b) => b.nilai - a.nilai);
@@ -1468,17 +1468,17 @@ export const calculateTopicMastery = (data = {}) => {
     } else if (weakCandidates.length === 1) {
       lemah = weakCandidates[0].nama;
     } else {
-      lemah = 'Pertahankan Seluruh Topik';
+      lemah = 'Semua topik sudah bagus, tinggal dijaga!';
     }
 
     const targetLemah = sortedAsc[0];
     if (targetLemah && targetLemah.nilai === 0) {
-      saranAksi = `Fokuskan belajarmu berikutnya pada topik ${targetLemah.nama} (${targetLemah.mapel}) agar nilaimu seimbang dan siap menghadapi Tryout!`;
+      saranAksi = `Selanjutnya coba pelajari topik ${targetLemah.nama} (${targetLemah.mapel}) supaya nilaimu makin merata.`;
     } else if (targetLemah && targetLemah.nilai < 70) {
-      saranAksi = `Tingkatkan latihan soal dan ulas materi pada topik ${targetLemah.nama} untuk mendongkrak penguasaan kompetensi TKA SD!`;
+      saranAksi = `Boleh diulang lagi materi dan latihan soal di topik ${targetLemah.nama} biar makin lancar ya.`;
     } else {
       saranAksi =
-        'Luar biasa! Seluruh topik materi telah dikuasai dengan baik. Pertahankan prestasimu dengan rutin mengikuti simulasi Tryout Akbar!';
+        'Keren! Semua topik sudah kamu kuasai dengan baik. Tetap latihan rutin lewat paket tryout supaya makin mantap.';
     }
   }
 

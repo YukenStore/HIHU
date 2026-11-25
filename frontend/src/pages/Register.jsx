@@ -65,7 +65,7 @@ const Register = () => {
     if (name === 'username' && value.includes('@')) {
       setErrors((prev) => ({
         ...prev,
-        username: 'Username tidak boleh berupa alamat email (jangan sertakan tanda @).',
+        username: 'Username jangan pakai alamat email ya (tanpa tanda @).',
       }));
     } else if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
@@ -102,7 +102,7 @@ const Register = () => {
         otpInputRefs.current[0]?.focus();
       }, 150);
     } catch (err) {
-      const errMsg = err.message || 'Maaf, belum bisa melakukan registrasi.';
+      const errMsg = err.message || 'Pendaftaran belum berhasil, coba lagi sebentar ya.';
       setServerError(errMsg);
 
       // Berikan warna merah dan pesan error pada kolom/field spesifik
@@ -110,7 +110,7 @@ const Register = () => {
         setErrors((prev) => ({
           ...prev,
           username: errMsg.includes('sudah digunakan')
-            ? 'Username sudah digunakan. Silakan pilih username lain.'
+            ? 'Username ini sudah dipakai. Coba nama lain ya.'
             : errMsg,
         }));
       } else if (err.field === 'email' || errMsg.toLowerCase().includes('email')) {
@@ -170,7 +170,7 @@ const Register = () => {
 
     const fullOtp = otpDigits.join('');
     if (fullOtp.length !== 6) {
-      setOtpError('Masukkan 6 digit kode OTP secara lengkap.');
+      setOtpError('Isi lengkap 6 angka kode verifikasinya ya.');
       return;
     }
 
@@ -186,11 +186,11 @@ const Register = () => {
       // Alur penting: setelah verifikasi berhasil, arahkan ke halaman Login dengan pesan sukses
       navigate('/', {
         state: {
-          message: response.message || 'Verifikasi berhasil! Silakan login dengan akun baru Anda.',
+          message: response.message || 'Akunmu sudah aktif! Sekarang kamu bisa langsung masuk.',
         },
       });
     } catch (err) {
-      setOtpError(err.message || 'Kode OTP tidak valid atau kedaluwarsa.');
+      setOtpError(err.message || 'Kode OTP salah atau sudah habis waktunya.');
     } finally {
       setIsVerifying(false);
     }
@@ -208,7 +208,7 @@ const Register = () => {
       setOtpDigits(['', '', '', '', '', '']);
       otpInputRefs.current[0]?.focus();
     } catch (err) {
-      setOtpError(err.message || 'Gagal mengirim ulang kode OTP.');
+      setOtpError(err.message || 'Kode OTP belum terkirim. Coba kirim ulang lagi ya.');
     } finally {
       setIsResending(false);
     }
@@ -222,17 +222,17 @@ const Register = () => {
           <div className="inline-flex items-center justify-center mb-2 sm:mb-3 p-2 bg-white rounded-2xl shadow-md border border-white/30">
             <img
               src="/logo.png"
-              alt="Logo EDU TKA"
+              alt="Logo MyAkademika"
               className="h-12 sm:h-14 w-auto object-contain"
             />
           </div>
           <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight drop-shadow-sm">
-            {step === 'form' ? 'Daftar Akun TKA SD' : 'Verifikasi Akun'}
+            {step === 'form' ? 'Buat Akun Baru' : 'Verifikasi Akun'}
           </h1>
           <p className="text-teal-50/90 text-xs sm:text-sm mt-1 font-medium">
             {step === 'form'
-              ? 'Buat akun baru untuk mulai latihan Tes Kemampuan Akademik'
-              : `Kode verifikasi telah dikirimkan ke email Anda`}
+              ? 'Daftar sebentar supaya progres belajarmu tersimpan.'
+              : `Cek kotak masuk email kamu untuk melihat kode 6 digit.`}
           </p>
         </div>
 
@@ -250,11 +250,11 @@ const Register = () => {
 
               <form onSubmit={handleRegisterSubmit} noValidate>
                 <InputField
-                  label="Username / Nama Panggilan"
+                  label="Nama Panggilan / Username"
                   id="register-username"
                   name="username"
                   type="text"
-                  placeholder="contoh: siswa123 atau siswa_sd"
+                  placeholder="Contoh: budi_sd atau rina123"
                   value={formData.username}
                   onChange={handleChange}
                   error={errors.username}
@@ -267,11 +267,11 @@ const Register = () => {
                 />
 
                 <InputField
-                  label="Alamat Email"
+                  label="Email"
                   id="register-email"
                   name="email"
                   type="email"
-                  placeholder="contoh: siswa@sekolah.id atau nama@gmail.com"
+                  placeholder="Contoh: nama@gmail.com"
                   value={formData.email}
                   onChange={handleChange}
                   error={errors.email}
@@ -284,7 +284,7 @@ const Register = () => {
                   id="register-password"
                   name="password"
                   type="password"
-                  placeholder="Buat password yang kuat"
+                  placeholder="Minimal 8 karakter"
                   value={formData.password}
                   onChange={handleChange}
                   error={errors.password}
@@ -298,7 +298,7 @@ const Register = () => {
                   id="register-confirmPassword"
                   name="confirmPassword"
                   type="password"
-                  placeholder="Ketik ulang password Anda"
+                  placeholder="Tulis ulang password tadi"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   error={errors.confirmPassword}
@@ -313,10 +313,10 @@ const Register = () => {
                     variant="primary"
                     fullWidth
                     isLoading={isLoading}
-                    loadingText="Mengirim Kode OTP..."
+                    loadingText="Mengirim kode..."
                   >
                     <UserPlus className="w-4 h-4 mr-2" />
-                    Daftar Sekarang
+                    Daftar
                   </Button>
                 </div>
               </form>
@@ -329,7 +329,7 @@ const Register = () => {
                     to="/"
                     className="font-bold text-[#1E3A8A] hover:text-[#172554] hover:underline"
                   >
-                    Masuk di sini
+                    Masuk saja
                   </Link>
                 </p>
               </div>
@@ -343,9 +343,9 @@ const Register = () => {
                 <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-200 text-[#1E3A8A] flex items-center justify-center mx-auto mb-3 shadow-xs">
                   <Mail className="w-6 h-6" />
                 </div>
-                <h3 className="text-base font-bold text-slate-800">Periksa Email Anda</h3>
+                <h3 className="text-base font-bold text-slate-800">Cek Email Kamu</h3>
                 <p className="text-xs text-slate-600 mt-1 max-w-xs mx-auto">
-                  Kami telah mengirimkan 6 digit kode keamanan ke:
+                  Kode 6 digit sudah dikirim ke:
                 </p>
                 <div className="inline-flex items-center space-x-1 px-3 py-1 bg-blue-50/80 rounded-full text-slate-800 font-semibold text-xs mt-2 border border-blue-200">
                   <span>{registeredEmail}</span>
@@ -364,9 +364,9 @@ const Register = () => {
                 <div className="flex items-start space-x-2.5">
                   <span className="text-base flex-shrink-0">💡</span>
                   <div className="text-xs text-slate-800 leading-relaxed">
-                    <p className="font-bold text-[#1E3A8A]">Email belum masuk ke Kotak Masuk?</p>
+                    <p className="font-bold text-[#1E3A8A]">Belum lihat emailnya?</p>
                     <p className="text-slate-600 mt-0.5">
-                      Periksa folder <strong className="text-slate-800">Spam</strong> atau <strong className="text-slate-800">Promosi</strong> di email Anda. Tandai sebagai <em>"Bukan Spam"</em> agar email berikutnya langsung masuk ke Kotak Masuk utama.
+                      Coba cek folder <strong className="text-slate-800">Spam</strong> atau <strong className="text-slate-800">Promosi</strong>. Kalau ada di sana, tandai <em>"Bukan Spam"</em> supaya email selanjutnya langsung masuk ke kotak masuk.
                     </p>
                   </div>
                 </div>
@@ -399,15 +399,15 @@ const Register = () => {
                   variant="primary"
                   fullWidth
                   isLoading={isVerifying}
-                  loadingText="Memverifikasi OTP..."
+                  loadingText="Mengecek kode..."
                 >
                   <ShieldCheck className="w-4 h-4 mr-2" />
-                  Verifikasi & Aktifkan Akun
+                  Aktifkan Akun
                 </Button>
 
                 {/* Kirim Ulang Kode OTP */}
                 <div className="mt-5 text-center">
-                  <p className="text-xs text-slate-500 mb-2">Tidak menerima kode verifikasi?</p>
+                  <p className="text-xs text-slate-500 mb-2">Belum dapat kodenya?</p>
                   <button
                     type="button"
                     onClick={handleResendOtp}
@@ -421,8 +421,8 @@ const Register = () => {
                     <RefreshCw className={`w-3.5 h-3.5 ${isResending ? 'animate-spin' : ''}`} />
                     <span>
                       {resendCountdown > 0
-                        ? `Kirim ulang kode dalam (${resendCountdown}s)`
-                        : 'Kirim Ulang Kode OTP'}
+                        ? `Kirim ulang dalam ${resendCountdown} detik`
+                        : 'Kirim Ulang Kode'}
                     </span>
                   </button>
                 </div>
@@ -439,7 +439,7 @@ const Register = () => {
                   className="inline-flex items-center space-x-1.5 text-xs font-medium text-slate-600 hover:text-[#1E3A8A] transition-colors cursor-pointer"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Ubah alamat email atau data pendaftaran</span>
+                  <span>Ganti email atau data lainnya</span>
                 </button>
               </div>
             </div>
@@ -448,7 +448,7 @@ const Register = () => {
 
         {/* Footer info */}
         <p className="text-center text-xs text-blue-200/70 mt-6">
-          &copy; {new Date().getFullYear()} TKA SD. Seluruh hak cipta dilindungi.
+          &copy; {new Date().getFullYear()} MyAkademika
         </p>
       </div>
     </div>

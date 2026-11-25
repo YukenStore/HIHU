@@ -95,10 +95,10 @@ const Rapor = () => {
               </div>
               <div>
                 <h1 className="text-base sm:text-lg font-bold text-[#261C14] tracking-tight">
-                  Rapor Belajar Siswa
+                  Rapor Belajar
                 </h1>
                 <p className="text-xs text-[#6E6258] mt-0.5">
-                  Ringkasan progres materi, latihan soal, dan skor simulasi tryout.
+                  Pantau perkembangan materi, latihan soal, dan hasil tryout kamu di sini.
                 </p>
               </div>
             </div>
@@ -159,7 +159,7 @@ const Rapor = () => {
                   <div className="p-4 rounded-xl bg-[#FAF7F2] border-2 border-[#047857] flex flex-col justify-between shadow-xs">
                     <div>
                       <div className="flex items-center justify-between text-xs text-[#6E6258] mb-1">
-                        <span className="font-medium">Materi Tuntas</span>
+                        <span className="font-medium">Materi Selesai</span>
                         <BookOpen className="w-4 h-4 text-[#047857]" />
                       </div>
                       <div className="text-xl sm:text-2xl font-bold text-[#261C14]">
@@ -283,10 +283,10 @@ const Rapor = () => {
                     <div>
                       <h2 className="text-sm font-bold text-[#261C14] flex items-center space-x-2">
                         <BarChart3 className="w-4 h-4 text-[#C25E38]" />
-                        <span>Penguasaan Topik Materi</span>
+                        <span>Pemahaman per Topik</span>
                       </h2>
                       <p className="text-xs text-[#6E6258] mt-0.5">
-                        Tingkat pemahaman materi Bahasa Indonesia dan Matematika.
+                        Lihat topik mana yang sudah kamu kuasai dan mana yang perlu diulang.
                       </p>
                     </div>
                   </div>
@@ -387,33 +387,33 @@ const Rapor = () => {
                   <div className="flex items-center space-x-2">
                     <Sparkles className="w-4 h-4 text-[#C25E38]" />
                     <h3 className="text-xs sm:text-sm font-bold text-[#261C14]">
-                      Rekomendasi Belajar
+                      Saran Belajar
                     </h3>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                     <div className="p-3 rounded-lg bg-white border-2 border-slate-300 shadow-2xs">
                       <span className="text-[11px] font-semibold text-[#286657] block mb-0.5">
-                        ✓ Topik Sangat Baik:
+                        ✓ Sudah Dikuasai:
                       </span>
                       <p className="text-[#261C14] font-medium">
-                        {stats.rekomendasi?.kuat || 'Belum Ada Aktivitas'}
+                        {stats.rekomendasi?.kuat || 'Belum ada catatan'}
                       </p>
                     </div>
 
                     <div className="p-3 rounded-lg bg-white border-2 border-slate-300 shadow-2xs">
                       <span className="text-[11px] font-semibold text-[#C25E38] block mb-0.5">
-                        ⚡ Perlu Ditingkatkan:
+                        ⚡ Perlu Diulang Lagi:
                       </span>
                       <p className="text-[#261C14] font-medium">
-                        {stats.rekomendasi?.lemah || 'Semua Topik Perlu Dipelajari'}
+                        {stats.rekomendasi?.lemah || 'Yuk mulai dari materi dasar dulu'}
                       </p>
                     </div>
                   </div>
 
                   <p className="text-[11px] sm:text-xs text-[#6E6258] leading-relaxed pt-1">
                     {stats.rekomendasi?.saranAksi ||
-                      'Fokuskan belajar pada materi dasar untuk membuka peta kompetensi!'}
+                      'Coba pelajari satu materi dasar dulu supaya perkembangan belajarmu mulai tercatat.'}
                   </p>
                 </div>
               </div>
@@ -424,9 +424,9 @@ const Rapor = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-sm font-bold text-[#261C14]">Riwayat Simulasi Tryout</h2>
+                    <h2 className="text-sm font-bold text-[#261C14]">Riwayat Tryout</h2>
                     <p className="text-xs text-[#6E6258] mt-0.5">
-                      Catatan pengerjaan 30 soal standar asesmen nasional TKA SD.
+                      Daftar nilai dari paket tryout yang sudah kamu kerjakan.
                     </p>
                   </div>
                   <span className="text-xs text-[#6E6258] font-medium">
@@ -483,16 +483,16 @@ const Rapor = () => {
                       <Trophy className="w-6 h-6 text-[#8C7E72]" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-[#261C14]">Belum Ada Riwayat Tryout</h3>
+                      <h3 className="text-sm font-bold text-[#261C14]">Belum Pernah Tryout</h3>
                       <p className="text-xs text-[#6E6258] mt-1 max-w-sm mx-auto">
-                        Kamu belum menyelesaikan simulasi tryout. Ikuti paket tryout untuk melihat riwayat skor di sini.
+                        Kamu belum mengerjakan paket tryout. Coba satu paket dulu, nanti nilainya muncul di sini.
                       </p>
                     </div>
                     <button
                       onClick={() => navigate('/tryout')}
                       className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-lg bg-[#C25E38] hover:bg-[#A94D2B] text-white text-xs font-semibold transition-colors cursor-pointer shadow-xs"
                     >
-                      <span>Mulai Tryout Sekarang</span>
+                      <span>Coba Tryout</span>
                       <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -608,9 +608,9 @@ const Rapor = () => {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-sm font-bold text-[#261C14]">Riwayat Latihan Berjenjang</h2>
+                    <h2 className="text-sm font-bold text-[#261C14]">Riwayat Latihan Soal</h2>
                     <p className="text-xs text-[#6E6258] mt-0.5">
-                      Catatan pengerjaan latihan level 1 s.d. 10.
+                      Rekap hasil latihan soal dari level 1 sampai 10.
                     </p>
                   </div>
                   <span className="text-xs text-[#6E6258] font-medium">
@@ -624,9 +624,9 @@ const Rapor = () => {
                       <Target className="w-6 h-6 text-[#8C7E72]" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-[#261C14]">Belum Ada Riwayat Latihan</h3>
+                      <h3 className="text-sm font-bold text-[#261C14]">Belum Ada Catatan Latihan</h3>
                       <p className="text-xs text-[#6E6258] mt-1 max-w-sm mx-auto">
-                        Kamu belum mengerjakan latihan soal berjenjang. Mulai latihan untuk mencatat nilai dan bintang di sini.
+                        Yuk mulai kerjakan latihan soal supaya nilai dan bintangmu tercatat di sini.
                       </p>
                     </div>
                     <button
@@ -688,7 +688,7 @@ const Rapor = () => {
                             <td className="px-4 py-3 text-center">
                               <span className="inline-flex items-center space-x-1 text-[#286657] font-semibold bg-[#E8F2EF] border border-[#C5DDD6] px-2 py-0.5 rounded-full text-[11px]">
                                 <CheckCircle2 className="w-3 h-3 text-[#286657]" />
-                                <span>Tuntas</span>
+                                <span>Selesai</span>
                               </span>
                             </td>
                           </tr>

@@ -151,7 +151,7 @@ const ensureSubjectContainer = (subjectKey, meta = {}) => {
       : 'blue');
   const deskripsi =
     meta.deskripsi ||
-    `Materi pembelajaran dan latihan soal berjenjang standar asesmen TKA SD untuk mata pelajaran ${title}.`;
+    `Kumpulan materi dan latihan soal bertahap untuk mata pelajaran ${title}.`;
 
   if (!PUSMENDIK_MATERI[subjectKey]) {
     PUSMENDIK_MATERI[subjectKey] = {

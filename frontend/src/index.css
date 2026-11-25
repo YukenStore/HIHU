@@ -532,4 +532,80 @@ input[type="password"]::-ms-clear {
     text-decoration: underline;
     text-underline-offset: 2px;
   }
+
+  /* Gaya Gambar di dalam Editor Admin Panel & Tampilan Materi / Latihan Soal Siswa */
+  .ms-word-editor {
+    display: flow-root;
+  }
+  .ms-word-editor img,
+  .rich-content-img,
+  .rich-content-display img {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 10px;
+    background-color: #ffffff;
+    padding: 4px;
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    object-fit: contain;
+  }
+  .ms-word-editor img {
+    cursor: pointer;
+    transition: box-shadow 0.15s ease, outline 0.15s ease, transform 0.15s ease;
+  }
+  .ms-word-editor img:hover {
+    outline: 2px solid #60a5fa;
+    outline-offset: 2px;
+  }
+  .ms-word-editor img[data-selected='true'] {
+    outline: 3px solid #f59e0b !important;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.25);
+  }
+  .rich-content-display {
+    display: flow-root;
+  }
+  /* Chip Rumus Matematika Visual (KaTeX) di dalam Editor Admin Panel */
+  .ms-word-editor .rich-math-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 7px;
+    margin: 1px 2px;
+    border-radius: 7px;
+    background-color: rgba(255, 255, 255, 0.97);
+    color: #0f172a;
+    border: 1.5px solid #93c5fd;
+    cursor: pointer;
+    vertical-align: middle;
+    line-height: 1.25;
+    user-select: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  }
+  .ms-word-editor .rich-math-chip:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.35);
+  }
+  .ms-word-editor .rich-math-chip[data-selected='true'] {
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.45);
+  }
+  .ms-word-editor .rich-math-chip.rich-math-block {
+    display: flex;
+    justify-content: center;
+    width: fit-content;
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 8px auto;
+    padding: 6px 14px;
+  }
+  .ms-word-editor .rich-math-chip .katex {
+    font-size: 1.05em;
+    color: #0f172a;
+  }
+  @media (max-width: 480px) {
+    .rich-content-display img[data-pos='float-left'],
+    .rich-content-display img[data-pos='float-right'] {
+      max-width: 55% !important;
+    }
+  }
 }
