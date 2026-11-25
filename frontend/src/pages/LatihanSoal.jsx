@@ -207,9 +207,16 @@ const LatihanSoal = () => {
 
   useEffect(() => {
     const handleContentUpdate = () => setContentVersion((v) => v + 1);
+    const handleProfileUpdate = () => setActivity(getActivityData());
     window.addEventListener('tka_content_updated', handleContentUpdate);
+    window.addEventListener('tka_profile_updated', handleProfileUpdate);
+    window.addEventListener('storage', handleProfileUpdate);
     syncCustomContentFromServer();
-    return () => window.removeEventListener('tka_content_updated', handleContentUpdate);
+    return () => {
+      window.removeEventListener('tka_content_updated', handleContentUpdate);
+      window.removeEventListener('tka_profile_updated', handleProfileUpdate);
+      window.removeEventListener('storage', handleProfileUpdate);
+    };
   }, []);
   const completedLatihanIds = activity?.latihanCompleted || [];
   const unlockedLatihanIds = activity?.unlockedLatihan || ['mtk_lat_1', 'bi_lat_1'];
@@ -261,9 +268,8 @@ const LatihanSoal = () => {
     setActivity(getActivityData());
   };
 
-  // Helper Cek Status Latihan (Tuntas hanya jika sudah meraih minimal 1 bintang)
-  const isLevelCompleted = (lvlId) =>
-    completedLatihanIds.includes(lvlId) && getLevelStars(lvlId) >= 1;
+  // Helper Cek Status Latihan (Tuntas cukup dengan minimal 1 bintang)
+  const isLevelCompleted = (lvlId) => getLevelStars(lvlId) >= 1;
 
   const isLevelUnlocked = (index, lvl, levelsList) => {
     // Mode Guest: hanya Latihan 1 (index === 0) yang terbuka
@@ -2434,8 +2440,8 @@ const LatihanSoal = () => {
                         </strong>
                         <p className="mt-0.5 text-[#6E6258] leading-relaxed">
                           {isAdmin
-                            ? `Selesaikan dulu Latihan ${prevLvl?.level}, atau sebagai Admin kamu bisa langsung melompat lewat tantangan soal.`
-                            : `Selesaikan dulu Latihan ${prevLvl?.level} biar latihan ini terbuka.`}
+                            ? `Raih minimal 1 bintang di Latihan ${prevLvl?.level}, atau sebagai Admin kamu bisa langsung melompat lewat tantangan soal.`
+                            : `Raih minimal 1 bintang di Latihan ${prevLvl?.level} biar latihan ini terbuka.`}
                         </p>
                       </div>
                     </div>

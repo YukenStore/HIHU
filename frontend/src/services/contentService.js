@@ -500,9 +500,15 @@ export const getAllSubjects = () => {
 
     const materiList =
       materiObj.elemen?.flatMap((e) => e.bab || []) || [];
+    const latihanPrefix =
+      key === 'bahasa_indonesia'
+        ? 'bi_lat_'
+        : key === 'matematika'
+        ? 'mtk_lat_'
+        : `${key}_lat_`;
     const latihanList = (latihanObj.levels || []).map((lvl) => ({
       ...lvl,
-      id: lvl.id || `${key}_lat_${lvl.level}`,
+      id: lvl.id || `${latihanPrefix}${lvl.level}`,
       no: lvl.level,
     }));
 

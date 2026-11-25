@@ -207,9 +207,16 @@ const Materi = () => {
 
   useEffect(() => {
     const handleContentUpdate = () => setContentVersion((v) => v + 1);
+    const handleProfileUpdate = () => setActivity(getActivityData());
     window.addEventListener('tka_content_updated', handleContentUpdate);
+    window.addEventListener('tka_profile_updated', handleProfileUpdate);
+    window.addEventListener('storage', handleProfileUpdate);
     syncCustomContentFromServer();
-    return () => window.removeEventListener('tka_content_updated', handleContentUpdate);
+    return () => {
+      window.removeEventListener('tka_content_updated', handleContentUpdate);
+      window.removeEventListener('tka_profile_updated', handleProfileUpdate);
+      window.removeEventListener('storage', handleProfileUpdate);
+    };
   }, []);
   const completedBabIds = activity?.materiCompleted || [];
   const unlockedBabIds = activity?.unlockedMateri || ['mtk_1', 'bi_1'];
@@ -268,9 +275,8 @@ const Materi = () => {
     setActivity(getActivityData());
   };
 
-  // Helper Cek Status Level (Tuntas hanya jika sudah memiliki minimal 1 bintang)
-  const isLevelCompleted = (babId) =>
-    completedBabIds.includes(babId) && getLevelStars(babId) >= 1;
+  // Helper Cek Status Level (Tuntas cukup dengan minimal 1 bintang)
+  const isLevelCompleted = (babId) => getLevelStars(babId) >= 1;
 
   const isLevelUnlocked = (index, bab, levelsList) => {
     // Mode Guest: hanya Materi 1 (index === 0) yang terbuka
@@ -747,9 +753,9 @@ const Materi = () => {
                         {subj.deskripsiMateri}
                       </p>
 
-                      {/* Bar Progres */}
-                      <div className="mt-4 pt-3 border-t border-[#E6DFD5]">
-                        <div className="flex items-center justify-between text-[11px] mb-1.5 font-medium text-[#6E6258]">
+                      {/* Bar Progres & Bintang */}
+                      <div className="mt-4 pt-3 border-t border-[#E6DFD5] space-y-2">
+                        <div className="flex items-center justify-between text-[11px] font-medium text-[#6E6258]">
                           <span>
                             Progres: {doneCount} dari {subjLevels.length} Materi
                           </span>
@@ -768,6 +774,16 @@ const Materi = () => {
                               backgroundColor: theme.primaryHex,
                             }}
                           />
+                        </div>
+                        <div className="flex items-center space-x-1.5 text-[11px] font-semibold text-[#D97E26]">
+                          <Star className="w-3.5 h-3.5 fill-[#E5A875] text-[#D97E26]" />
+                          <span>
+                            {subjLevels.reduce(
+                              (acc, b) => acc + getLevelStars(b.id),
+                              0
+                            )}{' '}
+                            / {subjLevels.length * 3} Bintang
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -1864,13 +1880,13 @@ const Materi = () => {
                         </strong>
                         {isAdmin ? (
                           <p className="mt-0.5 text-[#6E6258] leading-relaxed">
-                            Selesaikan dulu Materi {prevBab?.no} ({prevBab?.judul}),{' '}
+                            Raih minimal 1 bintang di Materi {prevBab?.no} ({prevBab?.judul}),{' '}
                             <strong className={selectedSubject === 'bahasa_indonesia' ? 'text-[#047857]' : 'text-[#881337]'}>atau sebagai Admin kamu bisa langsung melompat</strong>{' '}
                             ke materi ini lewat tantangan soal.
                           </p>
                         ) : (
                           <p className="mt-0.5 text-[#6E6258] leading-relaxed">
-                            Selesaikan dulu Materi {prevBab?.no} ({prevBab?.judul}) beserta kuisnya biar materi ini terbuka.
+                            Raih minimal 1 bintang di Materi {prevBab?.no} ({prevBab?.judul}) biar materi ini terbuka.
                           </p>
                         )}
                       </div>
