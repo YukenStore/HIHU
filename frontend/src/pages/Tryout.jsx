@@ -404,7 +404,24 @@ const Tryout = () => {
     const answeredCount = questions.filter((q, idx) => isTryoutQuestionAnswered(q, userAnswers[idx])).length;
 
     const score = Number(((correctCount / (questions.length || 1)) * 100).toFixed(1));
-    const expEarned = isCompletedAll ? Math.round(150 + score) : 0;
+
+    // Rekam ke tracker aktivitas & hitung EXP berbasis tier nilai (anti-spam)
+    const tryoutRes = recordTryout({
+      subject: selectedSubject,
+      packageNum: activePackage.nomorPaket,
+      score,
+      correct: correctCount,
+      total: questions.length,
+      userAnswers,
+      isCompletedAll,
+    });
+
+    const expEarned = tryoutRes?.expEarned || 0;
+    const prevBestExp = tryoutRes?.prevBestExp || 0;
+    const prevBestScore = tryoutRes?.prevBestScore || 0;
+    const newBestExp = tryoutRes?.newBestExp || 0;
+    const maxTryoutExp = tryoutRes?.maxTryoutExp || 350;
+    const tierInfo = tryoutRes?.tierInfo || null;
 
     const result = {
       score,
@@ -415,40 +432,37 @@ const Tryout = () => {
       isCompletedAll,
       answeredCount,
       expEarned,
+      prevBestExp,
+      prevBestScore,
+      newBestExp,
+      maxTryoutExp,
+      tierInfo,
     };
 
     setScoreResult(result);
     setIsFinished(true);
 
-    // Rekam ke tracker aktivitas (EXP hanya diberikan jika isCompletedAll === true)
-    recordTryout({
-      subject: selectedSubject,
-      packageNum: activePackage.nomorPaket,
-      score,
-      correct: correctCount,
-      total: questions.length,
-      userAnswers,
-      isCompletedAll,
-      expEarned,
-    });
-
     // Simpan ke status paket selesai
     const completionKey = `${selectedSubject}_${activePackage.nomorPaket}`;
-    const newCompletion = {
-      score,
-      correctCount,
-      totalCount: questions.length,
-      userAnswers,
-      isCompletedAll,
-      expEarned,
-      updatedAt: Date.now(),
-    };
     try {
       const storageKey = isGuestSession()
         ? 'tka_sd_guest_completed_tryouts'
         : 'tka_sd_completed_tryouts';
       const raw = localStorage.getItem(storageKey);
       const existing = raw ? JSON.parse(raw) : {};
+      const prevEntry = existing[completionKey];
+      const bestScore = Math.max(Number(prevEntry?.bestScore ?? prevEntry?.score) || 0, score);
+      const newCompletion = {
+        score,
+        bestScore,
+        correctCount,
+        totalCount: questions.length,
+        userAnswers,
+        isCompletedAll,
+        expEarned,
+        bestExp: newBestExp,
+        updatedAt: Date.now(),
+      };
       existing[completionKey] = newCompletion;
       localStorage.setItem(storageKey, JSON.stringify(existing));
       setCompletedTryouts(existing);
@@ -1365,18 +1379,94 @@ const Tryout = () => {
                       <span className="text-xs text-[#6E6258] font-normal"> / 100</span>
                     </div>
 
-                    {/* Status EXP Sesuai Kelengkapan Soal */}
-                    <div className="pt-0.5">
-                      {scoreResult?.isCompletedAll ? (
-                        <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#E8F2EF] text-[#286657] border border-[#BCD9D0] text-xs font-bold shadow-2xs">
-                          <Sparkles className="w-3.5 h-3.5 text-[#286657]" />
-                          <span>+{scoreResult?.expEarned} EXP masuk! (Semua soal terisi)</span>
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#FDF1F1] text-[#C93B3B] border border-[#F4C7C7] text-xs font-medium">
-                          <span>Belum dapat EXP (isi semua {scoreResult?.totalCount} soal untuk dapat EXP)</span>
-                        </span>
-                      )}
+                    {/* Status EXP Sesuai Tier Nilai & Kelengkapan Soal */}
+                    <div className="pt-0.5 space-y-2.5">
+                      {(() => {
+                        if (!scoreResult?.isCompletedAll) {
+                          return (
+                            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#FDF1F1] text-[#C93B3B] border border-[#F4C7C7] text-xs font-medium">
+                              <span>Belum dapat EXP (isi semua {scoreResult?.totalCount} soal untuk dapat EXP)</span>
+                            </span>
+                          );
+                        }
+
+                        const expEarned = scoreResult?.expEarned || 0;
+                        const prevBestExp = scoreResult?.prevBestExp || 0;
+                        const newBestExp = scoreResult?.newBestExp || 0;
+                        const maxTryoutExp = scoreResult?.maxTryoutExp || 350;
+                        const tierLabel = scoreResult?.tierInfo?.label || '';
+
+                        if (expEarned > 0) {
+                          return (
+                            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#E8F2EF] text-[#286657] border border-[#BCD9D0] text-xs font-bold shadow-2xs">
+                              <Sparkles className="w-3.5 h-3.5 text-[#286657]" />
+                              <span>
+                                {prevBestExp > 0
+                                  ? `+${expEarned} EXP tambahan! (Naik ke ${tierLabel} • ${newBestExp}/${maxTryoutExp} EXP)`
+                                  : `+${expEarned} EXP masuk! (${tierLabel} • ${newBestExp}/${maxTryoutExp} EXP)`}
+                              </span>
+                            </span>
+                          );
+                        }
+
+                        if (newBestExp >= maxTryoutExp) {
+                          return (
+                            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#FEF7EE] text-[#B45309] border border-[#FCD9BD] text-xs font-semibold">
+                              <span>EXP paket ini sudah maksimal (Nilai 100 • {maxTryoutExp}/{maxTryoutExp} EXP)</span>
+                            </span>
+                          );
+                        }
+
+                        if ((scoreResult?.score || 0) < 30 && newBestExp === 0) {
+                          return (
+                            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300 text-xs font-medium">
+                              <span>Belum dapat EXP — raih nilai minimal 30 untuk mulai dapat EXP</span>
+                            </span>
+                          );
+                        }
+
+                        const nextTargetLabel =
+                          newBestExp < 100
+                            ? 'nilai ≥ 30'
+                            : newBestExp < 200
+                            ? 'nilai ≥ 60'
+                            : newBestExp < 300
+                            ? 'nilai ≥ 80'
+                            : 'nilai 100';
+
+                        return (
+                          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300 text-xs font-medium">
+                            <span>
+                              Belum menambah EXP (rekor: {newBestExp}/{maxTryoutExp} EXP). Raih {nextTargetLabel} untuk tambah EXP!
+                            </span>
+                          </span>
+                        );
+                      })()}
+
+                      {/* Indikator 4 Tahap Tier EXP Tryout */}
+                      <div className="grid grid-cols-4 gap-1.5 pt-1 text-[10px]">
+                        {[
+                          { label: '30–59', exp: 100 },
+                          { label: '60–79', exp: 200 },
+                          { label: '80–99', exp: 300 },
+                          { label: '100', exp: 350 },
+                        ].map((tier) => {
+                          const unlocked = (scoreResult?.newBestExp || 0) >= tier.exp;
+                          return (
+                            <div
+                              key={tier.exp}
+                              className={`px-1.5 py-1.5 rounded-lg border text-center transition-all ${
+                                unlocked
+                                  ? 'bg-[#E8F2EF] border-[#BCD9D0] text-[#286657] font-bold'
+                                  : 'bg-white border-[#E6DFD5] text-[#8C7E72] font-medium'
+                              }`}
+                            >
+                              <div className="leading-tight">Nilai {tier.label}</div>
+                              <div className="text-[9px] mt-0.5">{tier.exp} EXP</div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2.5 pt-2 border-t border-[#E6DFD5] text-xs">

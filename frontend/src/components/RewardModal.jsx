@@ -246,7 +246,7 @@ const RewardModal = () => {
                   <span>PENCAPAIAN BARU!</span>
                 </div>
                 <h3 className="text-base sm:text-lg font-bold text-[#261C14] tracking-tight leading-tight mt-0.5">
-                  Kamu Naik Level! 🎉
+                  {newLevelInfo?.isMaxLevel ? 'Level Maksimal Tercapai! 🏆' : 'Kamu Naik Level! 🎉'}
                 </h3>
               </div>
             </div>
@@ -299,10 +299,16 @@ const RewardModal = () => {
             </span>
             <span
               className={`font-bold ${
-                leveledUp ? 'text-[#C25E38]' : 'text-[#286657]'
+                newLevelInfo?.isMaxLevel
+                  ? 'text-[#D97E26]'
+                  : leveledUp
+                  ? 'text-[#C25E38]'
+                  : 'text-[#286657]'
               }`}
             >
-              {newLevelInfo?.currentLevelExp} / {newLevelInfo?.nextLevelExp} EXP
+              {newLevelInfo?.isMaxLevel
+                ? 'MAX LEVEL 🏆'
+                : `${newLevelInfo?.currentLevelExp} / ${newLevelInfo?.nextLevelExp} EXP`}
             </span>
           </div>
 
@@ -310,7 +316,11 @@ const RewardModal = () => {
           <div className="w-full bg-[#E6DFD5] h-2.5 rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-700 ease-out ${
-                leveledUp ? 'bg-[#C25E38]' : 'bg-[#286657]'
+                newLevelInfo?.isMaxLevel
+                  ? 'bg-[#D97E26]'
+                  : leveledUp
+                  ? 'bg-[#C25E38]'
+                  : 'bg-[#286657]'
               }`}
               style={{ width: `${animProgress}%` }}
             />
@@ -319,7 +329,9 @@ const RewardModal = () => {
           <div className="flex items-center justify-between text-[11px] text-[#6E6258] font-medium pt-0.5">
             <span>Total {newExp} EXP</span>
             <span className="text-[#261C14] font-semibold">
-              {expNeeded} EXP menuju Level {(newLevelInfo?.level || 1) + 1}
+              {newLevelInfo?.isMaxLevel
+                ? `Level Maksimal (Lv. ${newLevelInfo?.maxLevel || 10}) tercapai!`
+                : `${expNeeded} EXP menuju Level ${(newLevelInfo?.level || 1) + 1}`}
             </span>
           </div>
         </div>

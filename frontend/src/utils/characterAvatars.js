@@ -56,7 +56,7 @@ export const CHARACTER_AVATARS = [
     bundleId: 'bundle_siswa_siswi',
     bundleName: 'Paket Bocil Cowo & Cewe',
     rewardSource: 'Peti Materi 5 B. Indo',
-    requirement: 'Buka Peti Materi 5 Bahasa Indonesia (Bocil Cowo & Bocil Cewe)',
+    requirement: 'Kumpulkan semua 15 bintang di Materi 1–5 Bahasa Indonesia',
   },
   {
     id: 'girl',
@@ -66,7 +66,7 @@ export const CHARACTER_AVATARS = [
     bundleId: 'bundle_siswa_siswi',
     bundleName: 'Paket Bocil Cowo & Cewe',
     rewardSource: 'Peti Materi 5 B. Indo',
-    requirement: 'Buka Peti Materi 5 Bahasa Indonesia (Bocil Cowo & Bocil Cewe)',
+    requirement: 'Kumpulkan semua 15 bintang di Materi 1–5 Bahasa Indonesia',
   },
 
   // 3. PAKET HADIAH 2: Anak Cowo & Anak Cewe (Peti Materi 4 Matematika)
@@ -78,7 +78,7 @@ export const CHARACTER_AVATARS = [
     bundleId: 'bundle_petualang_ceria',
     bundleName: 'Paket Anak Cowo & Cewe',
     rewardSource: 'Peti Materi 4 Matematika',
-    requirement: 'Buka Peti Materi 4 Matematika (Anak Cowo & Anak Cewe)',
+    requirement: 'Kumpulkan semua 12 bintang di Materi 1–4 Matematika',
   },
   {
     id: 'child-girl',
@@ -88,7 +88,7 @@ export const CHARACTER_AVATARS = [
     bundleId: 'bundle_petualang_ceria',
     bundleName: 'Paket Anak Cowo & Cewe',
     rewardSource: 'Peti Materi 4 Matematika',
-    requirement: 'Buka Peti Materi 4 Matematika (Anak Cowo & Anak Cewe)',
+    requirement: 'Kumpulkan semua 12 bintang di Materi 1–4 Matematika',
   },
 
   // 4. KATEGORI PAHLAWAN (Peti & Piala Materi / Latihan Soal Matematika)
@@ -146,7 +146,7 @@ export const CHARACTER_AVATARS = [
     category: 'Hewan',
     image: foxGif,
     rewardSource: 'Peti Materi 10 B. Indo',
-    requirement: 'Buka Peti Materi 10 Bahasa Indonesia',
+    requirement: 'Kumpulkan semua 30 bintang di Materi 1–10 Bahasa Indonesia',
   },
   {
     id: 'red-wolf',
@@ -154,7 +154,7 @@ export const CHARACTER_AVATARS = [
     category: 'Hewan',
     image: redWolfGif,
     rewardSource: 'Peti Materi 15 B. Indo',
-    requirement: 'Buka Peti Materi 15 Bahasa Indonesia',
+    requirement: 'Kumpulkan semua 45 bintang di Materi 1–15 Bahasa Indonesia',
   },
   {
     id: 'sheep',
@@ -162,7 +162,7 @@ export const CHARACTER_AVATARS = [
     category: 'Hewan',
     image: sheepGif,
     rewardSource: 'Peti Materi 8 Matematika',
-    requirement: 'Buka Peti Materi 8 Matematika',
+    requirement: 'Kumpulkan semua 24 bintang di Materi 1–8 Matematika',
   },
   {
     id: 'frog',
@@ -170,7 +170,7 @@ export const CHARACTER_AVATARS = [
     category: 'Hewan',
     image: frogGif,
     rewardSource: 'Peti Latihan 4 Matematika',
-    requirement: 'Buka Peti Latihan 4 Matematika',
+    requirement: 'Kumpulkan semua 12 bintang di Latihan 1–4 Matematika',
   },
   {
     id: 'cow',
@@ -178,7 +178,7 @@ export const CHARACTER_AVATARS = [
     category: 'Hewan',
     image: cowGif,
     rewardSource: 'Peti Latihan 4 B. Indo',
-    requirement: 'Buka Peti Latihan 4 Bahasa Indonesia',
+    requirement: 'Kumpulkan semua 12 bintang di Latihan 1–4 Bahasa Indonesia',
   },
   {
     id: 'teddy-bear-heart',
@@ -186,7 +186,7 @@ export const CHARACTER_AVATARS = [
     category: 'Hewan',
     image: teddyBearHeartGif,
     rewardSource: 'Peti Latihan 7 B. Indo',
-    requirement: 'Buka Peti Latihan 7 Bahasa Indonesia',
+    requirement: 'Kumpulkan semua 21 bintang di Latihan 1–7 Bahasa Indonesia',
   },
   {
     id: 'panda',
@@ -194,7 +194,7 @@ export const CHARACTER_AVATARS = [
     category: 'Hewan',
     image: pandaGif,
     rewardSource: 'Peti Latihan 7 Matematika',
-    requirement: 'Buka Peti Latihan 7 Matematika',
+    requirement: 'Kumpulkan semua 21 bintang di Latihan 1–7 Matematika',
   },
 
   // 7. KATEGORI FANTASI (SPESIAL GACHA TRYOUT MINIMAL 80% BENAR)

@@ -44,9 +44,13 @@ export const resetGuestSimulationData = () => {
       materiCompleted: [],
       unlockedMateri: ['mtk_1', 'bi_1'],
       materiStars: {},
+      materiBestExp: {},
       latihanCompleted: [],
       unlockedLatihan: ['mtk_lat_1', 'bi_lat_1'],
       latihanStars: {},
+      latihanBestExp: {},
+      tryoutBestExp: {},
+      tryoutBestScore: {},
       latihanHistory: [],
       tryoutHistory: [],
       streak: {
@@ -250,35 +254,145 @@ export const AVAILABLE_TITLES = [
     color: 'rose',
     badgeColor: 'bg-rose-50 text-rose-700 border-rose-300',
     badgeClassName: '-top-3 -left-2 -rotate-[10deg]',
-    desc: 'Gelar tertinggi buat kamu yang berhasil mencapai Level 10.',
-    requirement: 'Capai Level 10 (kumpulkan minimal 9.200 EXP)',
+    desc: 'Gelar tertinggi buat kamu yang berhasil mencapai Level 10 Maksimal.',
+    requirement: 'Capai Level 10 Maksimal (kumpulkan 9.470 EXP dari semua bintang & Tryout nilai 100)',
     isUnlocked: (data) => calculateLevelInfo(data.exp || 0).level >= 10,
   },
 ];
 
 /**
- * Tabel ambang batas kumulatif EXP untuk setiap level.
- * EXP yang dibutuhkan untuk naik level meningkat secara bertahap
- * agar seimbang dengan total materi (33 bab), drill soal (20 level), dan tryout nasional.
+ * Konfigurasi sistem EXP berbasis bintang & tier nilai Tryout (Anti-Spam / Delta EXP):
+ * - Materi (33 bab × 3 bintang = 99★): 30 EXP / bintang → maks 90 EXP / materi (total 2.970 EXP)
+ * - Latihan Soal (20 level × 3 bintang = 60★): 50 EXP / bintang → maks 150 EXP / latihan (total 3.000 EXP)
+ * - Tryout (10 paket):
+ *     • nilai < 30          → 0 EXP
+ *     • 30 <= nilai < 60    → 100 EXP (Tier 1)
+ *     • 60 <= nilai < 80    → 200 EXP (Tier 2)
+ *     • 80 <= nilai < 100   → 300 EXP (Tier 3)
+ *     • nilai = 100         → 350 EXP (Tier 3 + Bonus Nilai Sempurna 50 EXP)
+ *   Total 10 Tryout nilai 100 = 3.500 EXP
+ * - Total EXP Maksimal = 2.970 + 3.000 + 3.500 = 9.470 EXP (Level 10 Maksimal)
+ */
+export const EXP_CONFIG = {
+  MATERI_EXP_PER_STAR: 30,
+  MATERI_MAX_EXP: 90,
+  LATIHAN_EXP_PER_STAR: 50,
+  LATIHAN_MAX_EXP: 150,
+  TRYOUT_TIERS: {
+    TIER_1_MIN: 30,
+    TIER_1_EXP: 100,
+    TIER_2_MIN: 60,
+    TIER_2_EXP: 200,
+    TIER_3_MIN: 80,
+    TIER_3_EXP: 300,
+    PERFECT_SCORE: 100,
+    PERFECT_EXP: 350,
+  },
+  MAX_LEVEL: 10,
+  MAX_LEVEL_EXP: 9470,
+};
+
+/**
+ * Menghitung total EXP kumulatif untuk jumlah bintang Materi (0..3)
+ */
+export const getMateriExpForStars = (stars = 0) => {
+  const clamped = Math.max(0, Math.min(3, Math.floor(Number(stars) || 0)));
+  return clamped * EXP_CONFIG.MATERI_EXP_PER_STAR;
+};
+
+/**
+ * Menghitung total EXP kumulatif untuk jumlah bintang Latihan Soal (0..3)
+ */
+export const getLatihanExpForStars = (stars = 0) => {
+  const clamped = Math.max(0, Math.min(3, Math.floor(Number(stars) || 0)));
+  return clamped * EXP_CONFIG.LATIHAN_EXP_PER_STAR;
+};
+
+/**
+ * Menghitung tier & total EXP kumulatif Tryout berdasarkan nilai (0..100)
+ */
+export const getTryoutExpInfo = (score = 0, correct = null, total = null) => {
+  const numScore = Number(score) || 0;
+  const isPerfect =
+    numScore >= EXP_CONFIG.TRYOUT_TIERS.PERFECT_SCORE ||
+    (typeof total === 'number' && total > 0 && correct === total);
+
+  if (isPerfect) {
+    return {
+      tier: 4,
+      exp: EXP_CONFIG.TRYOUT_TIERS.PERFECT_EXP,
+      label: 'Nilai Sempurna (100)',
+      isPerfect: true,
+    };
+  }
+  if (numScore >= EXP_CONFIG.TRYOUT_TIERS.TIER_3_MIN) {
+    return {
+      tier: 3,
+      exp: EXP_CONFIG.TRYOUT_TIERS.TIER_3_EXP,
+      label: 'Tier 3 (Nilai 80–99)',
+      isPerfect: false,
+    };
+  }
+  if (numScore >= EXP_CONFIG.TRYOUT_TIERS.TIER_2_MIN) {
+    return {
+      tier: 2,
+      exp: EXP_CONFIG.TRYOUT_TIERS.TIER_2_EXP,
+      label: 'Tier 2 (Nilai 60–79)',
+      isPerfect: false,
+    };
+  }
+  if (numScore >= EXP_CONFIG.TRYOUT_TIERS.TIER_1_MIN) {
+    return {
+      tier: 1,
+      exp: EXP_CONFIG.TRYOUT_TIERS.TIER_1_EXP,
+      label: 'Tier 1 (Nilai 30–59)',
+      isPerfect: false,
+    };
+  }
+  return {
+    tier: 0,
+    exp: 0,
+    label: 'Di bawah 30',
+    isPerfect: false,
+  };
+};
+
+/**
+ * Tabel ambang batas kumulatif EXP untuk setiap level (Level 1 s.d. Level 10 Maksimal).
+ * Level 10 tepat tercapai pada 9.470 EXP (seluruh bintang Materi + Latihan + semua Tryout nilai 100).
  */
 export const LEVEL_EXP_TABLE = [
-  { level: 1, requiredExp: 0, nextLevelExp: 150 },      // Level 1: butuh 150 EXP menuju Lv 2
-  { level: 2, requiredExp: 150, nextLevelExp: 250 },    // Level 2: butuh 250 EXP menuju Lv 3 (total 400)
-  { level: 3, requiredExp: 400, nextLevelExp: 400 },    // Level 3: butuh 400 EXP menuju Lv 4 (total 800)
-  { level: 4, requiredExp: 800, nextLevelExp: 600 },    // Level 4: butuh 600 EXP menuju Lv 5 (total 1.400)
-  { level: 5, requiredExp: 1400, nextLevelExp: 850 },   // Level 5: butuh 850 EXP menuju Lv 6 (total 2.250)
-  { level: 6, requiredExp: 2250, nextLevelExp: 1150 },  // Level 6: butuh 1.150 EXP menuju Lv 7 (total 3.400)
-  { level: 7, requiredExp: 3400, nextLevelExp: 1500 },  // Level 7: butuh 1.500 EXP menuju Lv 8 (total 4.900)
-  { level: 8, requiredExp: 4900, nextLevelExp: 1900 },  // Level 8: butuh 1.900 EXP menuju Lv 9 (total 6.800)
-  { level: 9, requiredExp: 6800, nextLevelExp: 2400 },  // Level 9: butuh 2.400 EXP menuju Lv 10 (total 9.200)
-  { level: 10, requiredExp: 9200, nextLevelExp: 3000 }, // Level 10: master tertinggi (butuh 3.000 EXP per level)
+  { level: 1, requiredExp: 0, nextLevelExp: 150 },       // Level 1: butuh 150 EXP menuju Lv 2 (total 150)
+  { level: 2, requiredExp: 150, nextLevelExp: 250 },     // Level 2: butuh 250 EXP menuju Lv 3 (total 400)
+  { level: 3, requiredExp: 400, nextLevelExp: 400 },     // Level 3: butuh 400 EXP menuju Lv 4 (total 800)
+  { level: 4, requiredExp: 800, nextLevelExp: 600 },     // Level 4: butuh 600 EXP menuju Lv 5 (total 1.400)
+  { level: 5, requiredExp: 1400, nextLevelExp: 900 },    // Level 5: butuh 900 EXP menuju Lv 6 (total 2.300)
+  { level: 6, requiredExp: 2300, nextLevelExp: 1200 },   // Level 6: butuh 1.200 EXP menuju Lv 7 (total 3.500)
+  { level: 7, requiredExp: 3500, nextLevelExp: 1600 },   // Level 7: butuh 1.600 EXP menuju Lv 8 (total 5.100)
+  { level: 8, requiredExp: 5100, nextLevelExp: 2000 },   // Level 8: butuh 2.000 EXP menuju Lv 9 (total 7.100)
+  { level: 9, requiredExp: 7100, nextLevelExp: 2370 },   // Level 9: butuh 2.370 EXP menuju Lv 10 MAX (total 9.470)
+  { level: 10, requiredExp: 9470, nextLevelExp: 0 },     // Level 10: Level Maksimal
 ];
 
 /**
- * Menghitung detail level dan progres EXP secara dinamis (Scaling Curve)
+ * Menghitung detail level dan progres EXP (maksimal Level 10 pada 9.470 EXP)
  */
 export const calculateLevelInfo = (exp = 0) => {
   const currentExp = Math.max(0, Number(exp) || 0);
+
+  // Level Maksimal (Level 10 pada >= 9.470 EXP)
+  if (currentExp >= EXP_CONFIG.MAX_LEVEL_EXP) {
+    return {
+      level: EXP_CONFIG.MAX_LEVEL,
+      maxLevel: EXP_CONFIG.MAX_LEVEL,
+      isMaxLevel: true,
+      totalExp: currentExp,
+      currentLevelExp: EXP_CONFIG.MAX_LEVEL_EXP,
+      nextLevelExp: EXP_CONFIG.MAX_LEVEL_EXP,
+      expRemaining: 0,
+      progressPercent: 100,
+    };
+  }
 
   let currentLevel = 1;
   let levelBaseExp = 0;
@@ -293,23 +407,16 @@ export const calculateLevelInfo = (exp = 0) => {
     }
   }
 
-  // Jika melebihi Level 10 (Endgame mastery)
-  if (currentExp >= 9200) {
-    const extraExp = currentExp - 9200;
-    const extraLevels = Math.floor(extraExp / 3000);
-    currentLevel = 10 + extraLevels;
-    levelBaseExp = 9200 + extraLevels * 3000;
-    nextLevelExp = 3000;
-  }
-
   const currentLevelExp = currentExp - levelBaseExp;
-  const progressPercent = Math.min(
-    100,
-    Math.max(0, Math.round((currentLevelExp / nextLevelExp) * 100))
-  );
+  const progressPercent =
+    nextLevelExp > 0
+      ? Math.min(100, Math.max(0, Math.round((currentLevelExp / nextLevelExp) * 100)))
+      : 100;
 
   return {
     level: currentLevel,
+    maxLevel: EXP_CONFIG.MAX_LEVEL,
+    isMaxLevel: false,
     totalExp: currentExp,
     currentLevelExp,
     nextLevelExp,
@@ -358,11 +465,15 @@ export const getActivityData = () => {
       materiCompleted: [],
       unlockedMateri: ['mtk_1', 'bi_1'],
       materiStars: {},
+      materiBestExp: {},
       latihanCompleted: [],
       unlockedLatihan: ['mtk_lat_1', 'bi_lat_1'],
       latihanStars: {},
+      latihanBestExp: {},
       latihanHistory: [],
       tryoutHistory: [],
+      tryoutBestExp: {},
+      tryoutBestScore: {},
       streak: {
         count: 0,
         lastActiveDate: null,
@@ -380,11 +491,15 @@ export const getActivityData = () => {
   if (!data.materiCompleted) data.materiCompleted = [];
   if (!data.unlockedMateri) data.unlockedMateri = ['mtk_1', 'bi_1'];
   if (!data.materiStars) data.materiStars = {};
+  if (!data.materiBestExp) data.materiBestExp = {};
   if (!data.latihanCompleted) data.latihanCompleted = [];
   if (!data.unlockedLatihan) data.unlockedLatihan = ['mtk_lat_1', 'bi_lat_1'];
   if (!data.latihanStars) data.latihanStars = {};
+  if (!data.latihanBestExp) data.latihanBestExp = {};
   if (!data.latihanHistory) data.latihanHistory = [];
   if (!data.tryoutHistory) data.tryoutHistory = [];
+  if (!data.tryoutBestExp) data.tryoutBestExp = {};
+  if (!data.tryoutBestScore) data.tryoutBestScore = {};
 
   // Filter sample dummy jika pernah tersimpan di cache
   data.latihanHistory = (data.latihanHistory || []).filter(
@@ -418,14 +533,26 @@ export const getActivityData = () => {
 
   // Inisialisasi Total EXP
   if (data.exp === undefined || data.exp === null) {
-    // Hitung baseline EXP hanya dari riwayat aktivitas yang tuntas
-    const materiExp = (data.materiCompleted || []).length * 80;
-    const latihanExp = (data.latihanHistory || [])
-      .filter((l) => l.isCompletedAll !== false)
-      .reduce((sum, l) => sum + (l.expEarned || 80), 0);
-    const tryoutExp = (data.tryoutHistory || [])
+    // Hitung baseline EXP berdasarkan bintang Materi/Latihan dan nilai terbaik Tryout
+    const materiExp = (data.materiCompleted || []).reduce((sum, babId) => {
+      const stars =
+        data.materiStars?.[babId] !== undefined ? Number(data.materiStars[babId]) || 0 : 3;
+      return sum + getMateriExpForStars(stars);
+    }, 0);
+    const latihanExp = (data.latihanCompleted || []).reduce((sum, latId) => {
+      const stars =
+        data.latihanStars?.[latId] !== undefined ? Number(data.latihanStars[latId]) || 0 : 3;
+      return sum + getLatihanExpForStars(stars);
+    }, 0);
+    const tryoutBestMap = {};
+    (data.tryoutHistory || [])
       .filter((t) => t.isCompletedAll !== false)
-      .reduce((sum, t) => sum + (t.expEarned || 150), 0);
+      .forEach((t) => {
+        const key = `${t.subject}_${t.packageNum}`;
+        const tierExp = getTryoutExpInfo(t.score || 0, t.correct, t.total).exp;
+        tryoutBestMap[key] = Math.max(tryoutBestMap[key] || 0, tierExp);
+      });
+    const tryoutExp = Object.values(tryoutBestMap).reduce((sum, v) => sum + v, 0);
     data.exp = materiExp + latihanExp + tryoutExp;
   }
 
@@ -486,11 +613,15 @@ export const syncProfileToDatabase = (data) => {
           materiCompleted: data.materiCompleted || [],
           unlockedMateri: data.unlockedMateri || ['mtk_1', 'bi_1'],
           materiStars: data.materiStars || {},
+          materiBestExp: data.materiBestExp || {},
           latihanCompleted: data.latihanCompleted || [],
           unlockedLatihan: data.unlockedLatihan || ['mtk_lat_1', 'bi_lat_1'],
           latihanStars: data.latihanStars || {},
+          latihanBestExp: data.latihanBestExp || {},
           latihanHistory: data.latihanHistory || [],
           tryoutHistory: data.tryoutHistory || [],
+          tryoutBestExp: data.tryoutBestExp || {},
+          tryoutBestScore: data.tryoutBestScore || {},
         },
       };
       await profileService.saveProfile(payload);
@@ -535,15 +666,19 @@ export const syncProfileFromDatabase = async () => {
       if (Array.isArray(act.materiCompleted)) data.materiCompleted = act.materiCompleted;
       if (Array.isArray(act.unlockedMateri)) data.unlockedMateri = act.unlockedMateri;
       if (act.materiStars) data.materiStars = act.materiStars;
+      if (act.materiBestExp) data.materiBestExp = act.materiBestExp;
       if (Array.isArray(act.latihanCompleted)) data.latihanCompleted = act.latihanCompleted;
       if (Array.isArray(act.unlockedLatihan)) data.unlockedLatihan = act.unlockedLatihan;
       if (act.latihanStars) data.latihanStars = act.latihanStars;
+      if (act.latihanBestExp) data.latihanBestExp = act.latihanBestExp;
       if (act.avatar) data.avatar = act.avatar;
       if (Array.isArray(act.unlockedAvatars)) {
         data.unlockedAvatars = act.unlockedAvatars;
       }
       if (Array.isArray(act.latihanHistory)) data.latihanHistory = act.latihanHistory;
       if (Array.isArray(act.tryoutHistory)) data.tryoutHistory = act.tryoutHistory;
+      if (act.tryoutBestExp) data.tryoutBestExp = act.tryoutBestExp;
+      if (act.tryoutBestScore) data.tryoutBestScore = act.tryoutBestScore;
     }
 
     checkAndUnlockTitles(data);
@@ -748,108 +883,89 @@ export const checkAndUnlockAvatars = (data) => {
 
   const materiCompleted = data.materiCompleted || [];
   const materiStars = data.materiStars || {};
-  const biMateriCount = materiCompleted.filter((id) => id.startsWith('bi_')).length;
-  const mtkMateriCount = materiCompleted.filter((id) => id.startsWith('mtk_')).length;
-
-  // Jumlah materi yang meraih bintang penuh (3 Bintang)
-  const biMateri3StarCount = materiCompleted.filter(
-    (id) => id.startsWith('bi_') && (materiStars[id] !== undefined ? materiStars[id] : 3) >= 3
-  ).length;
-  const mtkMateri3StarCount = materiCompleted.filter(
-    (id) => id.startsWith('mtk_') && (materiStars[id] !== undefined ? materiStars[id] : 3) >= 3
-  ).length;
-
   const latihanCompleted = data.latihanCompleted || [];
   const latihanStars = data.latihanStars || {};
-  const latihanHistory = data.latihanHistory || [];
 
-  const biLatihanCount = Math.max(
-    latihanCompleted.filter((id) => id.startsWith('bi_')).length,
-    latihanHistory.filter(
-      (l) => l.subject?.toLowerCase().includes('indonesia') || l.subject?.toLowerCase().includes('bi')
-    ).length
-  );
+  // Helper ketat: cek apakah SEMUA materi/latihan dari 1 s.d. count sudah meraih 3 bintang penuh
+  const hasAllStarsUpTo = (prefix, count, completedList, starsMap) => {
+    for (let i = 1; i <= count; i++) {
+      const id = `${prefix}${i}`;
+      const stars =
+        starsMap[id] !== undefined
+          ? Number(starsMap[id]) || 0
+          : completedList.includes(id)
+          ? 3
+          : 0;
+      if (stars < 3) return false;
+    }
+    return true;
+  };
 
-  const mtkLatihanCount = Math.max(
-    latihanCompleted.filter((id) => id.startsWith('mtk_')).length,
-    latihanHistory.filter(
-      (l) => l.subject?.toLowerCase().includes('mat') || l.subject?.toLowerCase().includes('mtk')
-    ).length
-  );
-
-  // Jumlah latihan yang meraih bintang penuh (3 Bintang)
-  const biLatihan3StarCount = latihanCompleted.filter(
-    (id) => id.startsWith('bi_') && (latihanStars[id] !== undefined ? latihanStars[id] : 3) >= 3
-  ).length;
-  const mtkLatihan3StarCount = latihanCompleted.filter(
-    (id) => id.startsWith('mtk_') && (latihanStars[id] !== undefined ? latihanStars[id] : 3) >= 3
-  ).length;
-
-  // 1. Peti Materi 5 Bahasa Indonesia: Paket Bocil Cowo & Cewe ('boy' & 'girl')
-  if (biMateriCount >= 5) {
+  // 1. Peti Materi 5 Bahasa Indonesia (Semua 15 Bintang Materi 1-5): Paket Bocil Cowo & Cewe ('boy' & 'girl')
+  if (hasAllStarsUpTo('bi_', 5, materiCompleted, materiStars)) {
     legitUnlocked.add('boy');
     legitUnlocked.add('girl');
   }
 
-  // 2. Peti Materi 10 Bahasa Indonesia: Rubah ('fox')
-  if (biMateriCount >= 10) {
+  // 2. Peti Materi 10 Bahasa Indonesia (Semua 30 Bintang Materi 1-10): Rubah ('fox')
+  if (hasAllStarsUpTo('bi_', 10, materiCompleted, materiStars)) {
     legitUnlocked.add('fox');
   }
 
-  // 3. Peti Materi 15 Bahasa Indonesia: Serigala ('red-wolf')
-  if (biMateriCount >= 15) {
+  // 3. Peti Materi 15 Bahasa Indonesia (Semua 45 Bintang Materi 1-15): Serigala ('red-wolf')
+  if (hasAllStarsUpTo('bi_', 15, materiCompleted, materiStars)) {
     legitUnlocked.add('red-wolf');
   }
 
-  // 4. Piala Puncak Materi 21 Bahasa Indonesia (Semua 63 Bintang): Paket Raja & Ratu ('king' & 'queen')
-  if (biMateri3StarCount >= 21) {
+  // 4. Piala Puncak Materi 21 Bahasa Indonesia (Semua 63 Bintang Materi 1-21): Paket Raja & Ratu ('king' & 'queen')
+  if (hasAllStarsUpTo('bi_', 21, materiCompleted, materiStars)) {
     legitUnlocked.add('king');
     legitUnlocked.add('queen');
   }
 
-  // 5. Peti Materi 4 Matematika: Paket Anak Cowo & Cewe ('child-boy' & 'child-girl')
-  if (mtkMateriCount >= 4) {
+  // 5. Peti Materi 4 Matematika (Semua 12 Bintang Materi 1-4): Paket Anak Cowo & Cewe ('child-boy' & 'child-girl')
+  if (hasAllStarsUpTo('mtk_', 4, materiCompleted, materiStars)) {
     legitUnlocked.add('child-boy');
     legitUnlocked.add('child-girl');
   }
 
-  // 6. Peti Materi 8 Matematika: Domba ('sheep')
-  if (mtkMateriCount >= 8) {
+  // 6. Peti Materi 8 Matematika (Semua 24 Bintang Materi 1-8): Domba ('sheep')
+  if (hasAllStarsUpTo('mtk_', 8, materiCompleted, materiStars)) {
     legitUnlocked.add('sheep');
   }
 
-  // 7. Piala Puncak Materi 12 Matematika (Semua 36 Bintang): Ksatria ('knight')
-  if (mtkMateri3StarCount >= 12) {
+  // 7. Piala Puncak Materi 12 Matematika (Semua 36 Bintang Materi 1-12): Ksatria ('knight')
+  if (hasAllStarsUpTo('mtk_', 12, materiCompleted, materiStars)) {
     legitUnlocked.add('knight');
   }
 
-  // 8. Peti Latihan 4 Matematika: Katak ('frog')
-  if (mtkLatihanCount >= 4) {
+  // 8. Peti Latihan 4 Matematika (Semua 12 Bintang Latihan 1-4): Katak ('frog')
+  if (hasAllStarsUpTo('mtk_lat_', 4, latihanCompleted, latihanStars)) {
     legitUnlocked.add('frog');
   }
 
-  // 9. Peti Latihan 7 Matematika: Panda ('panda')
-  if (mtkLatihanCount >= 7) {
+  // 9. Peti Latihan 7 Matematika (Semua 21 Bintang Latihan 1-7): Panda ('panda')
+  if (hasAllStarsUpTo('mtk_lat_', 7, latihanCompleted, latihanStars)) {
     legitUnlocked.add('panda');
   }
 
-  // 10. Piala Puncak Latihan 10 Matematika (Semua 30 Bintang): Koboi ('cowboy')
-  if (mtkLatihan3StarCount >= 10) {
+  // 10. Piala Puncak Latihan 10 Matematika (Semua 30 Bintang Latihan 1-10): Koboi ('cowboy')
+  if (hasAllStarsUpTo('mtk_lat_', 10, latihanCompleted, latihanStars)) {
     legitUnlocked.add('cowboy');
   }
 
-  // 11. Peti Latihan 4 Bahasa Indonesia: Sapi ('cow')
-  if (biLatihanCount >= 4) {
+  // 11. Peti Latihan 4 Bahasa Indonesia (Semua 12 Bintang Latihan 1-4): Sapi ('cow')
+  if (hasAllStarsUpTo('bi_lat_', 4, latihanCompleted, latihanStars)) {
     legitUnlocked.add('cow');
   }
 
-  // 12. Peti Latihan 7 Bahasa Indonesia: Beruang ('teddy-bear-heart')
-  if (biLatihanCount >= 7) {
+  // 12. Peti Latihan 7 Bahasa Indonesia (Semua 21 Bintang Latihan 1-7): Beruang ('teddy-bear-heart')
+  if (hasAllStarsUpTo('bi_lat_', 7, latihanCompleted, latihanStars)) {
     legitUnlocked.add('teddy-bear-heart');
   }
 
-  // 13. Piala Puncak Latihan 10 Bahasa Indonesia (Semua 30 Bintang): Ninja ('ninja')
-  if (biLatihan3StarCount >= 10) {
+  // 13. Piala Puncak Latihan 10 Bahasa Indonesia (Semua 30 Bintang Latihan 1-10): Ninja ('ninja')
+  if (hasAllStarsUpTo('bi_lat_', 10, latihanCompleted, latihanStars)) {
     legitUnlocked.add('ninja');
   }
 
@@ -930,28 +1046,63 @@ export const setActiveAvatar = (avatarId) => {
 export const markMateriComplete = (babId, stars = 3) => {
   const data = getActivityData();
   if (!data.materiCompleted) data.materiCompleted = [];
+  if (!data.materiStars) data.materiStars = {};
+  if (!data.materiBestExp) data.materiBestExp = {};
+
   const isFirstTime = !data.materiCompleted.includes(babId);
-  if (isFirstTime) {
+  const clampedStars = Math.max(0, Math.min(3, Math.floor(Number(stars) || 0)));
+
+  // Rekor bintang & EXP terbaik sebelumnya (mencegah spam EXP saat ulang materi dengan bintang sama/lebih rendah)
+  const prevStars =
+    data.materiStars[babId] !== undefined
+      ? Number(data.materiStars[babId]) || 0
+      : !isFirstTime
+      ? 3
+      : 0;
+  const prevBestExp = Math.max(
+    Number(data.materiBestExp[babId]) || 0,
+    getMateriExpForStars(prevStars)
+  );
+
+  const newBestStars = Math.max(prevStars, clampedStars);
+  const targetExp = getMateriExpForStars(clampedStars);
+  const newBestExp = Math.max(prevBestExp, targetExp);
+  const expEarned = Math.max(0, newBestExp - prevBestExp);
+
+  if (clampedStars >= 1 && isFirstTime) {
     data.materiCompleted.push(babId);
   }
   if (!data.unlockedMateri) data.unlockedMateri = ['mtk_1', 'bi_1'];
   if (!data.unlockedMateri.includes(babId)) {
     data.unlockedMateri.push(babId);
   }
-  if (!data.materiStars) data.materiStars = {};
-  const prevStars = data.materiStars[babId] || 0;
-  data.materiStars[babId] = Math.max(prevStars, Math.max(1, Math.min(3, stars)));
+
+  if (clampedStars >= 1) {
+    data.materiStars[babId] = newBestStars;
+    data.materiBestExp[babId] = newBestExp;
+  }
+
+  checkAndUnlockTitles(data);
   checkAndUnlockAvatars(data);
   saveActivityData(data);
 
-  // EXP hanya diberikan saat materi pertama kali diselesaikan (mencegah farming EXP saat pelajari ulang materi)
-  const materiExp = isFirstTime ? (60 + stars * 10) : 0;
-  if (isFirstTime && materiExp > 0) {
-    recordUserActivity('materi', materiExp);
+  // EXP diberikan sesuai bintang yang baru dicapai (selisih terhadap rekor terbaik sebelumnya)
+  if (expEarned > 0) {
+    recordUserActivity('materi', expEarned);
   } else {
     notifyProfileUpdate();
   }
-  return { isFirstTime, expEarned: materiExp };
+
+  return {
+    isFirstTime,
+    isStarImproved: !isFirstTime && newBestStars > prevStars,
+    prevStars,
+    earnedStars: clampedStars,
+    newStars: newBestStars,
+    expEarned,
+    totalItemExp: newBestExp,
+    maxExp: EXP_CONFIG.MATERI_MAX_EXP,
+  };
 };
 
 export const unlockLatihan = (latihanId) => {
@@ -969,28 +1120,62 @@ export const unlockLatihan = (latihanId) => {
 export const markLatihanComplete = (latihanId, stars = 3, awardExp = true) => {
   const data = getActivityData();
   if (!data.latihanCompleted) data.latihanCompleted = [];
+  if (!data.latihanStars) data.latihanStars = {};
+  if (!data.latihanBestExp) data.latihanBestExp = {};
+
   const isFirstTime = !data.latihanCompleted.includes(latihanId);
-  if (isFirstTime) {
+  const clampedStars = Math.max(0, Math.min(3, Math.floor(Number(stars) || 0)));
+
+  // Rekor bintang & EXP terbaik sebelumnya (anti-spam, namun naik bintang tetap mendapat selisih EXP)
+  const prevStars =
+    data.latihanStars[latihanId] !== undefined
+      ? Number(data.latihanStars[latihanId]) || 0
+      : !isFirstTime
+      ? 3
+      : 0;
+  const prevBestExp = Math.max(
+    Number(data.latihanBestExp[latihanId]) || 0,
+    getLatihanExpForStars(prevStars)
+  );
+
+  const newBestStars = Math.max(prevStars, clampedStars);
+  const targetExp = getLatihanExpForStars(clampedStars);
+  const newBestExp = Math.max(prevBestExp, targetExp);
+  const expEarned = awardExp ? Math.max(0, newBestExp - prevBestExp) : 0;
+
+  if (clampedStars >= 1 && isFirstTime) {
     data.latihanCompleted.push(latihanId);
   }
   if (!data.unlockedLatihan) data.unlockedLatihan = ['mtk_lat_1', 'bi_lat_1'];
   if (!data.unlockedLatihan.includes(latihanId)) {
     data.unlockedLatihan.push(latihanId);
   }
-  if (!data.latihanStars) data.latihanStars = {};
-  const prevStars = data.latihanStars[latihanId] || 0;
-  data.latihanStars[latihanId] = Math.max(prevStars, Math.max(1, Math.min(3, stars)));
+
+  if (clampedStars >= 1) {
+    data.latihanStars[latihanId] = newBestStars;
+    data.latihanBestExp[latihanId] = newBestExp;
+  }
+
+  checkAndUnlockTitles(data);
   checkAndUnlockAvatars(data);
   saveActivityData(data);
 
-  // Berikan EXP hanya jika awardExp bernilai true dan ini pertama kali tuntas (mencegah farming EXP saat kerjakan ulang latihan)
-  const expEarned = (awardExp && isFirstTime) ? (80 + stars * 15) : 0;
   if (expEarned > 0) {
     recordUserActivity('latihan', expEarned);
   } else {
     notifyProfileUpdate();
   }
-  return { isFirstTime, expEarned };
+
+  return {
+    isFirstTime,
+    isStarImproved: !isFirstTime && newBestStars > prevStars,
+    prevStars,
+    earnedStars: clampedStars,
+    newStars: newBestStars,
+    expEarned,
+    totalItemExp: newBestExp,
+    maxExp: EXP_CONFIG.LATIHAN_MAX_EXP,
+  };
 };
 
 export const resetLatihanProgress = (subject = null) => {
@@ -1031,9 +1216,14 @@ export const recordLatihan = ({
   total,
   isCompletedAll = false,
   expEarned = 0,
+  awardExp = true,
 }) => {
   const data = getActivityData();
-  const finalExp = isCompletedAll ? expEarned : 0;
+  const finalExp = awardExp
+    ? isCompletedAll
+      ? Math.max(0, Number(expEarned) || 0)
+      : 0
+    : Math.max(0, Number(expEarned) || 0);
   const newRecord = {
     id: `lat_${Date.now()}`,
     subject,
@@ -1046,10 +1236,11 @@ export const recordLatihan = ({
     date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
   };
   data.latihanHistory.unshift(newRecord);
+  checkAndUnlockTitles(data);
   saveActivityData(data);
 
-  // EXP HANYA DIBERIKAN JIKA USER MENYELESAIKAN SEMUA SOAL LATIHAN
-  if (isCompletedAll && finalExp > 0) {
+  // EXP hanya diberikan jika awardExp true dan user menyelesaikan semua soal latihan
+  if (awardExp && isCompletedAll && finalExp > 0) {
     recordUserActivity('latihan', finalExp);
   }
 
@@ -1064,40 +1255,90 @@ export const recordTryout = ({
   total,
   userAnswers = {},
   isCompletedAll = false,
-  expEarned = 0,
 }) => {
   const data = getActivityData();
-  const finalExp = isCompletedAll ? expEarned : 0;
+  if (!data.tryoutBestExp) data.tryoutBestExp = {};
+  if (!data.tryoutBestScore) data.tryoutBestScore = {};
+
+  const tryoutKey = `${subject}_${packageNum}`;
+  const effectiveScore =
+    typeof total === 'number' && total > 0 && correct === total ? 100 : Number(score) || 0;
+  const tierInfo = getTryoutExpInfo(effectiveScore, correct, total);
+
+  // Cari rekor terbaik sebelumnya dari tryoutBestExp atau fallback riwayat lama (anti-spam)
+  const legacySamePkg = (data.tryoutHistory || []).filter(
+    (h) =>
+      h.subject === subject &&
+      String(h.packageNum) === String(packageNum) &&
+      h.isCompletedAll !== false
+  );
+  const legacyBestScore = legacySamePkg.reduce(
+    (max, h) => Math.max(max, Number(h.score) || 0),
+    0
+  );
+  const prevBestScore = Math.max(
+    Number(data.tryoutBestScore[tryoutKey]) || 0,
+    legacyBestScore
+  );
+  const prevBestExp =
+    data.tryoutBestExp[tryoutKey] !== undefined
+      ? Number(data.tryoutBestExp[tryoutKey]) || 0
+      : getTryoutExpInfo(legacyBestScore).exp;
+
+  const targetExp = isCompletedAll ? tierInfo.exp : 0;
+  const newBestExp = isCompletedAll ? Math.max(prevBestExp, targetExp) : prevBestExp;
+  const finalExp = isCompletedAll ? Math.max(0, newBestExp - prevBestExp) : 0;
+
+  if (isCompletedAll) {
+    data.tryoutBestExp[tryoutKey] = newBestExp;
+    data.tryoutBestScore[tryoutKey] = Math.max(prevBestScore, effectiveScore);
+  }
+
   const newRecord = {
     id: `to_${Date.now()}`,
     subject,
     packageNum,
-    score,
+    score: effectiveScore,
     correct,
     total,
     userAnswers,
     isCompletedAll,
     expEarned: finalExp,
+    tier: tierInfo.tier,
     date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
   };
   data.tryoutHistory.unshift(newRecord);
+  checkAndUnlockTitles(data);
   saveActivityData(data);
 
-  // EXP HANYA DIBERIKAN JIKA USER MENJAWAB SEMUA SOAL DARI TRYOUT
+  // EXP hanya diberikan jika user menjawab semua soal dan melampaui rekor tier EXP sebelumnya
   if (isCompletedAll && finalExp > 0) {
     recordUserActivity('tryout', finalExp);
+  } else {
+    notifyProfileUpdate();
   }
 
   // SISTEM GACHA KATEGORI FANTASI: Didapat jika Tryout selesai dan nilai min. 80% benar
+  // Baca ulang data terbaru agar tidak menimpa EXP, streak, atau gelar yang baru disimpan recordUserActivity
+  const latestData = getActivityData();
   let fantasyReward = null;
-  const percentScore = total > 0 ? (correct / total) * 100 : score;
-  if (isCompletedAll && (score >= 80 || percentScore >= 80)) {
-    fantasyReward = rollFantasyGacha(data);
+  const percentScore = total > 0 ? (correct / total) * 100 : effectiveScore;
+  if (isCompletedAll && (effectiveScore >= 80 || percentScore >= 80)) {
+    fantasyReward = rollFantasyGacha(latestData);
   }
 
-  checkAndUnlockAvatars(data);
+  checkAndUnlockAvatars(latestData);
 
-  return { ...newRecord, fantasyReward };
+  return {
+    ...newRecord,
+    expEarned: finalExp,
+    prevBestExp,
+    prevBestScore,
+    newBestExp,
+    maxTryoutExp: EXP_CONFIG.TRYOUT_TIERS.PERFECT_EXP,
+    tierInfo,
+    fantasyReward,
+  };
 };
 
 /**

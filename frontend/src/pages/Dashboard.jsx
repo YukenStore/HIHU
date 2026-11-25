@@ -151,7 +151,9 @@ const Dashboard = () => {
                   </span>
 
                   <span className="text-[10px] sm:text-xs text-blue-300 font-medium whitespace-nowrap">
-                    {profileStats.progressPercent}% tercapai
+                    {profileStats.isMaxLevel
+                      ? 'Level Maksimal 🏆'
+                      : `${profileStats.progressPercent}% tercapai`}
                   </span>
 
                 </div>
@@ -164,10 +166,14 @@ const Dashboard = () => {
                   <div className="flex flex-col items-center justify-center min-w-[38px] flex-shrink-0">
 
                     <span className="text-[9px] uppercase tracking-wider text-blue-300 font-semibold">
-                      Level
+                      {profileStats.isMaxLevel ? 'Max Lv' : 'Level'}
                     </span>
 
-                    <span className="text-base sm:text-lg font-extrabold text-blue-400 leading-tight">
+                    <span
+                      className={`text-base sm:text-lg font-extrabold leading-tight ${
+                        profileStats.isMaxLevel ? 'text-amber-300' : 'text-blue-400'
+                      }`}
+                    >
                       {profileStats.level}
                     </span>
 
@@ -180,7 +186,11 @@ const Dashboard = () => {
                     <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
 
                       <div
-                        className="bg-gradient-to-r from-blue-500 to-cyan-400 h-full rounded-full transition-all duration-500"
+                        className={`h-full rounded-full transition-all duration-500 ${
+                          profileStats.isMaxLevel
+                            ? 'bg-gradient-to-r from-amber-400 to-yellow-300'
+                            : 'bg-gradient-to-r from-blue-500 to-cyan-400'
+                        }`}
                         style={{
                           width: `${Math.min(100, Math.max(0, profileStats.progressPercent))}%`
                         }}
@@ -189,7 +199,9 @@ const Dashboard = () => {
                     </div>
 
                     <p className="text-[9px] sm:text-[10px] text-blue-300/80 mt-1.5">
-                      Sedikit lagi naik level, semangat!
+                      {profileStats.isMaxLevel
+                        ? 'Keren! Semua bintang & nilai sempurna tercapai!'
+                        : 'Sedikit lagi naik level, semangat!'}
                     </p>
 
                   </div>

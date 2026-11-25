@@ -95,14 +95,14 @@ const SUBJECTS_CONFIG = {
       4: {
         title: 'Peti Bintang Dasar Literasi',
         requiredLevel: 4,
-        desc: 'Hadiah setelah menyelesaikan 4 latihan pertama Bahasa Indonesia.',
+        desc: 'Didapat kalau kamu mengumpulkan semua 12 bintang (3 bintang di Latihan 1 s.d. 4 Bahasa Indonesia).',
         reward: '🎁 Foto Profil: Sapi',
         avatarIds: ['cow'],
       },
       7: {
         title: 'Peti Perak Analisis & Makna Bahasa',
         requiredLevel: 7,
-        desc: 'Hadiah setelah menyelesaikan 7 latihan Bahasa Indonesia.',
+        desc: 'Didapat kalau kamu mengumpulkan semua 21 bintang (3 bintang di Latihan 1 s.d. 7 Bahasa Indonesia).',
         reward: '🎁 Foto Profil: Beruang',
         avatarIds: ['teddy-bear-heart'],
       },
@@ -146,14 +146,14 @@ const SUBJECTS_CONFIG = {
       4: {
         title: 'Peti Bintang Dasar Numerasi',
         requiredLevel: 4,
-        desc: 'Hadiah setelah menyelesaikan 4 latihan pertama Matematika.',
+        desc: 'Didapat kalau kamu mengumpulkan semua 12 bintang (3 bintang di Latihan 1 s.d. 4 Matematika).',
         reward: '👑 Foto Profil: Katak',
         avatarIds: ['frog'],
       },
       7: {
         title: 'Peti Perak Logika & Geometri',
         requiredLevel: 7,
-        desc: 'Hadiah setelah menyelesaikan 7 latihan Matematika.',
+        desc: 'Didapat kalau kamu mengumpulkan semua 21 bintang (3 bintang di Latihan 1 s.d. 7 Matematika).',
         reward: '🎁 Foto Profil: Panda',
         avatarIds: ['panda'],
       },
@@ -261,8 +261,9 @@ const LatihanSoal = () => {
     setActivity(getActivityData());
   };
 
-  // Helper Cek Status Latihan
-  const isLevelCompleted = (lvlId) => completedLatihanIds.includes(lvlId);
+  // Helper Cek Status Latihan (Tuntas hanya jika sudah meraih minimal 1 bintang)
+  const isLevelCompleted = (lvlId) =>
+    completedLatihanIds.includes(lvlId) && getLevelStars(lvlId) >= 1;
 
   const isLevelUnlocked = (index, lvl, levelsList) => {
     // Mode Guest: hanya Latihan 1 (index === 0) yang terbuka
@@ -271,13 +272,13 @@ const LatihanSoal = () => {
     }
     // Latihan 1 selalu terbuka
     if (index === 0) return true;
-    // Terbuka jika sudah selesai
-    if (completedLatihanIds.includes(lvl.id)) return true;
-    // Terbuka jika sudah di-unlock via tantangan
-    if (unlockedLatihanIds.includes(lvl.id)) return true;
-    // Terbuka jika latihan sebelumnya sudah tuntas dikerjakan
+    // Terbuka jika latihan ini sendiri sudah meraih minimal 1 bintang
+    if (getLevelStars(lvl.id) >= 1) return true;
+    // Terbuka jika latihan sebelumnya sudah meraih minimal 1 bintang
     const prevLvl = levelsList[index - 1];
-    if (prevLvl && completedLatihanIds.includes(prevLvl.id)) return true;
+    if (prevLvl && getLevelStars(prevLvl.id) >= 1) return true;
+    // Khusus Admin (fitur lompat latihan): terbuka jika sudah di-unlock eksplisit
+    if (isAdmin && unlockedLatihanIds.includes(lvl.id)) return true;
 
     return false;
   };
@@ -452,13 +453,11 @@ const LatihanSoal = () => {
   // Selesai & Hitung Nilai Latihan
   const handleFinishQuiz = () => {
     const questions = activeLatihan.soal;
-    let totalScorePoints = 0;
     let correctCount = 0;
 
     questions.forEach((q, idx) => {
       const evaluation = evaluateQuestion(q, userAnswers[idx]);
-      totalScorePoints += evaluation.score;
-      if (evaluation.isCorrect || evaluation.score >= 0.7) {
+      if (evaluation.isCorrect) {
         correctCount++;
       }
     });
@@ -466,27 +465,54 @@ const LatihanSoal = () => {
     const isCompletedAll = questions.every((q, idx) => isQuestionAnswered(q, userAnswers[idx]));
     const answeredCount = questions.filter((q, idx) => isQuestionAnswered(q, userAnswers[idx])).length;
 
-    // Hitung persentase skor akhir (0 - 100)
-    const score = Math.round((totalScorePoints / questions.length) * 100);
+    // Hitung persentase jawaban benar (0 - 100) agar konsisten dengan Jawaban Benar & Review Pembahasan
+    const correctPercent = questions.length > 0 ? (correctCount / questions.length) * 100 : 0;
+    const score = Math.round(correctPercent);
 
-    // Hitung perolehan bintang:
-    // >= 80%: 3 bintang (⭐⭐⭐ Sempurna!)
-    // >= 50%: 2 bintang (⭐⭐☆ Hebat!)
-    // > 0% atau ada jawaban benar: 1 bintang (⭐☆☆ Bagus!)
+    // Hitung perolehan bintang berdasarkan persentase jawaban benar:
+    // 100% jawaban benar    : 3 bintang (⭐⭐⭐)
+    // >= 66% jawaban benar  : 2 bintang (⭐⭐☆)
+    // >= 33% jawaban benar  : 1 bintang (⭐☆☆)
+    // < 33% jawaban benar   : 0 bintang (☆☆☆)
     let starsEarned = 0;
-    if (score >= 80) {
+    if (questions.length > 0 && correctCount === questions.length) {
       starsEarned = 3;
-    } else if (score >= 50) {
+    } else if (correctPercent >= 66) {
       starsEarned = 2;
-    } else if (score > 0 || totalScorePoints > 0) {
+    } else if (correctPercent >= 33) {
       starsEarned = 1;
     }
 
-    // EXP HANYA DIBERIKAN JIKA MENYELESAIKAN SEMUA SOAL LATIHAN
-    // DAN HANYA JIKA LATIHAN INI BELUM PERNAH DISELESAIKAN SEBELUMNYA (mencegah farming EXP saat kerjakan ulang latihan)
-    const actData = getActivityData();
-    const isAlreadyCompleted = (actData.latihanCompleted || []).includes(activeLatihan.id);
-    const expEarned = (isCompletedAll && !isAlreadyCompleted) ? (80 + starsEarned * 15) : 0;
+    // Hitung & simpan EXP berbasis bintang (anti-spam, namun naik bintang mendapat selisih EXP)
+    let expResult = {
+      isFirstTime: false,
+      isStarImproved: false,
+      prevStars: 0,
+      earnedStars: starsEarned,
+      newStars: 0,
+      expEarned: 0,
+      totalItemExp: 0,
+      maxExp: 150,
+    };
+
+    if (starsEarned >= 1) {
+      expResult = markLatihanComplete(activeLatihan.id, starsEarned, true);
+
+      // Otomatis buka latihan berikutnya jika ada
+      const currentIndex = currentLevels.findIndex((l) => l.id === activeLatihan.id);
+      if (currentIndex !== -1 && currentIndex < currentLevels.length - 1) {
+        unlockLatihan(currentLevels[currentIndex + 1].id);
+      }
+    } else {
+      const actData = getActivityData();
+      const prevStars = Number(actData.latihanStars?.[activeLatihan.id]) || 0;
+      const prevBestExp = Number(actData.latihanBestExp?.[activeLatihan.id]) || 0;
+      expResult.prevStars = prevStars;
+      expResult.newStars = prevStars;
+      expResult.totalItemExp = prevBestExp;
+    }
+
+    const expEarned = expResult?.expEarned || 0;
 
     const result = {
       score,
@@ -497,13 +523,18 @@ const LatihanSoal = () => {
       isCompletedAll,
       answeredCount,
       expEarned,
-      isReplay: isAlreadyCompleted,
+      isFirstTime: Boolean(expResult?.isFirstTime),
+      isStarImproved: Boolean(expResult?.isStarImproved),
+      prevStars: expResult?.prevStars || 0,
+      newStars: expResult?.newStars || 0,
+      totalItemExp: expResult?.totalItemExp || 0,
+      maxExp: expResult?.maxExp || 150,
     };
 
     setLatestScoreResult(result);
     setIsFinished(true);
 
-    // Rekam aktivitas ke tracker untuk riwayat latihan (EXP hanya diberikan jika isCompletedAll === true)
+    // Rekam aktivitas ke tracker untuk riwayat latihan (EXP sudah diproses oleh markLatihanComplete)
     recordLatihan({
       subject: selectedSubject,
       level: `Latihan ${activeLatihan.level}`,
@@ -512,18 +543,8 @@ const LatihanSoal = () => {
       total: questions.length,
       isCompletedAll,
       expEarned,
+      awardExp: false,
     });
-
-    // Tandai tuntas & berikan bintang jika ada yang benar (minimal 1 bintang) dan semua soal dijawab
-    if (starsEarned >= 1 && isCompletedAll) {
-      markLatihanComplete(activeLatihan.id, starsEarned, false); // false = jangan tambah EXP dobel karena sudah tercatat di recordLatihan
-
-      // Otomatis buka latihan berikutnya jika ada
-      const currentIndex = currentLevels.findIndex((l) => l.id === activeLatihan.id);
-      if (currentIndex !== -1 && currentIndex < currentLevels.length - 1) {
-        unlockLatihan(currentLevels[currentIndex + 1].id);
-      }
-    }
 
     refreshActivity();
   };
@@ -1345,7 +1366,7 @@ const LatihanSoal = () => {
                                 if (unanswered > 0) {
                                   if (
                                     window.confirm(
-                                      `Masih ada ${unanswered} soal yang belum dijawab.\n\nKalau belum semua soal diisi (${activeLatihan.soal.length}/${activeLatihan.soal.length}), kamu tidak akan mendapat EXP.\n\nTetap mau kumpulkan sekarang?`
+                                      `Masih ada ${unanswered} soal yang belum dijawab.\n\nSoal yang belum dijawab akan dihitung salah dan memengaruhi perolehan bintang serta EXP.\n\nTetap mau kumpulkan sekarang?`
                                     )
                                   ) {
                                     handleFinishQuiz();
@@ -1439,24 +1460,56 @@ const LatihanSoal = () => {
                       : 'Belum dapat bintang nih. Coba ulangi lagi pelan-pelan ya!'}
                   </p>
 
-                  {/* Status EXP Sesuai Kelengkapan Soal */}
+                  {/* Status EXP Sesuai Perolehan Bintang */}
                   <div className="pt-0.5">
-                    {latestScoreResult?.isCompletedAll ? (
-                      latestScoreResult?.expEarned > 0 ? (
-                        <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#E8F2EF] text-[#286657] border border-[#BCD9D0] text-xs font-bold shadow-2xs">
-                          <Sparkles className="w-3.5 h-3.5 text-[#286657]" />
-                          <span>+{latestScoreResult?.expEarned} EXP masuk!</span>
-                        </span>
-                      ) : (
+                    {(() => {
+                      const expEarned = latestScoreResult?.expEarned || 0;
+                      const totalItemExp = latestScoreResult?.totalItemExp || 0;
+                      const maxExp = latestScoreResult?.maxExp || 150;
+                      const prevStars = latestScoreResult?.prevStars || 0;
+                      const newStars = latestScoreResult?.newStars || 0;
+                      const bestStars = Math.max(
+                        prevStars,
+                        Math.min(3, Math.round(totalItemExp / 50))
+                      );
+
+                      if (expEarned > 0) {
+                        return (
+                          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#E8F2EF] text-[#286657] border border-[#BCD9D0] text-xs font-bold shadow-2xs">
+                            <Sparkles className="w-3.5 h-3.5 text-[#286657]" />
+                            <span>
+                              {latestScoreResult?.isStarImproved
+                                ? `+${expEarned} EXP tambahan! (Naik ${prevStars}★ → ${newStars}★ • ${totalItemExp}/${maxExp} EXP)`
+                                : `+${expEarned} EXP masuk! (${newStars}★ • ${totalItemExp}/${maxExp} EXP)`}
+                            </span>
+                          </span>
+                        );
+                      }
+
+                      if (totalItemExp >= maxExp) {
+                        return (
+                          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#FEF7EE] text-[#B45309] border border-[#FCD9BD] text-xs font-semibold">
+                            <span>EXP latihan ini sudah maksimal (3★ • {maxExp}/{maxExp} EXP)</span>
+                          </span>
+                        );
+                      }
+
+                      if ((latestScoreResult?.starsEarned || 0) === 0 && totalItemExp === 0) {
+                        return (
+                          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#FDF1F1] text-[#C93B3B] border border-[#F4C7C7] text-xs font-medium">
+                            <span>Raih bintang untuk mendapatkan EXP</span>
+                          </span>
+                        );
+                      }
+
+                      return (
                         <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300 text-xs font-medium">
-                          <span>Latihan ini sudah pernah diselesaikan (tidak menambah EXP)</span>
+                          <span>
+                            Belum menambah EXP — rekor terbaikmu sudah {bestStars}★ ({totalItemExp}/{maxExp} EXP). Raih {Math.min(3, bestStars + 1)}★ untuk tambah EXP!
+                          </span>
                         </span>
-                      )
-                    ) : (
-                      <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#FDF1F1] text-[#C93B3B] border border-[#F4C7C7] text-xs font-medium">
-                        <span>Belum dapat EXP (isi semua {latestScoreResult?.totalCount} soal untuk dapat EXP)</span>
-                      </span>
-                    )}
+                      );
+                    })()}
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 pt-3 border-t border-[#E6DFD5] text-xs">
@@ -2162,37 +2215,51 @@ const LatihanSoal = () => {
                           </div>
                         </div>
 
-                        {/* --- MILESTONE PETI BONUS (Jika ada di level ini) --- */}
-                        {milestoneItem && !isFinalLevel && (
-                          <div
-                            onClick={() =>
-                              setMilestoneModal({
-                                title: milestoneItem.title,
-                                desc: milestoneItem.desc,
-                                requiredLevel: milestoneItem.requiredLevel,
-                                unlocked: completedCount >= milestoneItem.requiredLevel,
-                                reward: milestoneItem.reward,
-                                avatarIds: milestoneItem.avatarIds || [],
-                              })
-                            }
-                            className="relative flex flex-col items-center my-3 cursor-pointer group"
-                          >
+                        {/* --- MILESTONE PETI BONUS (Terbuka hanya jika seluruh bintang pada latihan sebelum peti terkumpul penuh) --- */}
+                        {milestoneItem && !isFinalLevel && (() => {
+                          const precedingLevels = currentLevels.slice(0, index + 1);
+                          const earnedBeforeChest = precedingLevels.reduce(
+                            (sum, item) => sum + getLevelStars(item.id),
+                            0
+                          );
+                          const requiredStarsBeforeChest = precedingLevels.length * 3;
+                          const isChestUnlocked =
+                            precedingLevels.length > 0 &&
+                            precedingLevels.every((item) => getLevelStars(item.id) >= 3);
+
+                          return (
                             <div
-                              className={`w-14 h-14 rounded-2xl flex items-center justify-center border-2 transition-all duration-150 cursor-pointer ${
-                                completedCount >= milestoneItem.requiredLevel
-                                  ? 'bg-[#FEF7EE] border-amber-300 text-amber-700 shadow-[0_5px_0_0_#D97E26] hover:shadow-[0_6px_0_0_#D97E26] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none'
-                                  : 'bg-[#F2ECE4] border-[#E6DFD5] text-[#8C7E72] shadow-[0_4px_0_0_#D8CDC2] hover:bg-[#EAE2D8] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none'
-                              }`}
+                              onClick={() =>
+                                setMilestoneModal({
+                                  title: milestoneItem.title,
+                                  desc: milestoneItem.desc,
+                                  requiredLevel: milestoneItem.requiredLevel,
+                                  requiredStars: requiredStarsBeforeChest,
+                                  earnedStars: earnedBeforeChest,
+                                  unlocked: isChestUnlocked,
+                                  reward: milestoneItem.reward,
+                                  avatarIds: milestoneItem.avatarIds || [],
+                                })
+                              }
+                              className="relative flex flex-col items-center my-3 cursor-pointer group"
                             >
-                              <Gift className="w-7 h-7 group-hover:scale-110 transition-transform" />
+                              <div
+                                className={`w-14 h-14 rounded-2xl flex items-center justify-center border-2 transition-all duration-150 cursor-pointer ${
+                                  isChestUnlocked
+                                    ? 'bg-[#FEF7EE] border-amber-300 text-amber-700 shadow-[0_5px_0_0_#D97E26] hover:shadow-[0_6px_0_0_#D97E26] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none'
+                                    : 'bg-[#F2ECE4] border-[#E6DFD5] text-[#8C7E72] shadow-[0_4px_0_0_#D8CDC2] hover:bg-[#EAE2D8] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none'
+                                }`}
+                              >
+                                <Gift className="w-7 h-7 group-hover:scale-110 transition-transform" />
+                              </div>
+                              <div className="mt-2 px-2.5 py-0.5 rounded-full bg-white border border-[#E6DFD5] text-[10px] font-bold text-[#6E6258] shadow-2xs group-hover:border-[#8C7E72]">
+                                {isChestUnlocked
+                                  ? '🎁 Peti Terbuka'
+                                  : `Peti Latihan ${milestoneItem.requiredLevel} (${earnedBeforeChest}/${requiredStarsBeforeChest} ⭐)`}
+                              </div>
                             </div>
-                            <div className="mt-2 px-2.5 py-0.5 rounded-full bg-white border border-[#E6DFD5] text-[10px] font-bold text-[#6E6258] shadow-2xs group-hover:border-[#8C7E72]">
-                              {completedCount >= milestoneItem.requiredLevel
-                                ? '🎁 Peti Terbuka'
-                                : `Peti Latihan ${milestoneItem.requiredLevel}`}
-                            </div>
-                          </div>
-                        )}
+                          );
+                        })()}
 
                         {/* --- GRAND TROPHY (Puncak Akhir Mapel - Terbuka jika seluruh bintang terkumpul) --- */}
                         {isFinalLevel && (
@@ -2695,7 +2762,7 @@ const LatihanSoal = () => {
                 </span>
                 <div>
                   <strong className="block text-[#261C14] font-semibold">Kerjakan Berurutan</strong>
-                  Isi semua soal di latihan yang sedang aktif. Kalau sudah selesai dan nilainya cukup, latihan selanjutnya otomatis terbuka.
+                  Jawab soal di latihan yang sedang aktif dan raih minimal 1 bintang (≥ 33% benar) agar latihan selanjutnya otomatis terbuka.
                 </div>
               </div>
 
@@ -2725,7 +2792,7 @@ const LatihanSoal = () => {
                 </span>
                 <div>
                   <strong className="block text-[#261C14] font-semibold">Peti Hadiah & Piala Puncak</strong>
-                  Kumpulkan bintang sebanyak mungkin untuk membuka peti hadiah avatar, dan raih semua bintang untuk membuka Piala Puncak.
+                  Raih semua bintang penuh (3 ⭐) pada latihan sebelum peti untuk membuka peti hadiah avatar, dan kumpulkan semua bintang mapel untuk membuka Piala Puncak.
                 </div>
               </div>
 
@@ -2799,8 +2866,8 @@ const LatihanSoal = () => {
                 </div>
               ) : (
                 <div className="text-[#6E6258]">
-                  <span>Selesaikan dulu <strong>{milestoneModal.requiredLevel} latihan</strong> buat membuka peti ini.</span>
-                  <div className="text-[11px] text-[#8C7E72] mt-0.5">Saat ini: {completedCount} / {milestoneModal.requiredLevel} Selesai</div>
+                  <span>Kumpulkan semua <strong>{milestoneModal.requiredStars} bintang (3 ⭐ di Latihan 1 s.d. {milestoneModal.requiredLevel})</strong> buat membuka peti ini.</span>
+                  <div className="text-[11px] text-[#8C7E72] mt-0.5">Saat ini: {milestoneModal.earnedStars ?? 0} / {milestoneModal.requiredStars} Bintang</div>
                 </div>
               )}
             </div>

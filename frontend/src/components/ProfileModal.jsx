@@ -74,6 +74,8 @@ const ProfileModal = ({ isOpen, onClose, user, profileStats, onProfileUpdated, o
 
   const {
     level,
+    maxLevel = 10,
+    isMaxLevel = false,
     totalExp,
     currentLevelExp,
     nextLevelExp,
@@ -293,25 +295,40 @@ const ProfileModal = ({ isOpen, onClose, user, profileStats, onProfileUpdated, o
               </div>
 
               <div className="text-right">
-                <span className="text-xs font-bold text-white">
-                  {currentLevelExp} / {nextLevelExp} EXP
-                </span>
-                <span className="text-[10px] text-blue-300 block">
-                  {nextLevelExp - currentLevelExp} EXP menuju Level {level + 1}
-                </span>
+                {isMaxLevel ? (
+                  <>
+                    <span className="text-xs font-bold text-amber-300">
+                      MAX LEVEL 🏆
+                    </span>
+                    <span className="text-[10px] text-blue-300 block">
+                      Level tertinggi (Lv. {maxLevel}) tercapai!
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span className="text-xs font-bold text-white">
+                      {currentLevelExp} / {nextLevelExp} EXP
+                    </span>
+                    <span className="text-[10px] text-blue-300 block">
+                      {Math.max(0, nextLevelExp - currentLevelExp)} EXP menuju Level {level + 1}
+                    </span>
+                  </>
+                )}
               </div>
             </div>
 
             {/* Bar Progress Level */}
             <div className="w-full bg-[#162E5B] h-2.5 rounded-full overflow-hidden border border-blue-500/40">
               <div
-                className="bg-blue-500 h-full rounded-full transition-all duration-300"
+                className={`h-full rounded-full transition-all duration-300 ${
+                  isMaxLevel ? 'bg-amber-400' : 'bg-blue-500'
+                }`}
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
 
             <p className="text-[11px] text-blue-100 leading-relaxed bg-[#162E5B] p-3 rounded-lg border-2 border-blue-900/60">
-              💡 <strong>Cara Naik Level:</strong> Selesaikan materi, latihan soal, dan tryout supaya EXP bertambah dan levelmu naik.
+              💡 <strong>Cara Naik Level:</strong> Kumpulkan bintang penuh di Materi (30 EXP/★) dan Latihan Soal (50 EXP/★), serta kejar nilai tertinggi di Tryout (30–59: 100 EXP, 60–79: 200 EXP, 80–99: 300 EXP, nilai 100: 350 EXP). Raih semua bintang &amp; nilai 100 Tryout untuk tembus Level Maksimal (Lv. {maxLevel})!
             </p>
 
             {/* Tombol Preview Simulasi Animasi Pop-up */}

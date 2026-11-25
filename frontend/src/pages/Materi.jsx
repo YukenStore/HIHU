@@ -92,21 +92,21 @@ const SUBJECTS_CONFIG = {
       5: {
         title: 'Peti Bintang Ejaan & Tata Bahasa',
         requiredLevel: 5,
-        desc: 'Hadiah setelah selesai mempelajari 5 materi pertama Bahasa Indonesia.',
+        desc: 'Didapat kalau kamu mengumpulkan semua 15 bintang (3 bintang di Materi 1 s.d. 5 Bahasa Indonesia).',
         reward: '🎁 Foto Profil: Bocil Cowo & Bocil Cewe',
         avatarIds: ['boy', 'girl'],
       },
       10: {
         title: 'Peti Perak Makna & Kalimat Efektif',
         requiredLevel: 10,
-        desc: 'Hadiah setelah selesai mempelajari 10 materi Bahasa Indonesia.',
+        desc: 'Didapat kalau kamu mengumpulkan semua 30 bintang (3 bintang di Materi 1 s.d. 10 Bahasa Indonesia).',
         reward: '🎁 Foto Profil: Rubah',
         avatarIds: ['fox'],
       },
       15: {
         title: 'Peti Emas Sastra, Prosa & Puisi',
         requiredLevel: 15,
-        desc: 'Hadiah setelah selesai mempelajari 15 materi Bahasa Indonesia.',
+        desc: 'Didapat kalau kamu mengumpulkan semua 45 bintang (3 bintang di Materi 1 s.d. 15 Bahasa Indonesia).',
         reward: '🎁 Foto Profil: Serigala',
         avatarIds: ['red-wolf'],
       },
@@ -146,14 +146,14 @@ const SUBJECTS_CONFIG = {
       4: {
         title: 'Peti Bintang Dasar Numerasi',
         requiredLevel: 4,
-        desc: 'Hadiah setelah selesai mempelajari 4 materi pertama Matematika.',
+        desc: 'Didapat kalau kamu mengumpulkan semua 12 bintang (3 bintang di Materi 1 s.d. 4 Matematika).',
         reward: '🎁 Foto Profil: Anak Cowo & Anak Cewe',
         avatarIds: ['child-boy', 'child-girl'],
       },
       8: {
         title: 'Peti Emas Geometri & Pengukuran',
         requiredLevel: 8,
-        desc: 'Hadiah setelah selesai mempelajari 8 materi Matematika.',
+        desc: 'Didapat kalau kamu mengumpulkan semua 24 bintang (3 bintang di Materi 1 s.d. 8 Matematika).',
         reward: '🎁 Foto Profil: Domba',
         avatarIds: ['sheep'],
       },
@@ -244,6 +244,8 @@ const Materi = () => {
   const [showQuizHint, setShowQuizHint] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
   const [quizMistakes, setQuizMistakes] = useState(0);
+  const [missedQuizQuestions, setMissedQuizQuestions] = useState([]);
+  const [quizEarnedStars, setQuizEarnedStars] = useState(0);
   const [quizExpResult, setQuizExpResult] = useState({ isFirstTime: true, expEarned: 0 });
 
   // State Mode Tantangan Lompat Level (Jump Challenge)
@@ -266,8 +268,9 @@ const Materi = () => {
     setActivity(getActivityData());
   };
 
-  // Helper Cek Status Level
-  const isLevelCompleted = (babId) => completedBabIds.includes(babId);
+  // Helper Cek Status Level (Tuntas hanya jika sudah memiliki minimal 1 bintang)
+  const isLevelCompleted = (babId) =>
+    completedBabIds.includes(babId) && getLevelStars(babId) >= 1;
 
   const isLevelUnlocked = (index, bab, levelsList) => {
     // Mode Guest: hanya Materi 1 (index === 0) yang terbuka
@@ -276,13 +279,13 @@ const Materi = () => {
     }
     // Level 1 selalu terbuka
     if (index === 0) return true;
-    // Terbuka jika sudah selesai
-    if (completedBabIds.includes(bab.id)) return true;
-    // Terbuka jika sudah di-unlock via tantangan
-    if (unlockedBabIds.includes(bab.id)) return true;
-    // Terbuka jika level sebelumnya sudah tuntas dikerjakan
+    // Terbuka jika level ini sendiri sudah meraih minimal 1 bintang
+    if (getLevelStars(bab.id) >= 1) return true;
+    // Terbuka jika level sebelumnya sudah meraih minimal 1 bintang
     const prevBab = levelsList[index - 1];
-    if (prevBab && completedBabIds.includes(prevBab.id)) return true;
+    if (prevBab && getLevelStars(prevBab.id) >= 1) return true;
+    // Khusus Admin (fitur lompat materi): terbuka jika sudah di-unlock eksplisit
+    if (isAdmin && unlockedBabIds.includes(bab.id)) return true;
 
     return false;
   };
@@ -364,6 +367,8 @@ const Materi = () => {
     setShowQuizHint(false);
     setQuizFinished(false);
     setQuizMistakes(0);
+    setMissedQuizQuestions([]);
+    setQuizEarnedStars(0);
     setQuizExpResult({ isFirstTime: true, expEarned: 0 });
     isQuizTransitioningRef.current = false;
     setIsQuizTransitioning(false);
@@ -383,6 +388,9 @@ const Materi = () => {
 
     if (!correct) {
       setQuizMistakes((prev) => prev + 1);
+      setMissedQuizQuestions((prev) =>
+        prev.includes(currentQuizIndex) ? prev : [...prev, currentQuizIndex]
+      );
       setShowQuizHint(true);
     } else {
       // Aktifkan kunci transisi agar spam klik tidak melompati soal
@@ -401,28 +409,61 @@ const Materi = () => {
           setIsQuizTransitioning(false);
         }, 1100);
       } else {
-        // Tuntas seluruh 3 soal!
-        setQuizFinished(true);
-        // Hitung bintang: 0 salah -> 3 bintang; 1 salah -> 2 bintang; >=2 salah -> 1 bintang
-        const earnedStars = quizMistakes === 0 ? 3 : quizMistakes === 1 ? 2 : 1;
-        const completionResult = markMateriComplete(activeBab.id, earnedStars);
-        setQuizExpResult(completionResult || { isFirstTime: false, expEarned: 0 });
-
-        // Buka level berikutnya secara otomatis
-        const currentIndex = currentLevels.findIndex((b) => b.id === activeBab.id);
-        if (currentIndex !== -1 && currentIndex < currentLevels.length - 1) {
-          const nextBab = currentLevels[currentIndex + 1];
-          unlockMateri(nextBab.id);
+        // Selesai seluruh soal kuis!
+        // Hitung persentase soal yang dijawab benar di percobaan pertama:
+        // 100% -> 3★, >= 66% -> 2★, >= 33% -> 1★, < 33% (semua sempat salah) -> 0★
+        const totalQuestions = activeBab.soalLatihan.length || 3;
+        const firstTryCorrect = Math.max(0, totalQuestions - missedQuizQuestions.length);
+        const correctPercent = (firstTryCorrect / totalQuestions) * 100;
+        let earnedStars = 0;
+        if (firstTryCorrect === totalQuestions) {
+          earnedStars = 3;
+        } else if (correctPercent >= 66) {
+          earnedStars = 2;
+        } else if (correctPercent >= 33) {
+          earnedStars = 1;
         }
 
-        refreshActivity();
+        setQuizEarnedStars(earnedStars);
+        setQuizFinished(true);
 
-        setTimeout(() => {
-          setActiveBab(null);
-          setInQuizMode(false);
+        if (earnedStars >= 1) {
+          const completionResult = markMateriComplete(activeBab.id, earnedStars);
+          setQuizExpResult(completionResult || { isFirstTime: false, expEarned: 0 });
+
+          // Buka level berikutnya hanya jika user berhasil meraih minimal 1 bintang
+          const currentIndex = currentLevels.findIndex((b) => b.id === activeBab.id);
+          if (currentIndex !== -1 && currentIndex < currentLevels.length - 1) {
+            const nextBab = currentLevels[currentIndex + 1];
+            unlockMateri(nextBab.id);
+          }
+
+          refreshActivity();
+
+          setTimeout(() => {
+            setActiveBab(null);
+            setInQuizMode(false);
+            isQuizTransitioningRef.current = false;
+            setIsQuizTransitioning(false);
+          }, 3000);
+        } else {
+          // 0 bintang: tidak membuka materi selanjutnya & tidak memberi EXP
+          const actData = getActivityData();
+          const prevStars = Number(actData.materiStars?.[activeBab.id]) || 0;
+          const prevBestExp = Number(actData.materiBestExp?.[activeBab.id]) || 0;
+          setQuizExpResult({
+            isFirstTime: false,
+            isStarImproved: false,
+            prevStars,
+            earnedStars: 0,
+            newStars: prevStars,
+            expEarned: 0,
+            totalItemExp: prevBestExp,
+            maxExp: 90,
+          });
           isQuizTransitioningRef.current = false;
           setIsQuizTransitioning(false);
-        }, 2600);
+        }
       }
     }
   };
@@ -833,6 +874,8 @@ const Materi = () => {
                   setIsAnswerCorrect(false);
                   setQuizFinished(false);
                   setQuizMistakes(0);
+                  setMissedQuizQuestions([]);
+                  setQuizEarnedStars(0);
                   setQuizExpResult({ isFirstTime: true, expEarned: 0 });
                   isQuizTransitioningRef.current = false;
                   setIsQuizTransitioning(false);
@@ -867,18 +910,25 @@ const Materi = () => {
                 <div className="p-5 sm:p-6 rounded-lg bg-slate-50 border border-slate-200 shadow-sm relative">
                   {quizFinished ? (
                     <div className="text-center py-6 space-y-4 animate-fade-in">
-                      <div className="w-14 h-14 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200">
+                      <div
+                        className={`w-14 h-14 rounded-full flex items-center justify-center mx-auto border ${
+                          quizEarnedStars >= 1
+                            ? 'bg-emerald-50 text-emerald-600 border-emerald-200'
+                            : 'bg-rose-50 text-rose-600 border-rose-200'
+                        }`}
+                      >
                         <Trophy className="w-7 h-7" />
                       </div>
                       <h4 className="text-lg font-bold text-slate-900">
-                        Materi {activeBab.no} Selesai!
+                        {quizEarnedStars >= 1
+                          ? `Materi ${activeBab.no} Selesai!`
+                          : `Belum Dapat Bintang`}
                       </h4>
 
                       {/* Tampilan Bintang yang Didapatkan */}
                       <div className="flex items-center justify-center space-x-2 py-1">
                         {[1, 2, 3].map((starNum) => {
-                          const finalStars = quizMistakes === 0 ? 3 : quizMistakes === 1 ? 2 : 1;
-                          const isEarned = starNum <= finalStars;
+                          const isEarned = starNum <= quizEarnedStars;
                           return (
                             <div
                               key={starNum}
@@ -901,29 +951,108 @@ const Materi = () => {
                       </div>
 
                       <p className="text-xs sm:text-sm font-semibold text-amber-800">
-                        {quizMistakes === 0
+                        {quizEarnedStars === 3
                           ? 'Keren banget! Kamu dapat 3 bintang penuh.'
-                          : quizMistakes === 1
+                          : quizEarnedStars === 2
                           ? 'Bagus! Kamu dapat 2 bintang.'
-                          : 'Mantap, dapat 1 bintang! Boleh coba lagi buat kejar 3 bintang.'}
+                          : quizEarnedStars === 1
+                          ? 'Mantap, dapat 1 bintang! Boleh coba lagi buat kejar 3 bintang.'
+                          : 'Belum dapat bintang nih karena semua soal sempat salah di percobaan pertama.'}
                       </p>
 
                       <p className="text-xs sm:text-sm text-slate-600 max-w-sm mx-auto leading-relaxed">
-                        Semua soal sudah benar. Materi selanjutnya sekarang sudah terbuka!
+                        {quizEarnedStars >= 1
+                          ? 'Semua soal sudah benar. Materi selanjutnya sekarang sudah terbuka!'
+                          : 'Raih minimal 1 bintang (minimal 33% soal langsung benar) untuk membuka materi selanjutnya.'}
                       </p>
 
                       <div className="pt-2">
-                        {quizExpResult?.isFirstTime && quizExpResult?.expEarned > 0 ? (
-                          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0] text-xs font-bold shadow-2xs">
-                            <Sparkles className="w-3.5 h-3.5 text-[#047857]" />
-                            <span>+{quizExpResult.expEarned} EXP masuk!</span>
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300 text-xs font-medium">
-                            <span>Materi ini sudah pernah diselesaikan (tidak menambah EXP)</span>
-                          </span>
-                        )}
+                        {(() => {
+                          const expEarned = quizExpResult?.expEarned || 0;
+                          const totalItemExp = quizExpResult?.totalItemExp || 0;
+                          const maxExp = quizExpResult?.maxExp || 90;
+                          const prevStars = quizExpResult?.prevStars || 0;
+                          const newStars = quizExpResult?.newStars || 0;
+                          const bestStars = Math.max(
+                            prevStars,
+                            Math.min(3, Math.round(totalItemExp / 30))
+                          );
+
+                          if (expEarned > 0) {
+                            return (
+                              <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0] text-xs font-bold shadow-2xs">
+                                <Sparkles className="w-3.5 h-3.5 text-[#047857]" />
+                                <span>
+                                  {quizExpResult?.isStarImproved
+                                    ? `+${expEarned} EXP tambahan! (Naik ${prevStars}★ → ${newStars}★ • ${totalItemExp}/${maxExp} EXP)`
+                                    : `+${expEarned} EXP masuk! (${newStars}★ • ${totalItemExp}/${maxExp} EXP)`}
+                                </span>
+                              </span>
+                            );
+                          }
+
+                          if (totalItemExp >= maxExp) {
+                            return (
+                              <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-xs font-semibold">
+                                <span>EXP materi ini sudah maksimal (3★ • {maxExp}/{maxExp} EXP)</span>
+                              </span>
+                            );
+                          }
+
+                          if (quizEarnedStars === 0 && totalItemExp === 0) {
+                            return (
+                              <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#FDF1F1] text-[#C93B3B] border border-[#F4C7C7] text-xs font-medium">
+                                <span>Raih bintang untuk mendapatkan EXP</span>
+                              </span>
+                            );
+                          }
+
+                          return (
+                            <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-300 text-xs font-medium">
+                              <span>
+                                Belum menambah EXP — rekor terbaikmu sudah {bestStars}★ ({totalItemExp}/{maxExp} EXP). Raih {Math.min(3, bestStars + 1)}★ untuk tambah EXP!
+                              </span>
+                            </span>
+                          );
+                        })()}
                       </div>
+
+                      {quizEarnedStars === 0 && (
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setCurrentQuizIndex(0);
+                              setSelectedAnswer(null);
+                              setHasSubmittedAnswer(false);
+                              setIsAnswerCorrect(false);
+                              setShowQuizHint(false);
+                              setQuizFinished(false);
+                              setQuizMistakes(0);
+                              setMissedQuizQuestions([]);
+                              setQuizEarnedStars(0);
+                              setQuizExpResult({ isFirstTime: true, expEarned: 0 });
+                            }}
+                            className={`w-full sm:w-auto px-4 py-2 rounded-lg text-white font-semibold text-xs transition-colors cursor-pointer ${
+                              selectedSubject === 'bahasa_indonesia'
+                                ? 'bg-[#047857] hover:bg-[#065F46]'
+                                : 'bg-[#881337] hover:bg-[#700D2B]'
+                            }`}
+                          >
+                            Ulangi Kuis
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setActiveBab(null);
+                              setInQuizMode(false);
+                            }}
+                            className="w-full sm:w-auto px-4 py-2 rounded-lg bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-medium text-xs transition-colors cursor-pointer"
+                          >
+                            Kembali ke Peta Materi
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <>
@@ -1507,37 +1636,51 @@ const Materi = () => {
                           </div>
                         </div>
 
-                        {/* --- MILESTONE PETI BONUS (Jika ada di level ini) --- */}
-                        {milestoneItem && !isFinalLevel && (
-                          <div
-                            onClick={() =>
-                              setMilestoneModal({
-                                title: milestoneItem.title,
-                                desc: milestoneItem.desc,
-                                requiredLevel: milestoneItem.requiredLevel,
-                                unlocked: completedCount >= milestoneItem.requiredLevel,
-                                reward: milestoneItem.reward,
-                                avatarIds: milestoneItem.avatarIds || [],
-                              })
-                            }
-                            className="relative flex flex-col items-center my-3 cursor-pointer group"
-                          >
+                        {/* --- MILESTONE PETI BONUS (Terbuka hanya jika seluruh bintang pada materi sebelum peti terkumpul penuh) --- */}
+                        {milestoneItem && !isFinalLevel && (() => {
+                          const precedingLevels = currentLevels.slice(0, index + 1);
+                          const earnedBeforeChest = precedingLevels.reduce(
+                            (sum, item) => sum + getLevelStars(item.id),
+                            0
+                          );
+                          const requiredStarsBeforeChest = precedingLevels.length * 3;
+                          const isChestUnlocked =
+                            precedingLevels.length > 0 &&
+                            precedingLevels.every((item) => getLevelStars(item.id) >= 3);
+
+                          return (
                             <div
-                              className={`w-14 h-14 rounded-2xl flex items-center justify-center border-2 transition-all duration-150 cursor-pointer ${
-                                completedCount >= milestoneItem.requiredLevel
-                                  ? 'bg-[#FEF7EE] border-amber-300 text-amber-700 shadow-[0_5px_0_0_#D97E26] hover:shadow-[0_6px_0_0_#D97E26] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none'
-                                  : 'bg-[#F2ECE4] border-[#E6DFD5] text-[#8C7E72] shadow-[0_4px_0_0_#D8CDC2] hover:bg-[#EAE2D8] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none'
-                              }`}
+                              onClick={() =>
+                                setMilestoneModal({
+                                  title: milestoneItem.title,
+                                  desc: milestoneItem.desc,
+                                  requiredLevel: milestoneItem.requiredLevel,
+                                  requiredStars: requiredStarsBeforeChest,
+                                  earnedStars: earnedBeforeChest,
+                                  unlocked: isChestUnlocked,
+                                  reward: milestoneItem.reward,
+                                  avatarIds: milestoneItem.avatarIds || [],
+                                })
+                              }
+                              className="relative flex flex-col items-center my-3 cursor-pointer group"
                             >
-                              <Gift className="w-7 h-7 group-hover:scale-110 transition-transform" />
+                              <div
+                                className={`w-14 h-14 rounded-2xl flex items-center justify-center border-2 transition-all duration-150 cursor-pointer ${
+                                  isChestUnlocked
+                                    ? 'bg-[#FEF7EE] border-amber-300 text-amber-700 shadow-[0_5px_0_0_#D97E26] hover:shadow-[0_6px_0_0_#D97E26] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none'
+                                    : 'bg-[#F2ECE4] border-[#E6DFD5] text-[#8C7E72] shadow-[0_4px_0_0_#D8CDC2] hover:bg-[#EAE2D8] hover:-translate-y-0.5 active:translate-y-1 active:shadow-none'
+                                }`}
+                              >
+                                <Gift className="w-7 h-7 group-hover:scale-110 transition-transform" />
+                              </div>
+                              <div className="mt-2 px-2.5 py-0.5 rounded-full bg-white border border-[#E6DFD5] text-[10px] font-bold text-[#6E6258] shadow-2xs group-hover:border-[#8C7E72]">
+                                {isChestUnlocked
+                                  ? '🎁 Peti Terbuka'
+                                  : `Peti Materi ${milestoneItem.requiredLevel} (${earnedBeforeChest}/${requiredStarsBeforeChest} ⭐)`}
+                              </div>
                             </div>
-                            <div className="mt-2 px-2.5 py-0.5 rounded-full bg-white border border-[#E6DFD5] text-[10px] font-bold text-[#6E6258] shadow-2xs group-hover:border-[#8C7E72]">
-                              {completedCount >= milestoneItem.requiredLevel
-                                ? '🎁 Peti Terbuka'
-                                : `Peti Materi ${milestoneItem.requiredLevel}`}
-                            </div>
-                          </div>
-                        )}
+                          );
+                        })()}
 
                         {/* --- GRAND TROPHY (Puncak Akhir Mapel - Terbuka jika seluruh bintang terkumpul) --- */}
                         {isFinalLevel && (
@@ -2067,7 +2210,7 @@ const Materi = () => {
                 </span>
                 <div>
                   <strong className="block text-[#261C14] font-semibold">Selesaikan Kuis untuk Lanjut</strong>
-                  Baca materinya sampai selesai, lalu jawab 3 soal kuis di akhir. Kalau sudah benar semua, materi berikutnya otomatis terbuka.
+                  Baca materinya sampai selesai, lalu jawab 3 soal kuis di akhir. Raih minimal 1 bintang agar materi berikutnya otomatis terbuka.
                 </div>
               </div>
 
@@ -2097,7 +2240,7 @@ const Materi = () => {
                 </span>
                 <div>
                   <strong className="block text-[#261C14] font-semibold">Peti Hadiah & Piala Puncak</strong>
-                  Kumpulkan bintang sebanyak mungkin untuk membuka peti hadiah avatar, dan raih semua bintang untuk membuka Piala Puncak.
+                  Raih semua bintang penuh (3 ⭐) pada materi sebelum peti untuk membuka peti hadiah avatar, dan kumpulkan semua bintang mapel untuk membuka Piala Puncak.
                 </div>
               </div>
 
@@ -2171,8 +2314,8 @@ const Materi = () => {
                 </div>
               ) : (
                 <div className="text-[#6E6258]">
-                  <span>Selesaikan dulu <strong>{milestoneModal.requiredLevel} materi</strong> buat membuka peti ini.</span>
-                  <div className="text-[11px] text-[#8C7E72] mt-0.5">Saat ini: {completedCount} / {milestoneModal.requiredLevel} Materi</div>
+                  <span>Kumpulkan semua <strong>{milestoneModal.requiredStars} bintang (3 ⭐ di Materi 1 s.d. {milestoneModal.requiredLevel})</strong> buat membuka peti ini.</span>
+                  <div className="text-[11px] text-[#8C7E72] mt-0.5">Saat ini: {milestoneModal.earnedStars ?? 0} / {milestoneModal.requiredStars} Bintang</div>
                 </div>
               )}
             </div>
