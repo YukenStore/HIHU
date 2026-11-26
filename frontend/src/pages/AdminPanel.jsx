@@ -1889,13 +1889,15 @@ const AdminPanel = () => {
                                   </span>
                                   {(() => {
                                     const hasImageInQ =
-                                      /<img\b/i.test(q.pertanyaan || '') ||
-                                      /<img\b/i.test(q.stimulus || '') ||
+                                      /<(?:img|svg)\b/i.test(q.pertanyaan || '') ||
+                                      /<(?:img|svg)\b/i.test(q.stimulus || '') ||
                                       (q.pilihan || []).some((o) =>
-                                        /<img\b/i.test(o || '')
+                                        /<(?:img|svg)\b/i.test(o || '')
                                       ) ||
-                                      (q.statements || []).some((s) =>
-                                        /<img\b/i.test(s?.text || '')
+                                      (q.statements || []).some(
+                                        (s) =>
+                                          /<(?:img|svg)\b/i.test(s?.text || '') ||
+                                          /<(?:img|svg)\b/i.test(s?.image || '')
                                       );
                                     const plainQ = (q.pertanyaan || '')
                                       .replace(/<[^>]*>/g, '')

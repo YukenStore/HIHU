@@ -565,6 +565,31 @@ input[type="password"]::-ms-clear {
   .rich-content-display {
     display: flow-root;
   }
+  /* Batasi ukuran diagram <svg> bawaan soal agar proporsional (aman untuk KaTeX & ikon Lucide) */
+  .rich-content-display > svg,
+  .rich-content-display > div > svg,
+  .rich-content-display > p > svg,
+  .rich-content-display svg.statement-image {
+    display: block;
+    width: 100%;
+    max-width: 240px;
+    max-height: 180px;
+    height: auto;
+    margin: 6px 0;
+    background-color: #ffffff;
+    padding: 8px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06);
+  }
+  .rich-content-display.rich-option-display > svg,
+  .rich-content-display.rich-option-display > div > svg,
+  .rich-content-display.rich-option-display > p > svg {
+    max-width: 150px;
+    max-height: 110px;
+    margin: 2px 0;
+    padding: 6px;
+  }
   /* Chip Rumus Matematika Visual (KaTeX) di dalam Editor Admin Panel */
   .ms-word-editor .rich-math-chip {
     display: inline-flex;

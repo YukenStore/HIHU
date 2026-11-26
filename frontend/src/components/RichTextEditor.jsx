@@ -310,14 +310,65 @@ const createMathChipHtml = (tex, displayMode = false) => {
 };
 
 /**
- * Mengubah string tersimpan menjadi HTML yang siap ditampilkan di dalam editor WYSIWYG.
- * Rumus matematika ($...$, $$...$$, dan \frac{a}{b}) otomatis dirender menjadi chip KaTeX visual!
+ * Mengubah tag <svg>...</svg> inline bawaan soal menjadi data-URI SVG yang valid
+ * (menambahkan xmlns, memperbaiki huruf besar/kecil viewBox, & menjaga rasio aspek)
+ * agar bisa diklik, diubah ukuran, dipindahkan, atau dihapus langsung di RichTextEditor.
  */
-const valueToEditorHtml = (raw) => {
+const svgTagToDataUri = (svgHtml) => {
+  let svg = String(svgHtml || '').trim();
+  if (!/^<svg\b/i.test(svg)) return '';
+  svg = svg.replace(/\bviewbox\s*=/gi, 'viewBox=');
+  if (!/\bxmlns\s*=/i.test(svg)) {
+    svg = svg.replace(/^<svg\b/i, '<svg xmlns="http://www.w3.org/2000/svg"');
+  }
+  const openTagMatch = svg.match(/^<svg\b[^>]*>/i);
+  if (openTagMatch) {
+    let openTag = openTagMatch[0];
+    const vbMatch = openTag.match(
+      /viewBox\s*=\s*['"]\s*[\d.-]+[\s,]+[\d.-]+[\s,]+([\d.]+)[\s,]+([\d.]+)\s*['"]/i
+    );
+    if (vbMatch) {
+      const vbW = Number(vbMatch[1]);
+      const vbH = Number(vbMatch[2]);
+      if (vbW > 0 && vbH > 0) {
+        if (!/\bwidth\s*=/i.test(openTag)) {
+          openTag = openTag.replace(/>$/, ` width="${vbW}">`);
+        }
+        if (!/\bheight\s*=/i.test(openTag)) {
+          openTag = openTag.replace(/>$/, ` height="${vbH}">`);
+        }
+        svg = openTag + svg.slice(openTagMatch[0].length);
+      }
+    }
+  }
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+};
+
+const convertInlineSvgsToImgs = (rawStr, isCompact = false) => {
+  if (!rawStr || !/<svg\b/i.test(rawStr)) return rawStr;
+  const defaultPos = isCompact ? 'block-left' : 'block-center';
+  const defaultWidth = isCompact ? '140px' : '220px';
+  const styleStr = buildImgStyle(defaultPos, defaultWidth);
+  return rawStr.replace(/<svg\b[^>]*>[\s\S]*?<\/svg>/gi, (svgMatch) => {
+    const dataUri = svgTagToDataUri(svgMatch);
+    if (!dataUri) return svgMatch;
+    return `<img src="${dataUri}" alt="Gambar ilustrasi" data-pos="${defaultPos}" data-width="${defaultWidth}" class="rich-content-img" style="${styleStr}" />`;
+  });
+};
+
+/**
+ * Mengubah string tersimpan menjadi HTML yang siap ditampilkan di dalam editor WYSIWYG.
+ * Rumus matematika ($...$, $$...$$, dan \frac{a}{b}) otomatis dirender menjadi chip KaTeX visual,
+ * dan diagram <svg> inline otomatis dikonversi menjadi <img> agar mudah diatur ukuran & posisinya!
+ */
+const valueToEditorHtml = (raw, isCompact = false) => {
   if (raw === null || raw === undefined || raw === '') return '';
   let str = String(raw)
     .replace(/\[h(?:orizontal)?\]\s*/gi, '')
     .replace(/\r\n/g, '\n');
+
+  // 0. Konversi diagram <svg> inline bawaan soal menjadi <img> agar proporsional & bisa diedit langsung
+  str = convertInlineSvgsToImgs(str, isCompact);
 
   // 1. Lindungi tag HTML valid (<img>, <span>, <b>, <ol>, dll.) tanpa menyentuh tanda '<' & '>' matematika
   const protectedTags = [];
@@ -444,6 +495,16 @@ const serializeNodesToValue = (parentNode) => {
         ).trim();
         const styleStr = buildImgStyle(pos, rawWidth);
         acc += `<img src="${src}" alt="${alt}" data-pos="${pos}" data-width="${rawWidth}" class="rich-content-img" style="${styleStr}" />`;
+        return;
+      }
+
+      // Diagram <svg> inline (fallback defensif agar tidak hilang saat diserialisasi)
+      if (tag === 'SVG') {
+        const dataUri = svgTagToDataUri(node.outerHTML);
+        if (dataUri) {
+          const styleStr = buildImgStyle('block-left', '160px');
+          acc += `<img src="${dataUri}" alt="Gambar ilustrasi" data-pos="block-left" data-width="160px" class="rich-content-img" style="${styleStr}" />`;
+        }
         return;
       }
 
@@ -846,7 +907,7 @@ const RichTextEditor = ({
       clearSelectedImage();
       clearSelectedMath();
       setShowMathPanel(false);
-      editorRef.current.innerHTML = valueToEditorHtml(value);
+      editorRef.current.innerHTML = valueToEditorHtml(value, compact);
       ensureImagesInteractive();
       lastEmittedRef.current = value;
     }
@@ -856,7 +917,7 @@ const RichTextEditor = ({
   // Set inisialisasi awal saat komponen pertama kali dimuat
   useEffect(() => {
     if (editorRef.current) {
-      editorRef.current.innerHTML = valueToEditorHtml(value);
+      editorRef.current.innerHTML = valueToEditorHtml(value, compact);
       ensureImagesInteractive();
       lastEmittedRef.current = value;
     }
@@ -1417,7 +1478,7 @@ const RichTextEditor = ({
         (_, idx) => preservedImgs[Number(idx)] ?? ''
       );
 
-      editorRef.current.innerHTML = valueToEditorHtml(cleaned);
+      editorRef.current.innerHTML = valueToEditorHtml(cleaned, compact);
       ensureImagesInteractive();
       clearSelectedImage();
       clearSelectedMath();

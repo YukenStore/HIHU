@@ -1141,10 +1141,10 @@ const LatihanSoal = () => {
                         dangerouslySetInnerHTML={{ __html: formatMath(currentQ.pertanyaan) }}
                       />
 
-                      {/* Opsi 1: MCQ (Single Choice) - Grid 2 Kolom Otomatis Jika Ada Gambar */}
+                      {/* Opsi 1: MCQ (Single Choice) - Grid 2 Kolom Otomatis Jika Ada Gambar / SVG */}
                       {qType === 'mcq' && (() => {
                         const hasImageOptions = (currentQ.pilihan || []).some((o) =>
-                          /<img\b/i.test(String(o || ''))
+                          /<(?:img|svg)\b/i.test(String(o || ''))
                         );
                         return (
                           <div
@@ -1176,7 +1176,7 @@ const LatihanSoal = () => {
                                   }`}
                                 >
                                   <div
-                                    className="flex-1 min-w-0 rich-content-display"
+                                    className="flex-1 min-w-0 rich-content-display rich-option-display"
                                     dangerouslySetInnerHTML={{ __html: formatMath(opt) }}
                                   />
                                   <div
@@ -1197,10 +1197,10 @@ const LatihanSoal = () => {
                         );
                       })()}
 
-                      {/* Opsi 2: MCMA (Multi-select) - Grid 2 Kolom Otomatis Jika Ada Gambar */}
+                      {/* Opsi 2: MCMA (Multi-select) - Grid 2 Kolom Otomatis Jika Ada Gambar / SVG */}
                       {qType === 'mcma' && (() => {
                         const hasImageOptions = (currentQ.pilihan || []).some((o) =>
-                          /<img\b/i.test(String(o || ''))
+                          /<(?:img|svg)\b/i.test(String(o || ''))
                         );
                         return (
                           <div className="space-y-2.5 pt-2">
@@ -1246,7 +1246,7 @@ const LatihanSoal = () => {
                                     }`}
                                   >
                                     <div
-                                      className="flex-1 min-w-0 rich-content-display"
+                                      className="flex-1 min-w-0 rich-content-display rich-option-display"
                                       dangerouslySetInnerHTML={{ __html: formatMath(opt) }}
                                     />
                                     <div
@@ -1699,7 +1699,7 @@ const LatihanSoal = () => {
                                 const isOptionSelected =
                                   opt === userAnswer ||
                                   (typeof userAnswer === 'number' && oIdx === userAnswer);
-                                const hasImg = /<img\b/i.test(String(opt || ''));
+                                const hasImg = /<(?:img|svg)\b/i.test(String(opt || ''));
 
                                 let badgeStyle = 'bg-white border-[#E6DFD5] text-[#6E6258]';
                                 if (isOptionCorrect) {
@@ -1720,7 +1720,7 @@ const LatihanSoal = () => {
                                         {String.fromCharCode(65 + oIdx)}.
                                       </span>
                                       <div
-                                        className="flex-1 min-w-0 rich-content-display"
+                                        className="flex-1 min-w-0 rich-content-display rich-option-display"
                                         dangerouslySetInnerHTML={{ __html: formatMath(opt) }}
                                       />
                                     </div>
@@ -1753,7 +1753,7 @@ const LatihanSoal = () => {
                                     }`}
                                   >
                                     <div
-                                      className="flex-1 min-w-0 rich-content-display"
+                                      className="flex-1 min-w-0 rich-content-display rich-option-display"
                                       dangerouslySetInnerHTML={{ __html: formatMath(opt) }}
                                     />
                                     <div className="flex items-center space-x-1 flex-shrink-0">
