@@ -104,34 +104,41 @@ export const PUSMENDIK_MATERI = {
             id: 'mtk_2',
             no: 2,
             judul: 'Perbandingan dan Skala',
-            ringkasan: 'Konsep rasio dua nilai atau lebih dan rumus skala gambar/peta terhadap jarak sebenarnya.',
-            tujuan: 'Murid mampu menghitung perbandingan senilai/berbalik nilai dan menghitung jarak peta, skala, serta jarak sebenarnya.',
-            konsepKunci: '-> Rumus Skala Pokok: Skala = JP : JS | Jarak Sebenarnya (JS) = JP / Skala | Jarak Peta (JP) = JS × Skala\n-> Konversi Tangga Satuan (km ➔ cm): 1 km = 100.000 cm | Turun 5 Tangga: × 100.000 (+5 nol) | Naik 5 Tangga: ÷ 100.000 (coret 5 nol)',
+            ringkasan: 'Konsep perbandingan senilai (kelipatan & rasio), perbandingan berbalik nilai, serta rumus skala peta/denah terhadap jarak sebenarnya.',
+            tujuan: 'Murid mampu menghitung perbandingan senilai (model kelipatan maupun rasio), perbandingan berbalik nilai, serta menghitung jarak peta/denah, skala, dan jarak sebenarnya.',
+            konsepKunci: '-> Rumus Skala Pokok: Skala = JP : JS | Jarak Sebenarnya (JS) = JP ÷ Skala | Jarak Peta (JP) = JS × Skala\n-> Aturan Tangga Satuan Panjang: Turun 1 tangga = × 10 (geser koma 1 langkah ke kanan) | Naik 1 tangga = ÷ 10 (geser koma 1 langkah ke kiri)\n-> Konversi Skala Peta & Denah: km ⇄ cm (jarak 5 tangga: × 100.000 / ÷ 100.000, geser koma 5 langkah) | m ⇄ cm (jarak 2 tangga: × 100 / ÷ 100, geser koma 2 langkah)\n-> Jenis Perbandingan: Senilai (kelipatan sebanding & model rasio A : B) | Berbalik Nilai (A naik ➔ B turun, hasil kali A × B tetap)',
             uraianMateri: [
               {
                 subjudul: 'Rumus Segitiga Skala',
-                konten: '-> Tiga Variabel Skala Peta: Skala = JP / JS | Jarak Sebenarnya (JS) = JP / Skala | Jarak pada Peta (JP) = JS × Skala',
-                rumus: 'Skala = JP : JS  (Semua dalam satuan cm)',
-                contoh: 'JP = 5 cm, JS = 25 km = 2.500.000 cm. Skala = 5 : 2.500.000 = 1 : 500.000'
+                konten: '-> Tiga Variabel Skala Peta / Denah: Skala = $\\frac{\\text{JP}}{\\text{JS}}$ | Jarak Sebenarnya (JS) = $\\text{JP} \\div \\text{Skala}$ | Jarak pada Peta (JP) = $\\text{JS} \\times \\text{Skala}$\n💡 Ingat Aturan Pembagian Pecahan: Saat menghitung JS dengan skala $1 : n$ (bentuk pecahan $\\frac{1}{n}$), tanda bagi ($\\div$) diubah menjadi kali ($\\times$) lalu pecahan di belakangnya dibalik, sehingga $\\text{JP} \\div \\frac{1}{n} = \\text{JP} \\times \\frac{n}{1} = \\text{JP} \\times n$.',
+                rumus: 'Skala = JP : JS  (Semua ukuran disamakan dulu ke satuan cm)',
+                contoh: '• Mencari Skala Peta (km ➔ cm): JP = 5 cm, JS = 25 km = 2.500.000 cm. Skala = 5 : 2.500.000 = 1 : 500.000.\n• Mencari Skala Denah (m ➔ cm): Panjang ruang di denah 4 cm, panjang sebenarnya 8 m = 800 cm. Skala = 4 : 800 = 1 : 200.'
               },
               {
-                subjudul: 'Tangga Satuan Panjang (Kunci Skala km ke cm)',
+                subjudul: 'Tangga Satuan Panjang (Aturan Umum, km ⇄ cm & m ⇄ cm)',
                 tipe: 'tangga_satuan',
-                konten: 'Dalam menghitung skala, satuan Jarak Sebenarnya (km) harus disamakan ke satuan Jarak Peta (cm) menggunakan tangga satuan panjang:\n-> Urutan Tangga Panjang: km ➔ hm | hm ➔ dam | dam ➔ m | m ➔ dm | dm ➔ cm | cm ➔ mm\n-> Setiap TURUN 1 tangga: Dikali 10 (tambah 1 angka nol)\n-> Setiap NAIK 1 tangga: Dibagi 10 (coret 1 angka nol)\n-> Rumus Kilat km ke cm: TURUN 5 tangga → Dikali 100.000 (tambah 5 angka nol)\n-> Rumus Kilat cm ke km: NAIK 5 tangga → Dibagi 100.000 (coret 5 angka nol)',
-                rumus: 'km → hm → dam → m → dm → cm → mm  (km ke cm = × 100.000)',
-                contoh: '• Ubah km ke cm: 4 km = 4 × 100.000 = 400.000 cm (tambah 5 nol).\n• Ubah cm ke km: 6.000.000 cm = 6.000.000 ÷ 100.000 = 60 km (coret 5 nol).'
+                konten: 'Dalam menghitung skala peta maupun denah, satuan jarak sebenarnya harus disamakan dulu dengan satuan pada gambar (cm) memakai aturan tangga satuan panjang:\n-> Urutan Tangga Panjang: km ➔ hm ➔ dam ➔ m ➔ dm ➔ cm ➔ mm\n-> Aturan Dasar Turun Tangga: Setiap TURUN 1 tangga dikali 10 (**geser koma 1 langkah ke kanan**; jika bilangan bulat, tambahkan 0 di belakang). Turun $n$ tangga = geser koma $n$ langkah ke kanan.\n-> Aturan Dasar Naik Tangga: Setiap NAIK 1 tangga dibagi 10 (**geser koma 1 langkah ke kiri**). Naik $n$ tangga = geser koma $n$ langkah ke kiri.\n-> Pola Peta Jarak Jauh (km ⇄ cm, jarak 5 tangga): km ➔ cm turun 5 tangga ($\\times 100.000$, geser koma 5 langkah ke kanan) | cm ➔ km naik 5 tangga ($\\div 100.000$, geser koma 5 langkah ke kiri).\n-> Pola Denah Bangunan/Lapangan (m ⇄ cm, jarak 2 tangga): m ➔ cm turun 2 tangga ($\\times 100$, geser koma 2 langkah ke kanan) | cm ➔ m naik 2 tangga ($\\div 100$, geser koma 2 langkah ke kiri).\n📌 Hati-hati Bilangan Desimal: Jangan asal menulis tambahan nol di belakang angka desimal! Misalnya $2{,}5\\text{ km}$ turun 5 tangga ke cm: geser koma 5 langkah ke kanan menjadi $250.000\\text{ cm}$ (bukan $2{,}500000$).',
+                rumus: 'Turun n tangga = geser koma n langkah ke kanan (× 10ⁿ)  |  Naik n tangga = geser koma n langkah ke kiri (÷ 10ⁿ)',
+                contoh: '• km ➔ cm (bilangan bulat, turun 5 tangga): 4 km = 4 × 100.000 = 400.000 cm (geser koma 5 langkah ke kanan).\n• km ➔ cm (desimal, turun 5 tangga): 2,5 km = 2,5 × 100.000 = 250.000 cm (geser koma 5 langkah ke kanan).\n• cm ➔ km (naik 5 tangga): 6.000.000 cm ÷ 100.000 = 60 km | 250.000 cm ÷ 100.000 = 2,5 km (geser koma 5 langkah ke kiri).\n• m ➔ cm (soal denah, turun 2 tangga): 12,5 m = 12,5 × 100 = 1.250 cm (geser koma 2 langkah ke kanan).\n• cm ➔ m (soal denah, naik 2 tangga): 850 cm ÷ 100 = 8,5 m (geser koma 2 langkah ke kiri).'
               },
               {
-                subjudul: 'Perbandingan Senilai',
-                konten: 'Konsep perbandingan senilai:\n-> Ciri Perbandingan Senilai: Nilai A Naik ➔ Nilai B Naik | Kelipatan Sebanding | Contoh: Jumlah Barang vs Total Harga',
-                contoh: 'Harga 3 buku Rp15.000. Harga 7 buku = (7/3) × 15.000 = Rp35.000.'
+                subjudul: 'Perbandingan Senilai (Kelipatan & Model Rasio)',
+                konten: 'Perbandingan senilai adalah perbandingan dua besaran yang bergerak searah (semakin besar nilai yang satu, semakin besar pula nilai pasangannya). Ada dua model yang sering keluar di soal:\n-> 1. Model Kelipatan / Satuan: Ciri: Nilai A naik ➔ Nilai B ikut naik | Kelipatan sebanding | Contoh: jumlah barang vs total harga, atau jarak tempuh vs banyak bensin.\n-> 2. Model Rasio ($A : B$): Ciri: Ditulis $A : B$ | Angka rasio lebih besar ➔ nilai aslinya lebih besar | Contoh: pembagian uang, perbandingan umur, atau banyak kelereng. Mencakup 3 bentuk soal:\n• Diketahui **Jumlah** ($A + B$): $\\text{Nilai } A = \\frac{A}{A + B} \\times \\text{Jumlah Asli}$\n• Diketahui **Selisih** ($A - B$): $\\text{Nilai } A = \\frac{A}{\\text{Selisih Rasio}} \\times \\text{Selisih Asli}$\n• **Perbandingan Bertingkat** ($A : B$ dan $B : C$): Samakan dulu angka rasio huruf yang sama ($B$) memakai KPK-nya agar menjadi satu rasio $A : B : C$.',
+                rumus: 'Kelipatan: $\\frac{\\text{Ditanya}}{\\text{Diketahui}} \\times \\text{Nilai Diketahui}$  |  Rasio Jumlah: $\\frac{\\text{Rasio Ditanya}}{\\text{Jumlah Rasio}} \\times \\text{Total}$  |  Rasio Selisih: $\\frac{\\text{Rasio Ditanya}}{\\text{Selisih Rasio}} \\times \\text{Selisih}$',
+                contoh: '• Model Kelipatan: Harga 3 buku Rp15.000. Harga 7 buku = $\\frac{7}{3} \\times \\text{Rp}15.000 = \\text{Rp}35.000$.\n• Model Rasio (Jumlah): Rasio uang Ani : Budi = 3 : 5 dan jumlah uang mereka Rp80.000. Uang Ani = $\\frac{3}{3+5} \\times \\text{Rp}80.000 = \\frac{3}{8} \\times \\text{Rp}80.000 = \\text{Rp}30.000$.\n• Model Rasio (Selisih): Rasio umur Kakak : Adik = 5 : 2 dan selisih umur mereka 9 tahun. Umur Kakak = $\\frac{5}{5-2} \\times 9 = \\frac{5}{3} \\times 9 = 15\\text{ tahun}$.\n• Model Rasio (Bertingkat): Diketahui $A : B = 2 : 3$ dan $B : C = 2 : 5$. Samakan nilai $B$ (KPK dari 3 dan 2 adalah 6): $A : B = 4 : 6$ dan $B : C = 6 : 15$, jadi $A : B : C = 4 : 6 : 15$.'
+              },
+              {
+                subjudul: 'Perbandingan Berbalik Nilai',
+                konten: 'Berbeda dengan perbandingan senilai, pada perbandingan berbalik nilai dua besaran bergerak berlawanan arah:\n-> Ciri Perbandingan Berbalik Nilai: Nilai A Naik ➔ Nilai B justru Turun (dan sebaliknya) | Hasil kali $A \\times B$ selalu tetap (konstan)\n-> Contoh Konteks Sehari-hari: Banyak pekerja vs lama waktu pengerjaan (makin banyak pekerja, pekerjaan makin cepat selesai) | Kecepatan kendaraan vs waktu tempuh | Banyak hewan ternak vs lama persediaan pakan habis.\n📌 Cara Membedakan Cepat: Kalau satu besaran ditambah, apakah pasangannya ikut makin besar (**senilai**) atau malah makin kecil/cepat habis (**berbalik nilai**)?',
+                rumus: '$A_1 \\times B_1 = A_2 \\times B_2$  atau  $B_2 = \\frac{A_1 \\times B_1}{A_2}$',
+                contoh: '• Contoh Pekerja & Waktu: Suatu pekerjaan selesai dalam 12 hari oleh 6 pekerja. Jika dikerjakan 8 pekerja, waktu makin singkat (berbalik nilai): $\\text{Waktu baru} = \\frac{6 \\times 12}{8} = \\frac{72}{8} = 9\\text{ hari}$.\n• Contoh Kecepatan & Waktu: Mobil melaju 60 km/jam sampai dalam 2 jam. Jika kecepatannya 80 km/jam, waktu tempuhnya = $\\frac{60 \\times 2}{80} = \\frac{120}{80} = 1{,}5\\text{ jam}$.'
               }
             ],
             contohSoal: {
               soal: 'Jarak kota P dan Q pada peta berskala 1 : 1.200.000 adalah 4 cm. Jarak sebenarnya adalah...',
-              penjelasan: 'JS = JP / Skala = 4 × 1.200.000 cm = 4.800.000 cm = 48 km.'
+              penjelasan: 'Diketahui: JP = $4\\text{ cm}$ dan Skala = $1 : 1.200.000 = \\frac{1}{1.200.000}$.\n-> Langkah 1 (Masukkan ke rumus JS): $\\text{JS} = \\text{JP} \\div \\text{Skala} = 4 \\div \\frac{1}{1.200.000}$\n💡 Ingat Aturan Pembagian Pecahan: Tanda bagi ($\\div$) diubah menjadi kali ($\\times$), lalu pecahan di belakangnya dibalik!\n-> Langkah 2 (Ubah pembagian menjadi perkalian): $\\text{JS} = 4 \\times \\frac{1.200.000}{1} = 4 \\times 1.200.000 = 4.800.000\\text{ cm}$\n-> Langkah 3 (Ubah cm ke km — naik 5 tangga, dibagi 100.000 atau geser koma 5 langkah ke kiri): $4.800.000\\text{ cm} = 48\\text{ km}$.'
             },
-            tipsJuara: 'Ingat tangga konversi: dari km ke cm turun 5 tangga, artinya dikali 100.000 (tambah 5 nol)!',
+            tipsJuara: 'Ingat aturan tangga: turun 1 tangga = ×10 (geser koma 1 langkah ke kanan), naik 1 tangga = ÷10 (geser koma 1 langkah ke kiri). Jadi dari km ⇄ cm geser 5 langkah, dan untuk soal denah m ⇄ cm geser 2 langkah!',
             soalLatihan: [
               {
                 id: 1,
@@ -145,14 +152,14 @@ export const PUSMENDIK_MATERI = {
                 pertanyaan: 'Jarak sebenarnya 60 km. Jika digambar pada peta dengan skala 1 : 1.500.000, jarak pada peta adalah...',
                 pilihan: ['2 cm', '4 cm', '6 cm', '8 cm'],
                 jawabanBenar: 1,
-                hint: 'Ubah 60 km ke cm (6.000.000 cm), lalu bagi dengan 1.500.000.'
+                hint: 'Ubah 60 km ke cm (turun 5 tangga, geser koma 5 langkah ke kanan = 6.000.000 cm), lalu bagi dengan 1.500.000.'
               },
               {
                 id: 3,
                 pertanyaan: 'Skala peta 1 : 250.000. Jika jarak pada peta 6 cm, berapakah jarak sebenarnya dalam kilometer?',
                 pilihan: ['12 km', '15 km', '25 km', '150 km'],
                 jawabanBenar: 1,
-                hint: '6 × 250.000 = 1.500.000 cm. Coret 5 nol untuk mengubah cm ke km.'
+                hint: 'JS = 6 ÷ (1/250.000) = 6 × 250.000 = 1.500.000 cm. Ubah cm ke km: naik 5 tangga (geser koma 5 langkah ke kiri / ÷ 100.000).'
               }
             ]
           },

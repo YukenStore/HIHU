@@ -232,43 +232,72 @@ const EnhancedContentRenderer = ({ content }) => {
 
 /**
  * Komponen Interaktif Visual Tangga Satuan Panjang (km sampai mm)
- * Didesain konsisten dengan UI standar aplikasi
+ * Mendukung konversi Peta (km ⇄ cm, 5 tangga) & Denah (m ⇄ cm, 2 tangga) termasuk angka desimal
  */
 const TanggaSatuanVisual = () => {
-  const [kmVal, setKmVal] = useState('4');
-  const [cmVal, setCmVal] = useState('6000000');
+  const [kmVal, setKmVal] = useState('2,5');
+  const [cmVal, setCmVal] = useState('6.000.000');
+  const [mVal, setMVal] = useState('12,5');
+  const [cmToMVal, setCmToMVal] = useState('850');
   const [activeTab, setActiveTab] = useState('km-to-cm');
 
   const STAIRS = [
-    { id: 'km', label: 'km', full: 'Kilometer', role: 'Satuan Jarak Sebenarnya (JS)', isSpecial: 'km' },
+    { id: 'km', label: 'km', full: 'Kilometer', role: 'Satuan Jarak Sebenarnya (Peta) • Awal', isSpecial: 'km' },
     { id: 'hm', label: 'hm', full: 'Hektometer', role: 'Turun 1: ×10' },
     { id: 'dam', label: 'dam', full: 'Dekameter', role: 'Turun 2: ×100' },
-    { id: 'm', label: 'm', full: 'Meter', role: 'Satuan Pokok Internasional' },
+    { id: 'm', label: 'm', full: 'Meter', role: 'Satuan Pokok Internasional / Denah • Turun 3: ×1.000', isSpecial: 'm' },
     { id: 'dm', label: 'dm', full: 'Desimeter', role: 'Turun 4: ×10.000' },
-    { id: 'cm', label: 'cm', full: 'Sentimeter', role: 'Satuan Skala & Peta (JP)', isSpecial: 'cm' },
-    { id: 'mm', label: 'mm', full: 'Milimeter', role: 'Satuan Terkecil (×1.000.000)' },
+    { id: 'cm', label: 'cm', full: 'Sentimeter', role: 'Satuan Skala & Peta (JP) • Turun 5: ×100.000', isSpecial: 'cm' },
+    { id: 'mm', label: 'mm', full: 'Milimeter', role: 'Satuan Terkecil • Turun 6: ×1.000.000' },
   ];
 
-  const presetsKm = ['1', '4', '15', '48', '60'];
-  const presetsCm = ['500.000', '1.200.000', '2.500.000', '6.000.000'];
+  const presetsKm = ['1', '2,5', '4', '15', '48'];
+  const presetsCm = ['250.000', '500.000', '1.200.000', '6.000.000'];
+  const presetsM = ['2', '8', '12,5', '25', '40'];
+  const presetsCmToM = ['150', '400', '850', '1.250'];
+
+  const parseIndoNumber = (val, allowThousandsDot = false) => {
+    const str = String(val ?? '').trim();
+    if (!str) return NaN;
+    const normalized = allowThousandsDot
+      ? str.replace(/\./g, '').replace(',', '.')
+      : str.replace(',', '.');
+    return parseFloat(normalized);
+  };
+
+  const formatIndoNumber = (num) => {
+    if (isNaN(num)) return '0';
+    const clean = Number(num.toPrecision(12));
+    return clean.toLocaleString('id-ID', { maximumFractionDigits: 6 });
+  };
 
   const getKmConverted = () => {
-    const clean = String(kmVal).replace(',', '.');
-    const n = parseFloat(clean);
+    const n = parseIndoNumber(kmVal, false);
     if (isNaN(n)) return '0';
-    return (n * 100000).toLocaleString('id-ID');
+    return formatIndoNumber(n * 100000);
   };
 
   const getCmConverted = () => {
-    const raw = String(cmVal).replace(/\./g, '').replace(',', '.');
-    const n = parseFloat(raw);
+    const n = parseIndoNumber(cmVal, true);
     if (isNaN(n)) return '0';
-    return (n / 100000).toLocaleString('id-ID');
+    return formatIndoNumber(n / 100000);
+  };
+
+  const getMConverted = () => {
+    const n = parseIndoNumber(mVal, false);
+    if (isNaN(n)) return '0';
+    return formatIndoNumber(n * 100);
+  };
+
+  const getCmToMConverted = () => {
+    const n = parseIndoNumber(cmToMVal, true);
+    if (isNaN(n)) return '0';
+    return formatIndoNumber(n / 100);
   };
 
   return (
     <div className="space-y-3.5 my-3 animate-fade-in">
-      {/* 1. Header Banner Aturan Tangga */}
+      {/* 1. Header Banner Aturan Tangga (Geser Koma — Aman untuk Bulat & Desimal) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
         <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 flex items-start space-x-2.5 shadow-2xs">
           <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center flex-shrink-0 font-bold">
@@ -278,8 +307,8 @@ const TanggaSatuanVisual = () => {
             <strong className="block font-bold text-slate-900 text-[11px] uppercase tracking-wider">
               Setiap Turun 1 Tangga:
             </strong>
-            <span className="text-slate-600">
-              Dikali (×) 10 • Tambah 1 angka nol (0)
+            <span className="text-slate-600 leading-relaxed">
+              Dikali (×) 10 • <strong>Geser koma 1 langkah ke kanan</strong> (untuk bilangan bulat, tambah 0 di belakang)
             </span>
           </div>
         </div>
@@ -292,8 +321,8 @@ const TanggaSatuanVisual = () => {
             <strong className="block font-bold text-slate-900 text-[11px] uppercase tracking-wider">
               Setiap Naik 1 Tangga:
             </strong>
-            <span className="text-slate-600">
-              Dibagi (÷) 10 • Coret 1 angka nol (0)
+            <span className="text-slate-600 leading-relaxed">
+              Dibagi (÷) 10 • <strong>Geser koma 1 langkah ke kiri</strong>
             </span>
           </div>
         </div>
@@ -315,18 +344,20 @@ const TanggaSatuanVisual = () => {
           {STAIRS.map((stair, index) => (
             <div
               key={stair.id}
-              className={`flex items-center justify-between p-2 rounded-lg border transition-all ${
+              className={`flex flex-wrap items-center justify-between gap-1.5 p-2 rounded-lg border transition-all ${
                 stair.isSpecial === 'cm'
                   ? 'bg-amber-50/70 border-amber-300 font-semibold'
                   : stair.isSpecial === 'km'
                   ? 'bg-blue-50/60 border-blue-200 font-semibold'
+                  : stair.isSpecial === 'm'
+                  ? 'bg-emerald-50/60 border-emerald-200 font-semibold'
                   : 'bg-slate-50/70 border-slate-200'
               }`}
               style={{
-                marginLeft: `${Math.min(index * 4.5, 30)}%`,
+                marginLeft: `${Math.min(index * 4, 24)}%`,
               }}
             >
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center flex-wrap gap-1.5">
                 <span className="w-10 h-6 rounded bg-white border border-slate-200 text-xs font-mono font-bold flex items-center justify-center text-slate-800">
                   {stair.label}
                 </span>
@@ -338,70 +369,79 @@ const TanggaSatuanVisual = () => {
                 )}
                 {stair.isSpecial === 'km' && (
                   <span className="px-1.5 py-0.5 rounded text-[10px] bg-blue-100 text-blue-800 font-bold">
-                    Jarak Sebenarnya (km)
+                    Jarak Peta (km)
+                  </span>
+                )}
+                {stair.isSpecial === 'm' && (
+                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 font-bold">
+                    Jarak Denah (m)
                   </span>
                 )}
               </div>
-              <div className="text-[11px] text-slate-500 hidden sm:block pr-2">
+              <div className="text-[10px] sm:text-[11px] text-slate-600 pr-1">
                 {stair.role}
               </div>
             </div>
           ))}
         </div>
 
-        <div className="p-3 rounded-lg bg-blue-50/60 border border-blue-200 text-xs text-blue-900 space-y-1 mt-2">
+        <div className="p-3 rounded-lg bg-blue-50/60 border border-blue-200 text-xs text-blue-900 space-y-1.5 mt-2">
           <div className="flex items-center space-x-1.5 font-bold">
             <Zap className="w-4 h-4 text-blue-600" />
-            <span>Trik Kilat Skala: Lompatan 5 Tangga (km ⇄ cm)</span>
+            <span>Trik Cepat Skala: Hitung Jumlah Tangga lalu Geser Koma!</span>
           </div>
           <p className="leading-relaxed text-slate-700">
-            Dari <strong>km</strong> turun 5 kali ke <strong>cm</strong> = <strong>DIKALI 100.000</strong> (tambah 5 angka nol).<br />
-            Dari <strong>cm</strong> naik 5 kali ke <strong>km</strong> = <strong>DIBAGI 100.000</strong> (coret 5 angka nol).
+            <strong>1. Peta (km ⇄ cm — 5 tangga):</strong><br />
+            • <strong>km → cm</strong> (turun 5 tangga) = <strong>× 100.000</strong> (geser koma 5 langkah ke kanan). Contoh: 2,5 km = 250.000 cm.<br />
+            • <strong>cm → km</strong> (naik 5 tangga) = <strong>÷ 100.000</strong> (geser koma 5 langkah ke kiri). Contoh: 250.000 cm = 2,5 km.<br />
+            <strong>2. Denah (m ⇄ cm — 2 tangga):</strong><br />
+            • <strong>m → cm</strong> (turun 2 tangga) = <strong>× 100</strong> (geser koma 2 langkah ke kanan). Contoh: 12,5 m = 1.250 cm.<br />
+            • <strong>cm → m</strong> (naik 2 tangga) = <strong>÷ 100</strong> (geser koma 2 langkah ke kiri). Contoh: 850 cm = 8,5 m.
           </p>
         </div>
       </div>
 
-      {/* 3. Simulator Interaktif Konversi */}
+      {/* 3. Simulator Interaktif Konversi (km ⇄ cm & m ⇄ cm, mendukung desimal) */}
       <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-3 shadow-2xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-2 border-b border-slate-100 gap-2">
+        <div className="flex flex-col gap-2 pb-2 border-b border-slate-100">
           <div className="flex items-center space-x-2">
             <Calculator className="w-4 h-4 text-blue-600" />
             <span className="text-xs font-bold uppercase tracking-wider text-slate-900">
-              Latihan Simulator Konversi Skala
+              Latihan Simulator Konversi Skala (Peta &amp; Denah)
             </span>
           </div>
 
-          <div className="flex space-x-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
-            <button
-              onClick={() => setActiveTab('km-to-cm')}
-              className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'km-to-cm'
-                  ? 'bg-white text-blue-700 shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              km ke cm (×100.000)
-            </button>
-            <button
-              onClick={() => setActiveTab('cm-to-km')}
-              className={`px-2.5 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'cm-to-km'
-                  ? 'bg-white text-blue-700 shadow-2xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              cm ke km (÷100.000)
-            </button>
+          <div className="flex flex-wrap gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+            {[
+              { id: 'km-to-cm', label: 'km → cm (×100.000)' },
+              { id: 'cm-to-km', label: 'cm → km (÷100.000)' },
+              { id: 'm-to-cm', label: 'm → cm (×100)' },
+              { id: 'cm-to-m', label: 'cm → m (÷100)' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+                  activeTab === tab.id
+                    ? 'bg-white text-blue-700 shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        {activeTab === 'km-to-cm' ? (
+        {activeTab === 'km-to-cm' && (
           <div className="space-y-2.5">
             <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-600">
               <span className="text-[11px] font-bold text-slate-500 mr-1">Contoh Cepat:</span>
               {presetsKm.map((p) => (
                 <button
                   key={p}
+                  type="button"
                   onClick={() => setKmVal(p)}
                   className={`px-2 py-0.5 rounded text-xs font-bold border transition-all cursor-pointer ${
                     kmVal === p
@@ -421,12 +461,14 @@ const TanggaSatuanVisual = () => {
                   type="text"
                   value={kmVal}
                   onChange={(e) => setKmVal(e.target.value)}
+                  placeholder="mis. 2,5"
                   className="w-28 px-3 py-1.5 rounded-lg bg-white text-slate-900 font-bold font-mono text-center text-sm border border-slate-300 outline-none focus:border-blue-500"
                 />
               </div>
 
-              <div className="text-blue-600 font-bold text-xs flex items-center space-x-1">
-                <span>➔ × 100.000</span>
+              <div className="text-blue-600 font-bold text-xs text-center">
+                <div>➔ × 100.000</div>
+                <div className="text-[10px] font-medium text-slate-500">Geser koma 5 langkah kanan</div>
               </div>
 
               <div className="flex-1 space-y-1 sm:text-right">
@@ -437,13 +479,16 @@ const TanggaSatuanVisual = () => {
               </div>
             </div>
           </div>
-        ) : (
+        )}
+
+        {activeTab === 'cm-to-km' && (
           <div className="space-y-2.5">
             <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-600">
               <span className="text-[11px] font-bold text-slate-500 mr-1">Contoh Cepat:</span>
               {presetsCm.map((p) => (
                 <button
                   key={p}
+                  type="button"
                   onClick={() => setCmVal(p)}
                   className={`px-2 py-0.5 rounded text-xs font-bold border transition-all cursor-pointer ${
                     cmVal === p
@@ -467,14 +512,108 @@ const TanggaSatuanVisual = () => {
                 />
               </div>
 
-              <div className="text-blue-600 font-bold text-xs flex items-center space-x-1">
-                <span>➔ ÷ 100.000</span>
+              <div className="text-blue-600 font-bold text-xs text-center">
+                <div>➔ ÷ 100.000</div>
+                <div className="text-[10px] font-medium text-slate-500">Geser koma 5 langkah kiri</div>
               </div>
 
               <div className="flex-1 space-y-1 sm:text-right">
                 <span className="text-[11px] font-bold text-blue-700 uppercase block">Hasil (km):</span>
                 <div className="inline-block px-3 py-1.5 rounded-lg bg-white text-blue-900 font-bold font-mono text-sm border border-blue-300">
                   {getCmConverted()} km
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'm-to-cm' && (
+          <div className="space-y-2.5">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-600">
+              <span className="text-[11px] font-bold text-slate-500 mr-1">Contoh Cepat:</span>
+              {presetsM.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setMVal(p)}
+                  className={`px-2 py-0.5 rounded text-xs font-bold border transition-all cursor-pointer ${
+                    mVal === p
+                      ? 'bg-emerald-600 text-white border-emerald-600'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {p} m
+                </button>
+              ))}
+            </div>
+
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex-1 space-y-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase block">Input Ukuran Denah (m):</span>
+                <input
+                  type="text"
+                  value={mVal}
+                  onChange={(e) => setMVal(e.target.value)}
+                  placeholder="mis. 12,5"
+                  className="w-28 px-3 py-1.5 rounded-lg bg-white text-slate-900 font-bold font-mono text-center text-sm border border-slate-300 outline-none focus:border-emerald-500"
+                />
+              </div>
+
+              <div className="text-emerald-700 font-bold text-xs text-center">
+                <div>➔ × 100</div>
+                <div className="text-[10px] font-medium text-slate-500">Geser koma 2 langkah kanan</div>
+              </div>
+
+              <div className="flex-1 space-y-1 sm:text-right">
+                <span className="text-[11px] font-bold text-emerald-700 uppercase block">Hasil (cm):</span>
+                <div className="inline-block px-3 py-1.5 rounded-lg bg-white text-emerald-900 font-bold font-mono text-sm border border-emerald-300">
+                  {getMConverted()} cm
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'cm-to-m' && (
+          <div className="space-y-2.5">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-600">
+              <span className="text-[11px] font-bold text-slate-500 mr-1">Contoh Cepat:</span>
+              {presetsCmToM.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setCmToMVal(p)}
+                  className={`px-2 py-0.5 rounded text-xs font-bold border transition-all cursor-pointer ${
+                    cmToMVal === p
+                      ? 'bg-emerald-600 text-white border-emerald-600'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {p} cm
+                </button>
+              ))}
+            </div>
+
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex-1 space-y-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase block">Input Nilai (cm):</span>
+                <input
+                  type="text"
+                  value={cmToMVal}
+                  onChange={(e) => setCmToMVal(e.target.value)}
+                  className="w-28 px-3 py-1.5 rounded-lg bg-white text-slate-900 font-bold font-mono text-center text-sm border border-slate-300 outline-none focus:border-emerald-500"
+                />
+              </div>
+
+              <div className="text-emerald-700 font-bold text-xs text-center">
+                <div>➔ ÷ 100</div>
+                <div className="text-[10px] font-medium text-slate-500">Geser koma 2 langkah kiri</div>
+              </div>
+
+              <div className="flex-1 space-y-1 sm:text-right">
+                <span className="text-[11px] font-bold text-emerald-700 uppercase block">Hasil (m):</span>
+                <div className="inline-block px-3 py-1.5 rounded-lg bg-white text-emerald-900 font-bold font-mono text-sm border border-emerald-300">
+                  {getCmToMConverted()} m
                 </div>
               </div>
             </div>
