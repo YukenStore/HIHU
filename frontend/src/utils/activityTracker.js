@@ -886,10 +886,9 @@ export const checkAndUnlockAvatars = (data) => {
   const latihanCompleted = data.latihanCompleted || [];
   const latihanStars = data.latihanStars || {};
 
-  // Helper ketat: cek apakah SEMUA materi/latihan dari 1 s.d. count sudah meraih 3 bintang penuh
-  const hasAllStarsUpTo = (prefix, count, completedList, starsMap) => {
-    for (let i = 1; i <= count; i++) {
-      const id = `${prefix}${i}`;
+  // Helper ketat: cek apakah SEMUA ID materi/latihan pada daftar sudah meraih 3 bintang penuh
+  const hasAllStarsForIds = (ids, completedList, starsMap) => {
+    for (const id of ids) {
       const stars =
         starsMap[id] !== undefined
           ? Number(starsMap[id]) || 0
@@ -898,8 +897,33 @@ export const checkAndUnlockAvatars = (data) => {
           : 0;
       if (stars < 3) return false;
     }
-    return true;
+    return ids.length > 0;
   };
+
+  // Helper ketat: cek apakah SEMUA materi/latihan dari 1 s.d. count sudah meraih 3 bintang penuh
+  const hasAllStarsUpTo = (prefix, count, completedList, starsMap) => {
+    const ids = [];
+    for (let i = 1; i <= count; i++) {
+      ids.push(`${prefix}${i}`);
+    }
+    return hasAllStarsForIds(ids, completedList, starsMap);
+  };
+
+  // Urutan aktual ID materi Matematika pada peta belajar (Pengukuran/mtk_5 berada di urutan ke-2 sebelum Perbandingan & Skala/mtk_2)
+  const MTK_MATERI_ORDERED_IDS = [
+    'mtk_1',
+    'mtk_5',
+    'mtk_2',
+    'mtk_3',
+    'mtk_4',
+    'mtk_6',
+    'mtk_7',
+    'mtk_8',
+    'mtk_9',
+    'mtk_10',
+    'mtk_11',
+    'mtk_12',
+  ];
 
   // 1. Peti Materi 5 Bahasa Indonesia (Semua 15 Bintang Materi 1-5): Paket Bocil Cowo & Cewe ('boy' & 'girl')
   if (hasAllStarsUpTo('bi_', 5, materiCompleted, materiStars)) {
@@ -923,19 +947,19 @@ export const checkAndUnlockAvatars = (data) => {
     legitUnlocked.add('queen');
   }
 
-  // 5. Peti Materi 4 Matematika (Semua 12 Bintang Materi 1-4): Paket Anak Cowo & Cewe ('child-boy' & 'child-girl')
-  if (hasAllStarsUpTo('mtk_', 4, materiCompleted, materiStars)) {
+  // 5. Peti Materi 4 Matematika (Semua 12 Bintang Materi urutan 1-4: Operasi Hitung, Pengukuran, Perbandingan & Skala, KPK & FPB)
+  if (hasAllStarsForIds(MTK_MATERI_ORDERED_IDS.slice(0, 4), materiCompleted, materiStars)) {
     legitUnlocked.add('child-boy');
     legitUnlocked.add('child-girl');
   }
 
-  // 6. Peti Materi 8 Matematika (Semua 24 Bintang Materi 1-8): Domba ('sheep')
-  if (hasAllStarsUpTo('mtk_', 8, materiCompleted, materiStars)) {
+  // 6. Peti Materi 8 Matematika (Semua 24 Bintang Materi urutan 1-8): Domba ('sheep')
+  if (hasAllStarsForIds(MTK_MATERI_ORDERED_IDS.slice(0, 8), materiCompleted, materiStars)) {
     legitUnlocked.add('sheep');
   }
 
   // 7. Piala Puncak Materi 12 Matematika (Semua 36 Bintang Materi 1-12): Ksatria ('knight')
-  if (hasAllStarsUpTo('mtk_', 12, materiCompleted, materiStars)) {
+  if (hasAllStarsForIds(MTK_MATERI_ORDERED_IDS, materiCompleted, materiStars)) {
     legitUnlocked.add('knight');
   }
 

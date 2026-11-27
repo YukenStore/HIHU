@@ -37,7 +37,6 @@ import {
   Search,
   X,
   Sparkles,
-  Zap,
   Star,
   Gift,
   RotateCcw,
@@ -58,8 +57,8 @@ import {
  * 2. Kedua mata pelajaran memiliki tampilan & mekanisme yang SAMA PERSIS:
  *    - Sistem Level Berjenjang (Level 1..12 untuk MTK, Level 1..21 untuk BI)
  *    - Posisi awal: Hanya Level 1 yang terbuka, level berikutnya terkunci.
- *    - Syarat membuka level: Menyelesaikan materi & kuis level sebelumnya.
- *    - Fitur Lompat Level: Siswa dapat melompat ke level terkunci dengan menjawab kuis dari materi tujuan.
+ *    - Syarat membuka level: Menyelesaikan materi & kuis level sebelumnya (min. 1 bintang).
+ *    - Akses Khusus Admin: Seluruh materi terbuka otomatis untuk akun Admin.
  *    - Desain Peta Petualangan Berliku (Duolingo-style Winding Path), Milestone Peti Bonus, dan Piala Puncak.
  */
 
@@ -219,7 +218,6 @@ const Materi = () => {
     };
   }, []);
   const completedBabIds = activity?.materiCompleted || [];
-  const unlockedBabIds = activity?.unlockedMateri || ['mtk_1', 'bi_1'];
   const materiStars = activity?.materiStars || {};
 
   // Helper dapatkan jumlah bintang yang diraih pada bab tertentu
@@ -255,20 +253,9 @@ const Materi = () => {
   const [quizEarnedStars, setQuizEarnedStars] = useState(0);
   const [quizExpResult, setQuizExpResult] = useState({ isFirstTime: true, expEarned: 0 });
 
-  // State Mode Tantangan Lompat Level (Jump Challenge)
-  const [jumpChallengeBab, setJumpChallengeBab] = useState(null);
-  const [jumpQuizIndex, setJumpQuizIndex] = useState(0);
-  const [jumpSelectedAnswer, setJumpSelectedAnswer] = useState(null);
-  const [jumpHasSubmitted, setJumpHasSubmitted] = useState(false);
-  const [jumpIsCorrect, setJumpIsCorrect] = useState(false);
-  const [showJumpHint, setShowJumpHint] = useState(false);
-  const [jumpFinished, setJumpFinished] = useState(false);
-
   // State Transisi Anti-Spam (Mencegah Klik Ganda/Spam Tombol Periksa Jawaban)
   const isQuizTransitioningRef = useRef(false);
   const [isQuizTransitioning, setIsQuizTransitioning] = useState(false);
-  const isJumpTransitioningRef = useRef(false);
-  const [isJumpTransitioning, setIsJumpTransitioning] = useState(false);
 
   // Refresh data aktivitas saat ada perubahan
   const refreshActivity = () => {
@@ -283,6 +270,8 @@ const Materi = () => {
     if (isGuestSession()) {
       return index === 0;
     }
+    // Khusus Admin: seluruh materi terbuka otomatis
+    if (isAdmin) return true;
     // Level 1 selalu terbuka
     if (index === 0) return true;
     // Terbuka jika level ini sendiri sudah meraih minimal 1 bintang
@@ -290,8 +279,6 @@ const Materi = () => {
     // Terbuka jika level sebelumnya sudah meraih minimal 1 bintang
     const prevBab = levelsList[index - 1];
     if (prevBab && getLevelStars(prevBab.id) >= 1) return true;
-    // Khusus Admin (fitur lompat materi): terbuka jika sudah di-unlock eksplisit
-    if (isAdmin && unlockedBabIds.includes(bab.id)) return true;
 
     return false;
   };
@@ -483,75 +470,6 @@ const Materi = () => {
     // Petunjuk (hint) tetap terlihat agar murid terbantu memilih jawaban yang tepat
   };
 
-  // Mulai Tantangan Lompat Level (Khusus Admin)
-  const handleStartJumpChallenge = (bab) => {
-    if (!isAdmin) return;
-    if (isGuestSession()) {
-      setSelectedLevelModal(null);
-      triggerGuestRestrictionModal(`Materi ${bab?.no}: ${bab?.judul}`);
-      return;
-    }
-    setSelectedLevelModal(null);
-    setJumpChallengeBab(bab);
-    setJumpQuizIndex(0);
-    setJumpSelectedAnswer(null);
-    setJumpHasSubmitted(false);
-    setJumpIsCorrect(false);
-    setShowJumpHint(false);
-    setJumpFinished(false);
-    isJumpTransitioningRef.current = false;
-    setIsJumpTransitioning(false);
-  };
-
-  // Submit Jawaban Tantangan Lompat Level
-  const handleCheckJumpAnswer = () => {
-    // Kunci langsung: cegah spam klik tantangan lompat level
-    if (isJumpTransitioningRef.current || (jumpHasSubmitted && jumpIsCorrect)) return;
-    if (jumpSelectedAnswer === null) return;
-
-    const currentQ = jumpChallengeBab.soalLatihan[jumpQuizIndex];
-    const correct = jumpSelectedAnswer === currentQ.jawabanBenar;
-
-    setJumpHasSubmitted(true);
-    setJumpIsCorrect(correct);
-
-    if (!correct) {
-      setShowJumpHint(true);
-    } else {
-      // Aktifkan kunci transisi agar spam klik tidak melompati soal tantangan
-      isJumpTransitioningRef.current = true;
-      setIsJumpTransitioning(true);
-      setShowJumpHint(false);
-
-      if (jumpQuizIndex < jumpChallengeBab.soalLatihan.length - 1) {
-        setTimeout(() => {
-          setJumpQuizIndex((prev) => prev + 1);
-          setJumpSelectedAnswer(null);
-          setJumpHasSubmitted(false);
-          setJumpIsCorrect(false);
-          setShowJumpHint(false);
-          isJumpTransitioningRef.current = false;
-          setIsJumpTransitioning(false);
-        }, 1100);
-      } else {
-        // Berhasil menyelesaikan kuis tantangan lompat level!
-        setJumpFinished(true);
-        unlockMateri(jumpChallengeBab.id);
-        refreshActivity();
-        isJumpTransitioningRef.current = false;
-        setIsJumpTransitioning(false);
-      }
-    }
-  };
-
-  // Aksi Coba Lagi Tantangan Lompat Level
-  const handleRetryJumpQuestion = () => {
-    if (isJumpTransitioningRef.current) return;
-    setJumpSelectedAnswer(null);
-    setJumpHasSubmitted(false);
-    setJumpIsCorrect(false);
-  };
-
   // Reset Progres
   const handleResetProgress = () => {
     resetMateriProgress(selectedSubject);
@@ -602,7 +520,6 @@ const Materi = () => {
             <button
               onClick={() => {
                 setActiveBab(null);
-                setJumpChallengeBab(null);
                 setSelectedSubject(null);
               }}
               className={`font-medium hover:text-white transition-colors ${
@@ -618,7 +535,6 @@ const Materi = () => {
                   type="button"
                   onClick={() => {
                     setActiveBab(null);
-                    setJumpChallengeBab(null);
                     setSearchQuery('');
                   }}
                   className={`font-medium hover:text-white transition-colors cursor-pointer ${
@@ -641,9 +557,8 @@ const Materi = () => {
 
           <button
             onClick={() => {
-              if (activeBab || jumpChallengeBab) {
+              if (activeBab) {
                 setActiveBab(null);
-                setJumpChallengeBab(null);
               } else if (selectedSubject) {
                 setSelectedSubject(null);
               } else {
@@ -654,7 +569,7 @@ const Materi = () => {
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>
-              {activeBab || jumpChallengeBab
+              {activeBab
                 ? 'Kembali ke Peta Materi'
                 : selectedSubject
                 ? 'Ganti Mata Pelajaran'
@@ -1251,8 +1166,9 @@ const Materi = () => {
                     <p className="text-xs sm:text-sm text-[#6E6258] max-w-xl mt-0.5 leading-relaxed">
                       {isAdmin ? (
                         <>
-                          Baca materi satu per satu, atau buka lebih cepat pakai{' '}
-                          <strong className={`transition-colors ${selectedSubject === 'bahasa_indonesia' ? 'text-[#047857]' : 'text-[#881337]'}`}>Lompat Materi (Khusus Admin)</strong>.
+                          Mode Admin aktif:{' '}
+                          <strong className={`transition-colors ${selectedSubject === 'bahasa_indonesia' ? 'text-[#047857]' : 'text-[#881337]'}`}>seluruh materi terbuka otomatis</strong>{' '}
+                          dan bisa langsung kamu buka kapan saja.
                         </>
                       ) : (
                         'Pelajari materinya satu per satu dan kumpulkan 3 bintang di setiap kuis.'
@@ -1497,7 +1413,7 @@ const Materi = () => {
 
                       <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold">
                         <span className={isUnlocked ? 'text-blue-600' : 'text-slate-400'}>
-                          {isUnlocked ? 'Buka Materi' : isAdmin ? 'Lompat Materi ⚡ (Admin)' : 'Masih Terkunci 🔒'}
+                          {isUnlocked ? 'Buka Materi' : 'Masih Terkunci 🔒'}
                         </span>
                         <ChevronRight className="w-3.5 h-3.5" />
                       </div>
@@ -1577,7 +1493,7 @@ const Materi = () => {
                                 : 'bg-[#F2ECE4] border-[#E6DFD5] text-[#8C7E72] shadow-[0_5px_0_0_#D8CDC2] hover:bg-[#EAE2D8] hover:text-[#6E6258] hover:shadow-[0_6px_0_0_#C5B8AC] hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_1px_0_0_#D8CDC2]'
                             }`}
                             title={`Materi ${bab.no}: ${bab.judul} (${
-                              isCompleted ? 'Tuntas' : isUnlocked ? 'Terbuka' : isAdmin ? 'Terkunci - Klik untuk Lompat (Admin)' : 'Terkunci'
+                              isCompleted ? 'Tuntas' : isUnlocked ? 'Terbuka' : 'Terkunci'
                             })`}
                           >
                             {/* Ikon di dalam node */}
@@ -1878,17 +1794,9 @@ const Materi = () => {
                         <strong className="block font-semibold text-[#261C14]">
                           Materi ini masih terkunci!
                         </strong>
-                        {isAdmin ? (
-                          <p className="mt-0.5 text-[#6E6258] leading-relaxed">
-                            Raih minimal 1 bintang di Materi {prevBab?.no} ({prevBab?.judul}),{' '}
-                            <strong className={selectedSubject === 'bahasa_indonesia' ? 'text-[#047857]' : 'text-[#881337]'}>atau sebagai Admin kamu bisa langsung melompat</strong>{' '}
-                            ke materi ini lewat tantangan soal.
-                          </p>
-                        ) : (
-                          <p className="mt-0.5 text-[#6E6258] leading-relaxed">
-                            Raih minimal 1 bintang di Materi {prevBab?.no} ({prevBab?.judul}) biar materi ini terbuka.
-                          </p>
-                        )}
+                        <p className="mt-0.5 text-[#6E6258] leading-relaxed">
+                          Raih minimal 1 bintang di Materi {prevBab?.no} ({prevBab?.judul}) biar materi ini terbuka.
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -1896,7 +1804,7 @@ const Materi = () => {
 
                 {/* Tombol Aksi */}
                 <div className="pt-2 space-y-2">
-                  {isUnlocked ? (
+                  {isUnlocked && (
                     <button
                       onClick={() => handleOpenBab(selectedLevelModal)}
                       className={`w-full py-2.5 rounded-lg text-white font-semibold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center space-x-2 cursor-pointer shadow-xs ${
@@ -1908,16 +1816,7 @@ const Materi = () => {
                       <BookOpen className="w-4 h-4" />
                       <span>{isCompleted ? 'Pelajari Ulang Materi' : 'Mulai Belajar Materi'}</span>
                     </button>
-                  ) : isAdmin ? (
-                    /* Opsi Lompat Materi (Khusus Admin) */
-                    <button
-                      onClick={() => handleStartJumpChallenge(selectedLevelModal)}
-                      className="w-full py-2.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-semibold text-xs sm:text-sm transition-colors flex items-center justify-center space-x-2 cursor-pointer shadow-xs"
-                    >
-                      <Zap className="w-4 h-4 fill-current" />
-                      <span>Lompat ke Materi Ini (Khusus Admin)</span>
-                    </button>
-                  ) : null}
+                  )}
 
                   <button
                     onClick={() => setSelectedLevelModal(null)}
@@ -1932,248 +1831,7 @@ const Materi = () => {
         );
       })()}
 
-      {/* --- MODAL 2: TANTANGAN LOMPAT MATERI (JUMP CHALLENGE - KHUSUS ADMIN) --- */}
-      {jumpChallengeBab && isAdmin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1F1914]/50 backdrop-blur-xs animate-fade-in">
-          <div className="bg-white rounded-lg border border-[#E6DFD5] shadow-xl max-w-lg w-full max-h-[88vh] flex flex-col overflow-hidden relative animate-fade-in my-auto">
-            {/* Header Tantangan Lompat */}
-            <div className="p-5 bg-[#1F1914] text-white relative border-b border-[#33261D] flex-shrink-0">
-              <button
-                onClick={() => setJumpChallengeBab(null)}
-                className="absolute right-4 top-4 w-7 h-7 rounded-lg bg-[#2D241C] hover:bg-[#3D2E22] text-[#D4C8BC] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-
-              <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded bg-[#2D241C] text-[10px] font-semibold text-[#E5A875] border border-[#3D3126] uppercase tracking-wider mb-2">
-                <Zap className="w-3 h-3 fill-current text-[#E5A875]" />
-                <span>Tantangan Lompat Materi • {currentSubject?.title}</span>
-              </div>
-              <h3 className="text-base sm:text-lg font-bold text-white">
-                Uji Pemahaman: Materi {jumpChallengeBab.no} ({jumpChallengeBab.judul})
-              </h3>
-              <p className="text-xs text-[#D4C8BC] mt-0.5">
-                Jawab soal materi ini untuk langsung membuka Materi {jumpChallengeBab.no} lebih awal.
-              </p>
-            </div>
-
-            {/* Body Tantangan */}
-            <div className="p-5 sm:p-6 overflow-y-auto slate-scrollbar flex-1">
-              {jumpFinished ? (
-                <div className="text-center py-6 space-y-4 animate-fade-in">
-                  <div className="w-14 h-14 rounded-full bg-[#E8F2EF] text-[#286657] flex items-center justify-center mx-auto border border-[#BCD9D0]">
-                    <Trophy className="w-7 h-7" />
-                  </div>
-                  <div>
-                    <h4 className="text-lg font-bold text-[#261C14]">
-                      Berhasil Terbuka!
-                    </h4>
-                    <p className="text-xs sm:text-sm text-[#6E6258] max-w-sm mx-auto mt-1 leading-relaxed">
-                      <strong>Materi {jumpChallengeBab.no} ({jumpChallengeBab.judul})</strong> sekarang sudah <strong>TERBUKA</strong> dan bisa langsung dibaca.
-                    </p>
-                  </div>
-
-                  <div className="pt-3 flex flex-col sm:flex-row items-center justify-center gap-2">
-                    <button
-                      onClick={() => {
-                        const target = jumpChallengeBab;
-                        setJumpChallengeBab(null);
-                        handleOpenBab(target);
-                      }}
-                      className={`w-full sm:w-auto px-4 py-2 rounded-lg text-white font-semibold text-xs transition-all duration-300 cursor-pointer shadow-xs ${
-                        selectedSubject === 'bahasa_indonesia'
-                          ? 'bg-[#047857] hover:bg-[#065F46]'
-                          : 'bg-[#881337] hover:bg-[#700D2B]'
-                      }`}
-                    >
-                      Langsung Baca Materi
-                    </button>
-                    <button
-                      onClick={() => setJumpChallengeBab(null)}
-                      className="w-full sm:w-auto px-4 py-2 rounded-lg bg-[#F2ECE4] hover:bg-[#E6DFD5] text-[#261C14] font-medium text-xs transition-colors cursor-pointer"
-                    >
-                      Kembali ke Peta Materi
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {/* Stepper Progress */}
-                  <div className="flex items-center justify-between text-xs font-medium text-[#6E6258] border-b border-[#E6DFD5] pb-2">
-                    <span>Soal Tantangan {jumpQuizIndex + 1} dari {jumpChallengeBab.soalLatihan.length}</span>
-                    <div className="flex space-x-1.5">
-                      {jumpChallengeBab.soalLatihan.map((_, i) => (
-                        <div
-                          key={i}
-                          className={`w-6 h-1.5 rounded-full transition-colors ${
-                            i < jumpQuizIndex
-                              ? selectedSubject === 'bahasa_indonesia'
-                                ? 'bg-[#047857]'
-                                : 'bg-[#881337]'
-                              : i === jumpQuizIndex
-                              ? selectedSubject === 'bahasa_indonesia'
-                                ? 'bg-[#047857]'
-                                : 'bg-[#881337]'
-                              : 'bg-[#E6DFD5]'
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Pertanyaan */}
-                  <div
-                    className="text-xs sm:text-sm font-semibold text-[#261C14] leading-relaxed whitespace-pre-line rich-content-display"
-                    dangerouslySetInnerHTML={{
-                      __html: formatMath(
-                        jumpChallengeBab.soalLatihan[jumpQuizIndex].pertanyaan
-                      ),
-                    }}
-                  />
-
-                  {/* Opsi Jawaban */}
-                  <div
-                    className={
-                      (jumpChallengeBab.soalLatihan[jumpQuizIndex].pilihan || []).some((o) =>
-                        /<img\b/i.test(String(o || ''))
-                      )
-                        ? 'grid grid-cols-1 sm:grid-cols-2 gap-2'
-                        : 'space-y-2'
-                    }
-                  >
-                    {jumpChallengeBab.soalLatihan[jumpQuizIndex].pilihan.map((opt, idx) => {
-                      const isSelected = jumpSelectedAnswer === idx;
-                      const isWrongSubmitted = jumpHasSubmitted && !jumpIsCorrect && jumpSelectedAnswer === idx;
-                      const isLocked = isJumpTransitioning || (jumpHasSubmitted && jumpIsCorrect);
-
-                      return (
-                        <button
-                          key={idx}
-                          disabled={isLocked}
-                          onClick={() => {
-                            if (isLocked) return;
-                            setJumpSelectedAnswer(idx);
-                            setJumpHasSubmitted(false);
-                            setJumpIsCorrect(false);
-                          }}
-                          className={`w-full p-3 rounded-lg text-left text-xs sm:text-sm font-medium border transition-all duration-300 flex items-start justify-between gap-2 ${
-                            isLocked ? 'cursor-not-allowed opacity-80' : 'cursor-pointer'
-                          } ${
-                            isWrongSubmitted
-                              ? 'bg-[#FDF1F1] border-[#C93B3B] text-[#A82828]'
-                              : isSelected
-                              ? selectedSubject === 'bahasa_indonesia'
-                                ? 'bg-[#ECFDF5] border-[#047857] text-[#261C14]'
-                                : 'bg-[#FFF1F2] border-[#881337] text-[#261C14]'
-                              : 'bg-white border-[#E6DFD5] text-[#261C14] hover:bg-[#FAF7F2]'
-                          }`}
-                        >
-                          <div
-                            className="flex-1 min-w-0 rich-content-display"
-                            dangerouslySetInnerHTML={{
-                              __html: formatMath(opt),
-                            }}
-                          />
-                          <div
-                            className={`w-5 h-5 rounded-full border flex items-center justify-center text-[10px] font-semibold flex-shrink-0 transition-colors ${
-                              isWrongSubmitted
-                                ? 'border-[#C93B3B] bg-[#C93B3B] text-white'
-                                : isSelected
-                                ? selectedSubject === 'bahasa_indonesia'
-                                  ? 'border-[#047857] bg-[#047857] text-white'
-                                  : 'border-[#881337] bg-[#881337] text-white'
-                                : 'border-[#E6DFD5] text-[#8C7E72]'
-                            }`}
-                          >
-                            {String.fromCharCode(65 + idx)}
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* Hint jika salah */}
-                  {(showJumpHint || (jumpHasSubmitted && !jumpIsCorrect)) && (
-                    <div className="p-3 rounded-lg bg-[#FEF7EE] border border-[#F6D8B8] text-[#D97E26] text-xs animate-fade-in flex items-start space-x-2">
-                      <HelpCircle className="w-4 h-4 text-[#D97E26] flex-shrink-0 mt-0.5" />
-                      <div>
-                        <strong className="block font-semibold">Petunjuk:</strong>
-                        <span
-                          className="text-[#261C14] leading-relaxed"
-                          dangerouslySetInnerHTML={{
-                            __html: formatMath(
-                              jumpChallengeBab.soalLatihan[jumpQuizIndex].hint
-                            ),
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Feedback Benar */}
-                  {jumpHasSubmitted && jumpIsCorrect && (
-                    <div
-                      className={`p-3 rounded-lg border text-xs animate-fade-in flex items-center space-x-2 ${
-                        selectedSubject === 'bahasa_indonesia'
-                          ? 'bg-[#ECFDF5] border-[#A7F3D0] text-[#047857]'
-                          : 'bg-[#FFF1F2] border-[#FECDD3] text-[#881337]'
-                      }`}
-                    >
-                      <CheckCircle2
-                        className={`w-4 h-4 ${
-                          selectedSubject === 'bahasa_indonesia' ? 'text-[#047857]' : 'text-[#881337]'
-                        }`}
-                      />
-                      <span className="font-semibold">Benar! Menuju ke soal berikutnya...</span>
-                    </div>
-                  )}
-
-                  {/* Tombol Periksa */}
-                  <div className="pt-3 border-t border-[#E6DFD5] flex items-center justify-between">
-                    <button
-                      onClick={() => setJumpChallengeBab(null)}
-                      className="text-xs text-[#8C7E72] hover:text-[#261C14] cursor-pointer"
-                    >
-                      Batal
-                    </button>
-                    <button
-                      onClick={
-                        jumpHasSubmitted && !jumpIsCorrect
-                          ? handleRetryJumpQuestion
-                          : handleCheckJumpAnswer
-                      }
-                      disabled={
-                        isJumpTransitioning ||
-                        (jumpHasSubmitted && jumpIsCorrect) ||
-                        (!jumpHasSubmitted && jumpSelectedAnswer === null)
-                      }
-                      className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-300 ${
-                        isJumpTransitioning || (jumpHasSubmitted && jumpIsCorrect)
-                          ? 'bg-[#F2ECE4] text-[#8C7E72] cursor-not-allowed border border-[#E6DFD5]'
-                          : jumpHasSubmitted && !jumpIsCorrect
-                          ? 'bg-amber-500 hover:bg-amber-600 text-slate-950 cursor-pointer shadow-xs'
-                          : jumpSelectedAnswer !== null
-                          ? selectedSubject === 'bahasa_indonesia'
-                            ? 'bg-[#047857] hover:bg-[#065F46] text-white cursor-pointer shadow-xs'
-                            : 'bg-[#881337] hover:bg-[#700D2B] text-white cursor-pointer shadow-xs'
-                          : 'bg-[#F2ECE4] text-[#8C7E72] cursor-not-allowed'
-                      }`}
-                    >
-                      {isJumpTransitioning || (jumpHasSubmitted && jumpIsCorrect)
-                        ? 'Memproses...'
-                        : jumpHasSubmitted && !jumpIsCorrect
-                        ? 'Coba Lagi'
-                        : 'Periksa Jawaban'}
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* --- MODAL 3: BUKU PANDUAN CARA BERMAIN --- */}
+      {/* --- MODAL 2: BUKU PANDUAN CARA BERMAIN --- */}
       {showGuideModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1F1914]/50 backdrop-blur-xs animate-fade-in">
           <div className={`bg-white rounded-2xl border-2 shadow-2xl max-w-md w-full max-h-[88vh] flex flex-col overflow-hidden relative animate-fade-in ${
@@ -2240,8 +1898,8 @@ const Materi = () => {
                     3
                   </span>
                   <div>
-                    <strong className="block text-[#261C14] font-semibold">Lompat Materi (Khusus Admin)</strong>
-                    Khusus akun Admin, kamu bisa membuka materi tertentu lebih dulu dengan menjawab <strong>kuis tantangannya</strong>.
+                    <strong className="block text-[#261C14] font-semibold">Akses Khusus Admin</strong>
+                    Khusus akun Admin, <strong>seluruh topik materi terbuka otomatis</strong> sehingga kamu bisa langsung memilih dan meninjau materi mana saja.
                   </div>
                 </div>
               )}

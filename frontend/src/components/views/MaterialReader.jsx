@@ -625,6 +625,742 @@ const TanggaSatuanVisual = () => {
 };
 
 /**
+ * Helper parsing & format angka Indonesia (mendukung koma desimal & titik ribuan)
+ */
+const parseIndoUnitNumber = (val, allowThousandsDot = false) => {
+  const str = String(val ?? '').trim();
+  if (!str) return NaN;
+  const normalized = allowThousandsDot
+    ? str.replace(/\./g, '').replace(',', '.')
+    : str.replace(',', '.');
+  return parseFloat(normalized);
+};
+
+const formatIndoUnitNumber = (num) => {
+  if (isNaN(num)) return '0';
+  const clean = Number(num.toPrecision(12));
+  return clean.toLocaleString('id-ID', { maximumFractionDigits: 6 });
+};
+
+/**
+ * Komponen Interaktif Visual Tangga Satuan Massa / Berat (kg sampai mg)
+ * Mendukung aturan geser koma untuk bilangan bulat & desimal serta ton/kuintal/ons
+ */
+const TanggaBeratVisual = () => {
+  const [kgToGVal, setKgToGVal] = useState('2,5');
+  const [gToKgVal, setGToKgVal] = useState('1.500');
+  const [kgToOnsVal, setKgToOnsVal] = useState('4,5');
+  const [tonToKgVal, setTonToKgVal] = useState('2,5');
+  const [activeTab, setActiveTab] = useState('kg-to-g');
+
+  const STAIRS = [
+    { id: 'kg', label: 'kg', full: 'Kilogram', role: 'Satuan Pokok Berat (SI) • Awal', isSpecial: 'kg' },
+    { id: 'hg', label: 'hg', full: 'Hektogram (ons)', role: '1 hg = 1 ons • Turun 1: ×10', isSpecial: 'ons' },
+    { id: 'dag', label: 'dag', full: 'Dekagram', role: 'Turun 2: ×100' },
+    { id: 'g', label: 'g', full: 'Gram', role: 'Satuan Berat Harian • Turun 3: ×1.000', isSpecial: 'g' },
+    { id: 'dg', label: 'dg', full: 'Desigram', role: 'Turun 4: ×10.000' },
+    { id: 'cg', label: 'cg', full: 'Sentigram', role: 'Turun 5: ×100.000' },
+    { id: 'mg', label: 'mg', full: 'Miligram', role: 'Satuan Terkecil (Obat/Emas) • Turun 6: ×1.000.000' },
+  ];
+
+  const presetsKg = ['0,5', '1', '2,5', '4', '12'];
+  const presetsG = ['250', '750', '1.500', '4.000'];
+  const presetsOns = ['1', '2,5', '4,5', '10'];
+  const presetsTon = ['0,5', '1', '2,5', '5'];
+
+  const convertVal = (raw, factor, isDivide = false, allowThousands = false) => {
+    const n = parseIndoUnitNumber(raw, allowThousands);
+    if (isNaN(n)) return '0';
+    return formatIndoUnitNumber(isDivide ? n / factor : n * factor);
+  };
+
+  return (
+    <div className="space-y-3.5 my-3 animate-fade-in">
+      {/* 1. Header Banner Aturan Tangga Massa/Berat */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 flex items-start space-x-2.5 shadow-2xs">
+          <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center flex-shrink-0 font-bold">
+            <ArrowDown className="w-4 h-4" />
+          </div>
+          <div>
+            <strong className="block font-bold text-slate-900 text-[11px] uppercase tracking-wider">
+              Setiap Turun 1 Tangga:
+            </strong>
+            <span className="text-slate-600 leading-relaxed">
+              Dikali (×) 10 • <strong>Geser koma 1 langkah ke kanan</strong> (bilangan bulat: tambah 0 di belakang)
+            </span>
+          </div>
+        </div>
+
+        <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 flex items-start space-x-2.5 shadow-2xs">
+          <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center flex-shrink-0 font-bold">
+            <ArrowUp className="w-4 h-4" />
+          </div>
+          <div>
+            <strong className="block font-bold text-slate-900 text-[11px] uppercase tracking-wider">
+              Setiap Naik 1 Tangga:
+            </strong>
+            <span className="text-slate-600 leading-relaxed">
+              Dibagi (÷) 10 • <strong>Geser koma 1 langkah ke kiri</strong>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Visualisasi Tangga Massa / Berat */}
+      <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-3 shadow-2xs">
+        <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center space-x-1.5">
+            <Layers className="w-4 h-4 text-emerald-600" />
+            <span>Peta Tangga Satuan Massa / Berat (kg sampai mg)</span>
+          </span>
+          <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+            7 Tingkat
+          </span>
+        </div>
+
+        {/* Catatan Satuan Besar (Ton & Kuintal) di atas kg */}
+        <div className="flex flex-wrap gap-2 text-[11px]">
+          <span className="px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 font-bold">
+            1 ton = 1.000 kg = 10 kuintal
+          </span>
+          <span className="px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 font-bold">
+            1 kuintal = 100 kg
+          </span>
+          <span className="px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 font-bold">
+            1 hg = 1 ons = 100 g
+          </span>
+        </div>
+
+        <div className="space-y-1.5 pt-1">
+          {STAIRS.map((stair, index) => (
+            <div
+              key={stair.id}
+              className={`flex flex-wrap items-center justify-between gap-1.5 p-2 rounded-lg border transition-all ${
+                stair.isSpecial === 'kg'
+                  ? 'bg-emerald-50/70 border-emerald-300 font-semibold'
+                  : stair.isSpecial === 'ons'
+                  ? 'bg-amber-50/70 border-amber-300 font-semibold'
+                  : stair.isSpecial === 'g'
+                  ? 'bg-blue-50/60 border-blue-200 font-semibold'
+                  : 'bg-slate-50/70 border-slate-200'
+              }`}
+              style={{
+                marginLeft: `${Math.min(index * 4, 24)}%`,
+              }}
+            >
+              <div className="flex items-center flex-wrap gap-1.5">
+                <span className="w-10 h-6 rounded bg-white border border-slate-200 text-xs font-mono font-bold flex items-center justify-center text-slate-800">
+                  {stair.label}
+                </span>
+                <span className="text-xs font-bold text-slate-800">{stair.full}</span>
+                {stair.isSpecial === 'kg' && (
+                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 font-bold">
+                    Satuan Pokok (kg)
+                  </span>
+                )}
+                {stair.isSpecial === 'ons' && (
+                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-100 text-amber-800 font-bold">
+                    = 1 ons
+                  </span>
+                )}
+                {stair.isSpecial === 'g' && (
+                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-blue-100 text-blue-800 font-bold">
+                    Satuan Gram (g)
+                  </span>
+                )}
+              </div>
+              <div className="text-[10px] sm:text-[11px] text-slate-600 pr-1">
+                {stair.role}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="p-3 rounded-lg bg-emerald-50/60 border border-emerald-200 text-xs text-emerald-950 space-y-1.5 mt-2">
+          <div className="flex items-center space-x-1.5 font-bold text-emerald-900">
+            <Zap className="w-4 h-4 text-emerald-600" />
+            <span>Trik Cepat Satuan Berat: Hitung Tangga lalu Geser Koma!</span>
+          </div>
+          <p className="leading-relaxed text-slate-700">
+            • <strong>kg → g</strong> (turun 3 tangga) = <strong>× 1.000</strong> (geser koma 3 langkah ke kanan). Contoh: 2,5 kg = 2.500 g.<br />
+            • <strong>g → kg</strong> (naik 3 tangga) = <strong>÷ 1.000</strong> (geser koma 3 langkah ke kiri). Contoh: 1.500 g = 1,5 kg.<br />
+            • <strong>kg → ons (hg)</strong> (turun 1 tangga) = <strong>× 10</strong> (geser koma 1 langkah ke kanan). Contoh: 4,5 kg = 45 ons.<br />
+            • <strong>ons (hg) → g</strong> (turun 2 tangga) = <strong>× 100</strong> (geser koma 2 langkah ke kanan). Contoh: 15 ons = 1.500 g.
+          </p>
+        </div>
+      </div>
+
+      {/* 3. Simulator Interaktif Konversi Massa / Berat */}
+      <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-3 shadow-2xs">
+        <div className="flex flex-col gap-2 pb-2 border-b border-slate-100">
+          <div className="flex items-center space-x-2">
+            <Calculator className="w-4 h-4 text-emerald-600" />
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-900">
+              Latihan Simulator Konversi Satuan Massa / Berat
+            </span>
+          </div>
+
+          <div className="flex flex-wrap gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+            {[
+              { id: 'kg-to-g', label: 'kg → g (×1.000)' },
+              { id: 'g-to-kg', label: 'g → kg (÷1.000)' },
+              { id: 'kg-to-ons', label: 'kg → ons (×10)' },
+              { id: 'ton-to-kg', label: 'ton → kg (×1.000)' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+                  activeTab === tab.id
+                    ? 'bg-white text-emerald-700 shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {activeTab === 'kg-to-g' && (
+          <div className="space-y-2.5">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-600">
+              <span className="text-[11px] font-bold text-slate-500 mr-1">Contoh Cepat:</span>
+              {presetsKg.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setKgToGVal(p)}
+                  className={`px-2 py-0.5 rounded text-xs font-bold border transition-all cursor-pointer ${
+                    kgToGVal === p
+                      ? 'bg-emerald-600 text-white border-emerald-600'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {p} kg
+                </button>
+              ))}
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex-1 space-y-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase block">Input Berat (kg):</span>
+                <input
+                  type="text"
+                  value={kgToGVal}
+                  onChange={(e) => setKgToGVal(e.target.value)}
+                  placeholder="mis. 2,5"
+                  className="w-28 px-3 py-1.5 rounded-lg bg-white text-slate-900 font-bold font-mono text-center text-sm border border-slate-300 outline-none focus:border-emerald-500"
+                />
+              </div>
+              <div className="text-emerald-700 font-bold text-xs text-center">
+                <div>➔ × 1.000</div>
+                <div className="text-[10px] font-medium text-slate-500">Geser koma 3 langkah kanan</div>
+              </div>
+              <div className="flex-1 space-y-1 sm:text-right">
+                <span className="text-[11px] font-bold text-emerald-700 uppercase block">Hasil (gram):</span>
+                <div className="inline-block px-3 py-1.5 rounded-lg bg-white text-emerald-900 font-bold font-mono text-sm border border-emerald-300">
+                  {convertVal(kgToGVal, 1000, false, false)} g
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'g-to-kg' && (
+          <div className="space-y-2.5">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-600">
+              <span className="text-[11px] font-bold text-slate-500 mr-1">Contoh Cepat:</span>
+              {presetsG.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setGToKgVal(p)}
+                  className={`px-2 py-0.5 rounded text-xs font-bold border transition-all cursor-pointer ${
+                    gToKgVal === p
+                      ? 'bg-emerald-600 text-white border-emerald-600'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {p} g
+                </button>
+              ))}
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex-1 space-y-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase block">Input Berat (gram):</span>
+                <input
+                  type="text"
+                  value={gToKgVal}
+                  onChange={(e) => setGToKgVal(e.target.value)}
+                  className="w-32 px-3 py-1.5 rounded-lg bg-white text-slate-900 font-bold font-mono text-center text-sm border border-slate-300 outline-none focus:border-emerald-500"
+                />
+              </div>
+              <div className="text-emerald-700 font-bold text-xs text-center">
+                <div>➔ ÷ 1.000</div>
+                <div className="text-[10px] font-medium text-slate-500">Geser koma 3 langkah kiri</div>
+              </div>
+              <div className="flex-1 space-y-1 sm:text-right">
+                <span className="text-[11px] font-bold text-emerald-700 uppercase block">Hasil (kg):</span>
+                <div className="inline-block px-3 py-1.5 rounded-lg bg-white text-emerald-900 font-bold font-mono text-sm border border-emerald-300">
+                  {convertVal(gToKgVal, 1000, true, true)} kg
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'kg-to-ons' && (
+          <div className="space-y-2.5">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-600">
+              <span className="text-[11px] font-bold text-slate-500 mr-1">Contoh Cepat:</span>
+              {presetsOns.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setKgToOnsVal(p)}
+                  className={`px-2 py-0.5 rounded text-xs font-bold border transition-all cursor-pointer ${
+                    kgToOnsVal === p
+                      ? 'bg-amber-600 text-white border-amber-600'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {p} kg
+                </button>
+              ))}
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex-1 space-y-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase block">Input Berat (kg):</span>
+                <input
+                  type="text"
+                  value={kgToOnsVal}
+                  onChange={(e) => setKgToOnsVal(e.target.value)}
+                  className="w-28 px-3 py-1.5 rounded-lg bg-white text-slate-900 font-bold font-mono text-center text-sm border border-slate-300 outline-none focus:border-amber-500"
+                />
+              </div>
+              <div className="text-amber-700 font-bold text-xs text-center">
+                <div>➔ × 10</div>
+                <div className="text-[10px] font-medium text-slate-500">Geser koma 1 langkah kanan (hg = ons)</div>
+              </div>
+              <div className="flex-1 space-y-1 sm:text-right">
+                <span className="text-[11px] font-bold text-amber-700 uppercase block">Hasil (ons / hg):</span>
+                <div className="inline-block px-3 py-1.5 rounded-lg bg-white text-amber-900 font-bold font-mono text-sm border border-amber-300">
+                  {convertVal(kgToOnsVal, 10, false, false)} ons
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'ton-to-kg' && (
+          <div className="space-y-2.5">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-600">
+              <span className="text-[11px] font-bold text-slate-500 mr-1">Contoh Cepat:</span>
+              {presetsTon.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setTonToKgVal(p)}
+                  className={`px-2 py-0.5 rounded text-xs font-bold border transition-all cursor-pointer ${
+                    tonToKgVal === p
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {p} ton
+                </button>
+              ))}
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex-1 space-y-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase block">Input Berat (ton):</span>
+                <input
+                  type="text"
+                  value={tonToKgVal}
+                  onChange={(e) => setTonToKgVal(e.target.value)}
+                  className="w-28 px-3 py-1.5 rounded-lg bg-white text-slate-900 font-bold font-mono text-center text-sm border border-slate-300 outline-none focus:border-blue-500"
+                />
+              </div>
+              <div className="text-blue-700 font-bold text-xs text-center">
+                <div>➔ × 1.000</div>
+                <div className="text-[10px] font-medium text-slate-500">1 ton = 1.000 kg (geser 3 langkah kanan)</div>
+              </div>
+              <div className="flex-1 space-y-1 sm:text-right">
+                <span className="text-[11px] font-bold text-blue-700 uppercase block">Hasil (kg):</span>
+                <div className="inline-block px-3 py-1.5 rounded-lg bg-white text-blue-900 font-bold font-mono text-sm border border-blue-300">
+                  {convertVal(tonToKgVal, 1000, false, false)} kg
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/**
+ * Komponen Interaktif Visual Tangga Satuan Volume / Liter (kL sampai mL)
+ * Mendukung aturan geser koma untuk bilangan bulat & desimal serta jembatan ke satuan kubik (m³, dm³, cm³/cc)
+ */
+const TanggaLiterVisual = () => {
+  const [lToMlVal, setLToMlVal] = useState('2,5');
+  const [mlToLVal, setMlToLVal] = useState('750');
+  const [klToLVal, setKlToLVal] = useState('1,2');
+  const [lToDlVal, setLToDlVal] = useState('3,5');
+  const [activeTab, setActiveTab] = useState('l-to-ml');
+
+  const STAIRS = [
+    { id: 'kL', label: 'kL', full: 'Kiloliter', role: '1 kL = 1 m³ • Awal', isSpecial: 'kL' },
+    { id: 'hL', label: 'hL', full: 'Hektoliter', role: 'Turun 1: ×10' },
+    { id: 'daL', label: 'daL', full: 'Dekaliter', role: 'Turun 2: ×100' },
+    { id: 'L', label: 'L', full: 'Liter', role: 'Satuan Pokok Cairan • 1 L = 1 dm³ • Turun 3: ×1.000', isSpecial: 'L' },
+    { id: 'dL', label: 'dL', full: 'Desiliter', role: 'Turun 4: ×10.000' },
+    { id: 'cL', label: 'cL', full: 'Sentiliter', role: 'Turun 5: ×100.000' },
+    { id: 'mL', label: 'mL', full: 'Mililiter', role: '1 mL = 1 cm³ (cc) • Turun 6: ×1.000.000', isSpecial: 'mL' },
+  ];
+
+  const presetsL = ['0,5', '1,25', '2,5', '5', '10'];
+  const presetsMl = ['250', '750', '1.500', '3.250'];
+  const presetsKl = ['0,5', '1,2', '3', '4,5'];
+  const presetsDl = ['1', '2,5', '3,5', '12'];
+
+  const convertVal = (raw, factor, isDivide = false, allowThousands = false) => {
+    const n = parseIndoUnitNumber(raw, allowThousands);
+    if (isNaN(n)) return '0';
+    return formatIndoUnitNumber(isDivide ? n / factor : n * factor);
+  };
+
+  return (
+    <div className="space-y-3.5 my-3 animate-fade-in">
+      {/* 1. Header Banner Aturan Tangga Volume / Liter */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 flex items-start space-x-2.5 shadow-2xs">
+          <div className="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-700 border border-cyan-200 flex items-center justify-center flex-shrink-0 font-bold">
+            <ArrowDown className="w-4 h-4" />
+          </div>
+          <div>
+            <strong className="block font-bold text-slate-900 text-[11px] uppercase tracking-wider">
+              Setiap Turun 1 Tangga:
+            </strong>
+            <span className="text-slate-600 leading-relaxed">
+              Dikali (×) 10 • <strong>Geser koma 1 langkah ke kanan</strong> (bilangan bulat: tambah 0 di belakang)
+            </span>
+          </div>
+        </div>
+
+        <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 flex items-start space-x-2.5 shadow-2xs">
+          <div className="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-700 border border-cyan-200 flex items-center justify-center flex-shrink-0 font-bold">
+            <ArrowUp className="w-4 h-4" />
+          </div>
+          <div>
+            <strong className="block font-bold text-slate-900 text-[11px] uppercase tracking-wider">
+              Setiap Naik 1 Tangga:
+            </strong>
+            <span className="text-slate-600 leading-relaxed">
+              Dibagi (÷) 10 • <strong>Geser koma 1 langkah ke kiri</strong>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Visualisasi Tangga Volume / Liter */}
+      <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-3 shadow-2xs">
+        <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-800 flex items-center space-x-1.5">
+            <Layers className="w-4 h-4 text-cyan-600" />
+            <span>Peta Tangga Satuan Volume / Liter (kL sampai mL)</span>
+          </span>
+          <span className="text-[11px] font-bold text-cyan-700 bg-cyan-50 border border-cyan-200 px-2 py-0.5 rounded-full">
+            7 Tingkat
+          </span>
+        </div>
+
+        {/* Jembatan Satuan Kubik */}
+        <div className="flex flex-wrap gap-2 text-[11px]">
+          <span className="px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 font-bold">
+            1 kL = 1 m³ = 1.000 L
+          </span>
+          <span className="px-2.5 py-1 rounded-lg bg-cyan-50 border border-cyan-200 text-cyan-900 font-bold">
+            1 L = 1 dm³ = 1.000 mL
+          </span>
+          <span className="px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 font-bold">
+            1 mL = 1 cm³ = 1 cc
+          </span>
+        </div>
+
+        <div className="space-y-1.5 pt-1">
+          {STAIRS.map((stair, index) => (
+            <div
+              key={stair.id}
+              className={`flex flex-wrap items-center justify-between gap-1.5 p-2 rounded-lg border transition-all ${
+                stair.isSpecial === 'kL'
+                  ? 'bg-blue-50/60 border-blue-200 font-semibold'
+                  : stair.isSpecial === 'L'
+                  ? 'bg-cyan-50/70 border-cyan-300 font-semibold'
+                  : stair.isSpecial === 'mL'
+                  ? 'bg-amber-50/70 border-amber-300 font-semibold'
+                  : 'bg-slate-50/70 border-slate-200'
+              }`}
+              style={{
+                marginLeft: `${Math.min(index * 4, 24)}%`,
+              }}
+            >
+              <div className="flex items-center flex-wrap gap-1.5">
+                <span className="w-10 h-6 rounded bg-white border border-slate-200 text-xs font-mono font-bold flex items-center justify-center text-slate-800">
+                  {stair.label}
+                </span>
+                <span className="text-xs font-bold text-slate-800">{stair.full}</span>
+                {stair.isSpecial === 'kL' && (
+                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-blue-100 text-blue-800 font-bold">
+                    = 1 m³
+                  </span>
+                )}
+                {stair.isSpecial === 'L' && (
+                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-cyan-100 text-cyan-800 font-bold">
+                    = 1 dm³ (Utama)
+                  </span>
+                )}
+                {stair.isSpecial === 'mL' && (
+                  <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-100 text-amber-800 font-bold">
+                    = 1 cm³ / cc
+                  </span>
+                )}
+              </div>
+              <div className="text-[10px] sm:text-[11px] text-slate-600 pr-1">
+                {stair.role}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="p-3 rounded-lg bg-cyan-50/60 border border-cyan-200 text-xs text-cyan-950 space-y-1.5 mt-2">
+          <div className="flex items-center space-x-1.5 font-bold text-cyan-900">
+            <Zap className="w-4 h-4 text-cyan-600" />
+            <span>Trik Cepat Satuan Liter: Hitung Tangga lalu Geser Koma!</span>
+          </div>
+          <p className="leading-relaxed text-slate-700">
+            • <strong>L → mL</strong> (turun 3 tangga) = <strong>× 1.000</strong> (geser koma 3 langkah ke kanan). Contoh: 2,5 L = 2.500 mL.<br />
+            • <strong>mL → L</strong> (naik 3 tangga) = <strong>÷ 1.000</strong> (geser koma 3 langkah ke kiri). Contoh: 750 mL = 0,75 L.<br />
+            • <strong>kL → L</strong> (turun 3 tangga) = <strong>× 1.000</strong> (geser koma 3 langkah ke kanan). Contoh: 1,2 kL = 1.200 L = 1.200 dm³.<br />
+            • <strong>L → dL</strong> (turun 1 tangga) = <strong>× 10</strong> (geser koma 1 langkah ke kanan). Contoh: 3,5 L = 35 dL.
+          </p>
+        </div>
+      </div>
+
+      {/* 3. Simulator Interaktif Konversi Volume / Liter */}
+      <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-3 shadow-2xs">
+        <div className="flex flex-col gap-2 pb-2 border-b border-slate-100">
+          <div className="flex items-center space-x-2">
+            <Calculator className="w-4 h-4 text-cyan-600" />
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-900">
+              Latihan Simulator Konversi Satuan Volume / Liter
+            </span>
+          </div>
+
+          <div className="flex flex-wrap gap-1 bg-slate-100 p-1 rounded-lg border border-slate-200">
+            {[
+              { id: 'l-to-ml', label: 'L → mL (×1.000)' },
+              { id: 'ml-to-l', label: 'mL → L (÷1.000)' },
+              { id: 'kl-to-l', label: 'kL → L (×1.000)' },
+              { id: 'l-to-dl', label: 'L → dL (×10)' },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
+                  activeTab === tab.id
+                    ? 'bg-white text-cyan-700 shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {activeTab === 'l-to-ml' && (
+          <div className="space-y-2.5">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-600">
+              <span className="text-[11px] font-bold text-slate-500 mr-1">Contoh Cepat:</span>
+              {presetsL.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setLToMlVal(p)}
+                  className={`px-2 py-0.5 rounded text-xs font-bold border transition-all cursor-pointer ${
+                    lToMlVal === p
+                      ? 'bg-cyan-600 text-white border-cyan-600'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {p} L
+                </button>
+              ))}
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex-1 space-y-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase block">Input Volume (L):</span>
+                <input
+                  type="text"
+                  value={lToMlVal}
+                  onChange={(e) => setLToMlVal(e.target.value)}
+                  placeholder="mis. 2,5"
+                  className="w-28 px-3 py-1.5 rounded-lg bg-white text-slate-900 font-bold font-mono text-center text-sm border border-slate-300 outline-none focus:border-cyan-500"
+                />
+              </div>
+              <div className="text-cyan-700 font-bold text-xs text-center">
+                <div>➔ × 1.000</div>
+                <div className="text-[10px] font-medium text-slate-500">Geser koma 3 langkah kanan</div>
+              </div>
+              <div className="flex-1 space-y-1 sm:text-right">
+                <span className="text-[11px] font-bold text-cyan-700 uppercase block">Hasil (mL / cc):</span>
+                <div className="inline-block px-3 py-1.5 rounded-lg bg-white text-cyan-900 font-bold font-mono text-sm border border-cyan-300">
+                  {convertVal(lToMlVal, 1000, false, false)} mL
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'ml-to-l' && (
+          <div className="space-y-2.5">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-600">
+              <span className="text-[11px] font-bold text-slate-500 mr-1">Contoh Cepat:</span>
+              {presetsMl.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setMlToLVal(p)}
+                  className={`px-2 py-0.5 rounded text-xs font-bold border transition-all cursor-pointer ${
+                    mlToLVal === p
+                      ? 'bg-cyan-600 text-white border-cyan-600'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {p} mL
+                </button>
+              ))}
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex-1 space-y-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase block">Input Volume (mL):</span>
+                <input
+                  type="text"
+                  value={mlToLVal}
+                  onChange={(e) => setMlToLVal(e.target.value)}
+                  className="w-32 px-3 py-1.5 rounded-lg bg-white text-slate-900 font-bold font-mono text-center text-sm border border-slate-300 outline-none focus:border-cyan-500"
+                />
+              </div>
+              <div className="text-cyan-700 font-bold text-xs text-center">
+                <div>➔ ÷ 1.000</div>
+                <div className="text-[10px] font-medium text-slate-500">Geser koma 3 langkah kiri</div>
+              </div>
+              <div className="flex-1 space-y-1 sm:text-right">
+                <span className="text-[11px] font-bold text-cyan-700 uppercase block">Hasil (L / dm³):</span>
+                <div className="inline-block px-3 py-1.5 rounded-lg bg-white text-cyan-900 font-bold font-mono text-sm border border-cyan-300">
+                  {convertVal(mlToLVal, 1000, true, true)} L
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'kl-to-l' && (
+          <div className="space-y-2.5">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-600">
+              <span className="text-[11px] font-bold text-slate-500 mr-1">Contoh Cepat:</span>
+              {presetsKl.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setKlToLVal(p)}
+                  className={`px-2 py-0.5 rounded text-xs font-bold border transition-all cursor-pointer ${
+                    klToLVal === p
+                      ? 'bg-blue-600 text-white border-blue-600'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {p} kL
+                </button>
+              ))}
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex-1 space-y-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase block">Input Volume (kL / m³):</span>
+                <input
+                  type="text"
+                  value={klToLVal}
+                  onChange={(e) => setKlToLVal(e.target.value)}
+                  className="w-28 px-3 py-1.5 rounded-lg bg-white text-slate-900 font-bold font-mono text-center text-sm border border-slate-300 outline-none focus:border-blue-500"
+                />
+              </div>
+              <div className="text-blue-700 font-bold text-xs text-center">
+                <div>➔ × 1.000</div>
+                <div className="text-[10px] font-medium text-slate-500">Geser koma 3 langkah kanan</div>
+              </div>
+              <div className="flex-1 space-y-1 sm:text-right">
+                <span className="text-[11px] font-bold text-blue-700 uppercase block">Hasil (L):</span>
+                <div className="inline-block px-3 py-1.5 rounded-lg bg-white text-blue-900 font-bold font-mono text-sm border border-blue-300">
+                  {convertVal(klToLVal, 1000, false, false)} L
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'l-to-dl' && (
+          <div className="space-y-2.5">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-600">
+              <span className="text-[11px] font-bold text-slate-500 mr-1">Contoh Cepat:</span>
+              {presetsDl.map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setLToDlVal(p)}
+                  className={`px-2 py-0.5 rounded text-xs font-bold border transition-all cursor-pointer ${
+                    lToDlVal === p
+                      ? 'bg-amber-600 text-white border-amber-600'
+                      : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {p} L
+                </button>
+              ))}
+            </div>
+            <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex-1 space-y-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase block">Input Volume (L):</span>
+                <input
+                  type="text"
+                  value={lToDlVal}
+                  onChange={(e) => setLToDlVal(e.target.value)}
+                  className="w-28 px-3 py-1.5 rounded-lg bg-white text-slate-900 font-bold font-mono text-center text-sm border border-slate-300 outline-none focus:border-amber-500"
+                />
+              </div>
+              <div className="text-amber-700 font-bold text-xs text-center">
+                <div>➔ × 10</div>
+                <div className="text-[10px] font-medium text-slate-500">Geser koma 1 langkah kanan</div>
+              </div>
+              <div className="flex-1 space-y-1 sm:text-right">
+                <span className="text-[11px] font-bold text-amber-700 uppercase block">Hasil (dL):</span>
+                <div className="inline-block px-3 py-1.5 rounded-lg bg-white text-amber-900 font-bold font-mono text-sm border border-amber-300">
+                  {convertVal(lToDlVal, 10, false, false)} dL
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/**
  * Komponen Utama Pembaca Materi Pembelajaran TKA SD
  */
 const MaterialReader = ({ bab, onStartQuiz }) => {
@@ -766,10 +1502,31 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
   }
 
   // SLIDE 3..N: PEMBAHASAN MENDALAM TIAP SUBMATERI
+  const isPengukuranBab =
+    bab.id === 'mtk_5' || (bab.judul || '').toLowerCase().includes('pengukuran');
+  let hasRenderedTanggaBerat = false;
+  let hasRenderedTanggaLiter = false;
+
   if (bab.uraianMateri && bab.uraianMateri.length > 0) {
     bab.uraianMateri.forEach((item, idx) => {
       const contohKey = `uraian_${idx}_contoh`;
       const isContohOpen = openContohDropdown[contohKey] ?? true; // Default terbuka
+      const subLower = (item.subjudul || '').toLowerCase();
+      const showTanggaBerat =
+        item.tipe === 'tangga_berat' ||
+        (subLower.includes('tangga') && (subLower.includes('berat') || subLower.includes('massa'))) ||
+        (isPengukuranBab && (subLower.includes('berat') || subLower.includes('massa')));
+      const showTanggaLiter =
+        item.tipe === 'tangga_liter' ||
+        (subLower.includes('tangga') && (subLower.includes('liter') || subLower.includes('volume'))) ||
+        (isPengukuranBab && (subLower.includes('liter') || subLower.includes('volume')));
+      const showTanggaPanjang =
+        !showTanggaBerat &&
+        !showTanggaLiter &&
+        (item.tipe === 'tangga_satuan' || subLower.includes('tangga'));
+
+      if (showTanggaBerat) hasRenderedTanggaBerat = true;
+      if (showTanggaLiter) hasRenderedTanggaLiter = true;
 
       slides.push({
         id: `uraian_${idx}`,
@@ -801,10 +1558,10 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
               </div>
             )}
 
-            {/* Widget Interaktif Tangga Satuan Khusus Skala */}
-            {(item.tipe === 'tangga_satuan' || item.subjudul?.toLowerCase().includes('tangga')) && (
-              <TanggaSatuanVisual />
-            )}
+            {/* Widget Interaktif Tangga Satuan (Panjang, Massa/Berat, Volume/Liter) */}
+            {showTanggaBerat && <TanggaBeratVisual />}
+            {showTanggaLiter && <TanggaLiterVisual />}
+            {showTanggaPanjang && <TanggaSatuanVisual />}
 
             {/* Rumus / Kaidah Pokok */}
             {item.rumus && (
@@ -879,6 +1636,66 @@ const MaterialReader = ({ bab, onStartQuiz }) => {
           </div>
         ),
       });
+    });
+  }
+
+  // Fallback khusus materi Pengukuran: jika konten di database/Admin belum memiliki subtopik tangga berat/liter,
+  // tetap tampilkan slide interaktif Tangga Satuan Massa/Berat & Volume/Liter agar selalu bisa dipelajari.
+  if (isPengukuranBab && !hasRenderedTanggaBerat) {
+    const nextBagian = slides.length + 1;
+    slides.push({
+      id: 'auto_tangga_berat',
+      badge: `Materi ${bab.no} • Bagian ${nextBagian}`,
+      title: 'Tangga Satuan Massa / Berat (kg sampai mg)',
+      subtitle: 'Visual Tangga & Simulator Konversi',
+      icon: Layers,
+      render: () => (
+        <div className="p-5 sm:p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-4 animate-fade-in">
+          <div className="flex items-center space-x-3 pb-3 border-b border-slate-100">
+            <span className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center text-xs font-bold flex-shrink-0">
+              kg
+            </span>
+            <div>
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                Visual Interaktif
+              </span>
+              <h4 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+                Tangga Satuan Massa / Berat (kg sampai mg)
+              </h4>
+            </div>
+          </div>
+          <TanggaBeratVisual />
+        </div>
+      ),
+    });
+  }
+
+  if (isPengukuranBab && !hasRenderedTanggaLiter) {
+    const nextBagian = slides.length + 1;
+    slides.push({
+      id: 'auto_tangga_liter',
+      badge: `Materi ${bab.no} • Bagian ${nextBagian}`,
+      title: 'Tangga Satuan Volume / Liter (kL sampai mL)',
+      subtitle: 'Visual Tangga & Simulator Konversi',
+      icon: Layers,
+      render: () => (
+        <div className="p-5 sm:p-6 rounded-lg bg-white border border-slate-200 shadow-sm space-y-4 animate-fade-in">
+          <div className="flex items-center space-x-3 pb-3 border-b border-slate-100">
+            <span className="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-700 border border-cyan-200 flex items-center justify-center text-xs font-bold flex-shrink-0">
+              L
+            </span>
+            <div>
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                Visual Interaktif
+              </span>
+              <h4 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+                Tangga Satuan Volume / Liter (kL sampai mL)
+              </h4>
+            </div>
+          </div>
+          <TanggaLiterVisual />
+        </div>
+      ),
     });
   }
 

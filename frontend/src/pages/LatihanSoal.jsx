@@ -35,7 +35,6 @@ import {
   Search,
   X,
   Sparkles,
-  Zap,
   Star,
   Gift,
   RotateCcw,
@@ -56,8 +55,8 @@ import {
  *    - Menggunakan penamaan "Latihan 1", "Latihan 2", dst. (bukan "Materi 1").
  *    - Sistem Latihan Berjenjang (Latihan 1..10 untuk MTK dan BI).
  *    - Posisi awal: Hanya Latihan 1 yang terbuka, latihan berikutnya terkunci.
- *    - Syarat membuka latihan: Menuntaskan latihan sebelumnya.
- *    - Fitur Tantangan Lompat Latihan: Langsung melompat ke latihan terkunci dengan menjawab kuis tantangan.
+ *    - Syarat membuka latihan: Menuntaskan latihan sebelumnya (min. 1 bintang).
+ *    - Akses Khusus Admin: Seluruh latihan soal terbuka otomatis untuk akun Admin.
  *    - Desain Peta Petualangan Berliku (Duolingo-style Winding Path), Milestone Peti Bonus, dan Piala Puncak.
  *    - Tampilan Mode Peta & Mode Daftar Grid.
  */
@@ -219,7 +218,6 @@ const LatihanSoal = () => {
     };
   }, []);
   const completedLatihanIds = activity?.latihanCompleted || [];
-  const unlockedLatihanIds = activity?.unlockedLatihan || ['mtk_lat_1', 'bi_lat_1'];
   const latihanStars = activity?.latihanStars || {};
 
   // Helper dapatkan jumlah bintang yang diraih pada latihan tertentu
@@ -250,19 +248,6 @@ const LatihanSoal = () => {
   const [reviewFilter, setReviewFilter] = useState('all'); // 'all' | 'wrong' | 'correct'
   const [latestScoreResult, setLatestScoreResult] = useState(null);
 
-  // State Mode Tantangan Lompat Latihan (Jump Challenge)
-  const [jumpChallengeLevel, setJumpChallengeLevel] = useState(null);
-  const [jumpQuizIndex, setJumpQuizIndex] = useState(0);
-  const [jumpSelectedAnswer, setJumpSelectedAnswer] = useState(null);
-  const [jumpHasSubmitted, setJumpHasSubmitted] = useState(false);
-  const [jumpIsCorrect, setJumpIsCorrect] = useState(false);
-  const [showJumpHint, setShowJumpHint] = useState(false);
-  const [jumpFinished, setJumpFinished] = useState(false);
-
-  // State Transisi Anti-Spam
-  const isJumpTransitioningRef = useRef(false);
-  const [isJumpTransitioning, setIsJumpTransitioning] = useState(false);
-
   // Refresh data aktivitas saat ada perubahan
   const refreshActivity = () => {
     setActivity(getActivityData());
@@ -276,6 +261,8 @@ const LatihanSoal = () => {
     if (isGuestSession()) {
       return index === 0;
     }
+    // Khusus Admin: seluruh latihan soal terbuka otomatis
+    if (isAdmin) return true;
     // Latihan 1 selalu terbuka
     if (index === 0) return true;
     // Terbuka jika latihan ini sendiri sudah meraih minimal 1 bintang
@@ -283,8 +270,6 @@ const LatihanSoal = () => {
     // Terbuka jika latihan sebelumnya sudah meraih minimal 1 bintang
     const prevLvl = levelsList[index - 1];
     if (prevLvl && getLevelStars(prevLvl.id) >= 1) return true;
-    // Khusus Admin (fitur lompat latihan): terbuka jika sudah di-unlock eksplisit
-    if (isAdmin && unlockedLatihanIds.includes(lvl.id)) return true;
 
     return false;
   };
@@ -555,81 +540,6 @@ const LatihanSoal = () => {
     refreshActivity();
   };
 
-  // Mulai Tantangan Lompat Latihan (Khusus Admin)
-  const handleStartJumpChallenge = (lvl) => {
-    if (!isAdmin) return;
-    if (isGuestSession()) {
-      setSelectedLevelModal(null);
-      triggerGuestRestrictionModal(`Latihan ${lvl?.level}: ${lvl?.subjudul || lvl?.namaLevel}`);
-      return;
-    }
-    setSelectedLevelModal(null);
-    setJumpChallengeLevel(lvl);
-    setJumpQuizIndex(0);
-    setJumpSelectedAnswer(null);
-    setJumpHasSubmitted(false);
-    setJumpIsCorrect(false);
-    setShowJumpHint(false);
-    setJumpFinished(false);
-    isJumpTransitioningRef.current = false;
-    setIsJumpTransitioning(false);
-  };
-
-  // Dapatkan soal tantangan dari level (utamakan pilihan ganda sederhana)
-  const getJumpQuestions = (lvl) => {
-    if (!lvl || !lvl.soal || lvl.soal.length === 0) return [];
-    const mcqs = lvl.soal.filter((q) => !q.type || q.type === 'mcq');
-    return mcqs.length > 0 ? mcqs.slice(0, 2) : lvl.soal.slice(0, 1);
-  };
-
-  // Submit Jawaban Tantangan Lompat Latihan
-  const handleCheckJumpAnswer = () => {
-    if (isJumpTransitioningRef.current || (jumpHasSubmitted && jumpIsCorrect)) return;
-    if (jumpSelectedAnswer === null) return;
-
-    const challengeList = getJumpQuestions(jumpChallengeLevel);
-    const currentQ = challengeList[jumpQuizIndex];
-    const correct = isQuestionCorrect(currentQ, jumpSelectedAnswer);
-
-    setJumpHasSubmitted(true);
-    setJumpIsCorrect(correct);
-
-    if (!correct) {
-      setShowJumpHint(true);
-    } else {
-      isJumpTransitioningRef.current = true;
-      setIsJumpTransitioning(true);
-      setShowJumpHint(false);
-
-      if (jumpQuizIndex < challengeList.length - 1) {
-        setTimeout(() => {
-          setJumpQuizIndex((prev) => prev + 1);
-          setJumpSelectedAnswer(null);
-          setJumpHasSubmitted(false);
-          setJumpIsCorrect(false);
-          setShowJumpHint(false);
-          isJumpTransitioningRef.current = false;
-          setIsJumpTransitioning(false);
-        }, 1100);
-      } else {
-        // Berhasil menyelesaikan tantangan lompat latihan!
-        setJumpFinished(true);
-        unlockLatihan(jumpChallengeLevel.id);
-        refreshActivity();
-        isJumpTransitioningRef.current = false;
-        setIsJumpTransitioning(false);
-      }
-    }
-  };
-
-  // Coba lagi pada tantangan lompat latihan
-  const handleRetryJumpQuestion = () => {
-    if (isJumpTransitioningRef.current) return;
-    setJumpSelectedAnswer(null);
-    setJumpHasSubmitted(false);
-    setJumpIsCorrect(false);
-  };
-
   // Reset Progres Latihan
   const handleResetProgress = () => {
     resetLatihanProgress(selectedSubject);
@@ -680,7 +590,6 @@ const LatihanSoal = () => {
             <button
               onClick={() => {
                 setActiveLatihan(null);
-                setJumpChallengeLevel(null);
                 setSelectedSubject(null);
               }}
               className={`font-medium hover:text-white transition-colors ${
@@ -704,7 +613,6 @@ const LatihanSoal = () => {
                       return;
                     }
                     setActiveLatihan(null);
-                    setJumpChallengeLevel(null);
                     setSearchQuery('');
                     refreshActivity();
                   }}
@@ -728,9 +636,8 @@ const LatihanSoal = () => {
 
           <button
             onClick={() => {
-              if (activeLatihan || jumpChallengeLevel) {
+              if (activeLatihan) {
                 if (
-                  activeLatihan &&
                   !isFinished &&
                   Object.keys(userAnswers).length > 0 &&
                   !window.confirm('Yakin ingin kembali ke peta latihan? Jawaban latihan ini belum disimpan.')
@@ -738,7 +645,6 @@ const LatihanSoal = () => {
                   return;
                 }
                 setActiveLatihan(null);
-                setJumpChallengeLevel(null);
                 refreshActivity();
               } else if (selectedSubject) {
                 setSelectedSubject(null);
@@ -750,7 +656,7 @@ const LatihanSoal = () => {
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>
-              {activeLatihan || jumpChallengeLevel
+              {activeLatihan
                 ? 'Kembali ke Peta Latihan'
                 : selectedSubject
                 ? 'Ganti Mata Pelajaran'
@@ -1844,7 +1750,15 @@ const LatihanSoal = () => {
                       {currentSubject.title}
                     </h2>
                     <p className="text-xs sm:text-sm text-[#6E6258] max-w-xl leading-relaxed">
-                      {currentSubject.deskripsi}
+                      {isAdmin ? (
+                        <>
+                          Mode Admin aktif:{' '}
+                          <strong className={`transition-colors ${selectedSubject === 'matematika' ? 'text-[#881337]' : 'text-[#047857]'}`}>seluruh latihan soal terbuka otomatis</strong>{' '}
+                          dan bisa langsung kamu kerjakan kapan saja.
+                        </>
+                      ) : (
+                        currentSubject.deskripsi
+                      )}
                     </p>
                   </div>
 
@@ -2066,7 +1980,7 @@ const LatihanSoal = () => {
 
                       <div className="mt-4 pt-3 border-t border-[#E6DFD5] flex items-center justify-between text-xs font-medium">
                         <span className={`transition-colors duration-300 ${isUnlocked ? (isMtk ? 'text-[#881337]' : 'text-[#047857]') : 'text-[#8C7E72]'}`}>
-                          {isUnlocked ? 'Kerjakan Latihan' : isAdmin ? 'Lompat Latihan (Admin)' : 'Masih Terkunci 🔒'}
+                          {isUnlocked ? 'Kerjakan Latihan' : 'Masih Terkunci 🔒'}
                         </span>
                         <ChevronRight className="w-3.5 h-3.5 text-[#8C7E72]" />
                       </div>
@@ -2148,7 +2062,7 @@ const LatihanSoal = () => {
                                 : 'bg-[#F2ECE4] border-[#E6DFD5] text-[#8C7E72] shadow-[0_5px_0_0_#D8CDC2] hover:bg-[#EAE2D8] hover:text-[#6E6258] hover:shadow-[0_6px_0_0_#C5B8AC] hover:-translate-y-0.5 active:translate-y-1 active:shadow-[0_1px_0_0_#D8CDC2]'
                             }`}
                             title={`Latihan ${lvl.level}: ${lvl.subjudul || lvl.namaLevel} (${
-                              isCompleted ? 'Tuntas' : isUnlocked ? 'Terbuka' : isAdmin ? 'Terkunci - Klik untuk Lompat (Admin)' : 'Terkunci'
+                              isCompleted ? 'Tuntas' : isUnlocked ? 'Terbuka' : 'Terkunci'
                             })`}
                           >
                             {/* Ikon di dalam node */}
@@ -2439,9 +2353,7 @@ const LatihanSoal = () => {
                           Latihan ini masih terkunci
                         </strong>
                         <p className="mt-0.5 text-[#6E6258] leading-relaxed">
-                          {isAdmin
-                            ? `Raih minimal 1 bintang di Latihan ${prevLvl?.level}, atau sebagai Admin kamu bisa langsung melompat lewat tantangan soal.`
-                            : `Raih minimal 1 bintang di Latihan ${prevLvl?.level} biar latihan ini terbuka.`}
+                          Raih minimal 1 bintang di Latihan {prevLvl?.level} biar latihan ini terbuka.
                         </p>
                       </div>
                     </div>
@@ -2450,7 +2362,7 @@ const LatihanSoal = () => {
 
                 {/* Tombol Aksi */}
                 <div className="pt-2 space-y-2">
-                  {isUnlocked ? (
+                  {isUnlocked && (
                     <button
                       onClick={() => handleStartLatihan(selectedLevelModal)}
                       className={`w-full py-2.5 rounded-lg text-white font-semibold text-xs sm:text-sm transition-all duration-300 flex items-center justify-center space-x-2 cursor-pointer ${
@@ -2462,15 +2374,7 @@ const LatihanSoal = () => {
                       <CheckCircle2 className="w-4 h-4" />
                       <span>{isCompleted ? 'Kerjakan Ulang Latihan' : 'Mulai Kerjakan Latihan'}</span>
                     </button>
-                  ) : isAdmin ? (
-                    <button
-                      onClick={() => handleStartJumpChallenge(selectedLevelModal)}
-                      className="w-full py-2.5 rounded-lg bg-[#D97E26] hover:bg-[#B5671B] text-white font-semibold text-xs sm:text-sm transition-colors flex items-center justify-center space-x-2 cursor-pointer"
-                    >
-                      <Zap className="w-4 h-4 fill-current" />
-                      <span>Lompat ke Latihan Ini (Khusus Admin)</span>
-                    </button>
-                  ) : null}
+                  )}
 
                   <button
                     onClick={() => setSelectedLevelModal(null)}
@@ -2485,237 +2389,7 @@ const LatihanSoal = () => {
         );
       })()}
 
-      {/* --- MODAL 2: TANTANGAN LOMPAT LATIHAN (JUMP CHALLENGE - KHUSUS ADMIN) --- */}
-      {jumpChallengeLevel && isAdmin && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1F1914]/50 backdrop-blur-xs">
-          <div className={`bg-white rounded-2xl border-2 shadow-xl max-w-lg w-full max-h-[88vh] flex flex-col overflow-hidden relative my-auto ${
-            selectedSubject === 'matematika' ? 'border-[#881337]' : 'border-[#047857]'
-          }`}>
-            {/* Header Tantangan Lompat */}
-            <div className={`p-4 text-white relative border-b-2 flex-shrink-0 ${
-              selectedSubject === 'matematika' ? 'bg-[#881337] border-[#700D2B]' : 'bg-[#047857] border-[#065F46]'
-            }`}>
-              <button
-                onClick={() => setJumpChallengeLevel(null)}
-                className="absolute right-3.5 top-3.5 w-7 h-7 rounded-md hover:bg-[#2D241C] text-[#D4C8BC] hover:text-white flex items-center justify-center transition-colors cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-
-              <div className="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded bg-[#2D241C] text-[10px] font-semibold text-[#E5A875] border border-[#3D3126] mb-1.5">
-                <Zap className="w-3 h-3 fill-current" />
-                <span>Tantangan Lompat • {currentSubject?.title}</span>
-              </div>
-              <h3 className="text-base font-bold text-white">
-                Uji Pemahaman: Latihan {jumpChallengeLevel.level} ({jumpChallengeLevel.subjudul})
-              </h3>
-              <p className="text-xs text-[#D4C8BC] mt-0.5">
-                Jawab soal tantangan dengan tepat untuk membuka latihan ini lebih awal.
-              </p>
-            </div>
-
-            {/* Body Tantangan */}
-            <div className="p-4 sm:p-5 overflow-y-auto slate-scrollbar flex-1">
-              {jumpFinished ? (
-                <div className="text-center py-4 space-y-3">
-                  <div className="w-12 h-12 rounded-full bg-[#E8F2EF] text-[#286657] flex items-center justify-center mx-auto border border-[#C5DDD6]">
-                    <Trophy className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h4 className="text-base font-bold text-[#261C14]">
-                      Berhasil Terbuka!
-                    </h4>
-                    <p className="text-xs text-[#6E6258] max-w-sm mx-auto mt-1 leading-relaxed">
-                      Latihan {jumpChallengeLevel.level} ({jumpChallengeLevel.subjudul}) sekarang sudah <strong>TERBUKA</strong>.
-                    </p>
-                  </div>
-
-                  <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2">
-                    <button
-                      onClick={() => {
-                        const target = jumpChallengeLevel;
-                        setJumpChallengeLevel(null);
-                        handleStartLatihan(target);
-                      }}
-                      className={`w-full sm:w-auto px-4 py-2 rounded-lg text-white font-semibold text-xs transition-all duration-300 cursor-pointer ${
-                        selectedSubject === 'matematika'
-                          ? 'bg-[#881337] hover:bg-[#700D2B]'
-                          : 'bg-[#047857] hover:bg-[#065F46]'
-                      }`}
-                    >
-                      Langsung Kerjakan Latihan
-                    </button>
-                    <button
-                      onClick={() => setJumpChallengeLevel(null)}
-                      className="w-full sm:w-auto px-4 py-2 rounded-lg bg-white hover:bg-[#FAF7F2] border border-[#E6DFD5] text-[#261C14] font-medium text-xs transition-colors cursor-pointer"
-                    >
-                      Kembali ke Peta Latihan
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                (() => {
-                  const challengeList = getJumpQuestions(jumpChallengeLevel);
-                  const currentQ = challengeList[jumpQuizIndex];
-                  if (!currentQ) return null;
-
-                  return (
-                    <div className="space-y-3.5">
-                      {/* Stepper Progress */}
-                      <div className="flex items-center justify-between text-xs font-medium text-[#6E6258] border-b border-[#E6DFD5] pb-2">
-                        <span>Soal Tantangan {jumpQuizIndex + 1} dari {challengeList.length}</span>
-                        <div className="flex space-x-1">
-                          {challengeList.map((_, i) => (
-                            <span
-                              key={i}
-                              className={`w-4 h-1.5 rounded-full transition-all duration-300 ${
-                                i < jumpQuizIndex
-                                  ? selectedSubject === 'matematika'
-                                    ? 'bg-[#881337]'
-                                    : 'bg-[#047857]'
-                                  : i === jumpQuizIndex
-                                  ? selectedSubject === 'matematika'
-                                    ? 'bg-[#9F1239]'
-                                    : 'bg-[#059669]'
-                                  : 'bg-[#F2ECE4]'
-                              }`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Stimulus jika ada */}
-                      {currentQ.stimulus && (
-                        <div className="p-3 rounded-lg bg-[#FAF7F2] border border-[#E6DFD5] text-[#261C14] text-xs leading-relaxed">
-                          <strong className="block text-[#261C14] mb-0.5">Bacaan / Pengantar:</strong>
-                          <div
-                            className="rich-content-display"
-                            dangerouslySetInnerHTML={{ __html: formatMath(currentQ.stimulus) }}
-                          />
-                        </div>
-                      )}
-
-                      {/* Pertanyaan */}
-                      <div
-                        className="text-xs sm:text-sm font-semibold text-[#261C14] leading-relaxed rich-content-display"
-                        dangerouslySetInnerHTML={{ __html: formatMath(currentQ.pertanyaan) }}
-                      />
-
-                      {/* Pilihan Jawaban */}
-                      <div
-                        className={
-                          (currentQ.pilihan || []).some((o) => /<img\b/i.test(String(o || '')))
-                            ? 'grid grid-cols-1 sm:grid-cols-2 gap-2'
-                            : 'space-y-1.5'
-                        }
-                      >
-                        {currentQ.pilihan?.map((opt, idx) => {
-                          const isSelected = jumpSelectedAnswer === opt;
-                          const isWrongSubmitted = jumpHasSubmitted && !jumpIsCorrect && isSelected;
-
-                          return (
-                            <button
-                              key={idx}
-                              onClick={() => {
-                                if (isJumpTransitioningRef.current || (jumpHasSubmitted && jumpIsCorrect)) return;
-                                setJumpSelectedAnswer(opt);
-                                setJumpHasSubmitted(false);
-                                setJumpIsCorrect(false);
-                                setShowJumpHint(false);
-                              }}
-                              className={`w-full p-2.5 rounded-lg text-left text-xs font-medium border transition-all duration-300 flex items-start justify-between gap-2 cursor-pointer ${
-                                isWrongSubmitted
-                                  ? 'bg-[#FDF1F1] border-[#F4C7C7] text-[#C93B3B]'
-                                  : isSelected
-                                  ? selectedSubject === 'matematika'
-                                    ? 'bg-[#FFF1F2] border-[#881337] text-[#261C14]'
-                                    : 'bg-[#ECFDF5] border-[#047857] text-[#261C14]'
-                                  : 'bg-white border-[#E6DFD5] text-[#261C14] hover:bg-[#FAF7F2]'
-                              }`}
-                            >
-                              <div
-                                className="flex-1 min-w-0 rich-content-display"
-                                dangerouslySetInnerHTML={{ __html: formatMath(opt) }}
-                              />
-                              <div
-                                className={`w-5 h-5 rounded-md border flex items-center justify-center text-[10px] font-semibold flex-shrink-0 transition-all duration-300 ${
-                                  isWrongSubmitted
-                                    ? 'border-[#C93B3B] bg-[#C93B3B] text-white'
-                                    : isSelected
-                                    ? selectedSubject === 'matematika'
-                                      ? 'border-[#881337] bg-[#881337] text-white'
-                                      : 'border-[#047857] bg-[#047857] text-white'
-                                    : 'border-[#E6DFD5] text-[#8C7E72]'
-                                }`}
-                              >
-                                {String.fromCharCode(65 + idx)}
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-
-                      {/* Hint jika salah */}
-                      {(showJumpHint || (jumpHasSubmitted && !jumpIsCorrect)) && (
-                        <div className="p-3 rounded-lg bg-[#FDF1F1] border border-[#F4C7C7] text-[#C93B3B] text-xs flex items-start space-x-2">
-                          <HelpCircle className="w-4 h-4 text-[#C93B3B] flex-shrink-0 mt-0.5" />
-                          <div>
-                            <strong>Jawaban Kurang Tepat</strong>
-                            <p className="mt-0.5 text-[#6E6258]">
-                              Baca pertanyaan dengan cermat dan coba pilih opsi lain yang sesuai.
-                            </p>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Aksi Tombol Bawah */}
-                      <div className="pt-2 border-t border-[#E6DFD5] flex items-center justify-between">
-                        <button
-                          onClick={() => setJumpChallengeLevel(null)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-medium text-[#6E6258] hover:text-[#261C14] cursor-pointer"
-                        >
-                          Batal
-                        </button>
-                        <button
-                          onClick={
-                            jumpHasSubmitted && !jumpIsCorrect
-                              ? handleRetryJumpQuestion
-                              : handleCheckJumpAnswer
-                          }
-                          disabled={
-                            isJumpTransitioning ||
-                            (jumpHasSubmitted && jumpIsCorrect) ||
-                            (!jumpHasSubmitted && jumpSelectedAnswer === null)
-                          }
-                          className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all duration-300 ${
-                            isJumpTransitioning || (jumpHasSubmitted && jumpIsCorrect)
-                              ? 'bg-[#F2ECE4] text-[#8C7E72] cursor-not-allowed'
-                              : jumpHasSubmitted && !jumpIsCorrect
-                              ? 'bg-[#D97E26] hover:bg-[#B5671B] text-white cursor-pointer'
-                              : jumpSelectedAnswer !== null
-                              ? selectedSubject === 'matematika'
-                                ? 'bg-[#881337] hover:bg-[#700D2B] text-white cursor-pointer'
-                                : 'bg-[#047857] hover:bg-[#065F46] text-white cursor-pointer'
-                              : 'bg-[#F2ECE4] text-[#8C7E72] cursor-not-allowed'
-                          }`}
-                        >
-                          {isJumpTransitioning || (jumpHasSubmitted && jumpIsCorrect)
-                            ? 'Memproses...'
-                            : jumpHasSubmitted && !jumpIsCorrect
-                            ? 'Coba Lagi'
-                            : 'Periksa Jawaban'}
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })()
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* --- MODAL 3: BUKU PANDUAN CARA BERMAIN --- */}
+      {/* --- MODAL 2: BUKU PANDUAN CARA BERMAIN --- */}
       {showGuideModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#1F1914]/50 backdrop-blur-xs animate-fade-in">
           <div className={`bg-white rounded-2xl border-2 shadow-2xl max-w-md w-full max-h-[88vh] flex flex-col overflow-hidden relative ${
@@ -2782,8 +2456,8 @@ const LatihanSoal = () => {
                     3
                   </span>
                   <div>
-                    <strong className="block text-[#261C14] font-semibold">Lompat Latihan (Khusus Admin)</strong>
-                    Khusus akun Admin, kamu bisa membuka latihan tertentu lebih dulu dengan menjawab <strong>kuis tantangannya</strong>.
+                    <strong className="block text-[#261C14] font-semibold">Akses Khusus Admin</strong>
+                    Khusus akun Admin, <strong>seluruh tingkat latihan soal terbuka otomatis</strong> sehingga kamu bisa langsung mengerjakan atau meninjau latihan mana saja.
                   </div>
                 </div>
               )}

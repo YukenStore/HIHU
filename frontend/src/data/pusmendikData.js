@@ -4,10 +4,10 @@
  * Terdiri dari:
  * a. Matematika (12 Materi):
  *    1. Operasi Hitung
- *    2. Perbandingan dan Skala
- *    3. KPK dan FPB
- *    4. Bilangan Pangkat
- *    5. Pengukuran
+ *    2. Pengukuran
+ *    3. Perbandingan dan Skala
+ *    4. KPK dan FPB
+ *    5. Bilangan Pangkat
  *    6. Jarak, Waktu, dan kecepatan
  *    7. Bangun datar
  *    8. Bangun ruang
@@ -48,8 +48,8 @@ export const PUSMENDIK_MATERI = {
     elemen: [
       {
         id: 'mtk_bilangan_operasi',
-        namaElemen: '1. Bilangan & Operasi Hitung',
-        deskripsi: 'Keterampilan dasar perhitungan numerasi, faktor, kelipatan, dan pangkat.',
+        namaElemen: '1. Bilangan, Pengukuran & Operasi Hitung',
+        deskripsi: 'Keterampilan dasar perhitungan numerasi, konversi pengukuran, perbandingan, faktor, kelipatan, dan pangkat.',
         bab: [
           {
             id: 'mtk_1',
@@ -101,8 +101,72 @@ export const PUSMENDIK_MATERI = {
             ]
           },
           {
-            id: 'mtk_2',
+            id: 'mtk_5',
             no: 2,
+            judul: 'Pengukuran',
+            ringkasan: 'Konversi satuan massa/berat (kg-mg, ton, kuintal), satuan volume/liter (kL-mL, dm³, cc), satuan kuantitas (lusin, gros, kodi, rim), dan satuan waktu (jam-detik).',
+            tujuan: 'Murid mampu mengonversi satuan massa/berat dan satuan volume/liter memakai aturan tangga satuan (geser koma), serta menggunakan satuan kuantitas dan waktu dalam kehidupan sehari-hari.',
+            konsepKunci: '-> Aturan Umum Tangga Satuan (Berat & Liter): Setiap turun 1 tangga = × 10 (geser koma 1 langkah ke kanan) | Setiap naik 1 tangga = ÷ 10 (geser koma 1 langkah ke kiri)\n-> Konversi Satuan Massa / Berat Populer: 1 ton = 1.000 kg | 1 kuintal = 100 kg | 1 kg = 10 ons (hg) = 1.000 g | 1 ons (hg) = 100 g\n-> Konversi Satuan Volume / Liter Populer: 1 kL = 1 m³ = 1.000 L | 1 L = 1 dm³ = 1.000 mL | 1 mL = 1 cm³ (cc)\n-> Satuan Kuantitas & Waktu: 1 lusin = 12 buah | 1 gros = 144 buah | 1 kodi = 20 lembar | 1 rim = 500 lembar | 1 jam = 60 menit = 3.600 detik',
+            uraianMateri: [
+              {
+                subjudul: 'Tangga Satuan Massa / Berat (kg sampai mg)',
+                tipe: 'tangga_berat',
+                konten: 'Untuk mengubah satuan berat, gunakan tangga satuan massa dari kg sampai mg dengan aturan geser koma:\n-> Urutan Tangga Berat: kg ➔ hg (ons) ➔ dag ➔ g ➔ dg ➔ cg ➔ mg\n-> Aturan Dasar Turun Tangga: Setiap TURUN 1 tangga dikali 10 (**geser koma 1 langkah ke kanan**; untuk bilangan bulat, tambahkan 0 di belakang). Turun $n$ tangga = geser koma $n$ langkah ke kanan.\n-> Aturan Dasar Naik Tangga: Setiap NAIK 1 tangga dibagi 10 (**geser koma 1 langkah ke kiri**). Naik $n$ tangga = geser koma $n$ langkah ke kiri.\n-> Satuan Berat Tambahan (Besar & Pasar): $1\\text{ ton} = 1.000\\text{ kg}$ | $1\\text{ kuintal} = 100\\text{ kg}$ | $1\\text{ ton} = 10\\text{ kuintal}$ | $1\\text{ hg} = 1\\text{ ons}$ | $1\\text{ kg} = 10\\text{ ons} = 1.000\\text{ g}$ | $1\\text{ ons} = 100\\text{ g}$.\n📌 Hati-hati Bilangan Desimal: Jangan asal menambah nol di belakang angka berkoma! Misalnya $2{,}5\\text{ kg}$ diubah ke gram (turun 3 tangga): geser koma 3 langkah ke kanan menjadi $2.500\\text{ g}$ (bukan $2{,}5000$).',
+                rumus: 'Turun n tangga = × 10ⁿ (geser koma n langkah kanan)  |  Naik n tangga = ÷ 10ⁿ (geser koma n langkah kiri)',
+                contoh: '• kg ➔ g (turun 3 tangga): 2,5 kg = 2,5 × 1.000 = 2.500 g (geser koma 3 langkah ke kanan).\n• g ➔ kg (naik 3 tangga): 1.500 g = 1.500 ÷ 1.000 = 1,5 kg (geser koma 3 langkah ke kiri).\n• kg ➔ ons/hg (turun 1 tangga): 4,5 kg = 45 ons | 15 ons = 15 × 100 = 1.500 g.\n• ton & kuintal ke kg: 2,5 ton = 2.500 kg | 4 kuintal = 400 kg.'
+              },
+              {
+                subjudul: 'Tangga Satuan Volume / Liter (kL sampai mL)',
+                tipe: 'tangga_liter',
+                konten: 'Satuan liter dipakai untuk mengukur isi/volume benda cair (air, minyak, susu) dengan aturan tangga yang sama persis seperti satuan berat:\n-> Urutan Tangga Liter: kL ➔ hL ➔ daL ➔ L ➔ dL ➔ cL ➔ mL\n-> Aturan Dasar Tangga Liter: Setiap TURUN 1 tangga dikali 10 (**geser koma 1 langkah ke kanan**), dan setiap NAIK 1 tangga dibagi 10 (**geser koma 1 langkah ke kiri**).\n-> Jembatan ke Satuan Kubik ($\\text{m}^3, \\text{dm}^3, \\text{cm}^3$): $1\\text{ kL} = 1\\text{ m}^3 = 1.000\\text{ L}$ | $1\\text{ L} = 1\\text{ dm}^3 = 1.000\\text{ mL}$ | $1\\text{ mL} = 1\\text{ cm}^3 = 1\\text{ cc}$.\n📌 Ingat Perbedaan Tangga Liter vs Tangga Kubik: Pada tangga liter ($\\text{kL} \\to \\text{mL}$) turun 1 tangga dikali $10$, sedangkan pada tangga kubik ($\\text{m}^3 \\to \\text{dm}^3 \\to \\text{cm}^3$) turun 1 tangga dikali $1.000$!',
+                rumus: '1 kL = 1 m³ = 1.000 L   |   1 L = 1 dm³ = 1.000 mL   |   1 mL = 1 cm³ = 1 cc',
+                contoh: '• L ➔ mL (turun 3 tangga): 2,5 L = 2,5 × 1.000 = 2.500 mL (geser koma 3 langkah ke kanan).\n• mL ➔ L (naik 3 tangga): 750 mL = 750 ÷ 1.000 = 0,75 L (geser koma 3 langkah ke kiri).\n• kL ➔ L (turun 3 tangga): 1,2 kL = 1.200 L = 1.200 dm³.\n• Hubungan cc & mL: 350 cc = 350 mL = 0,35 L.'
+              },
+              {
+                subjudul: 'Satuan Kuantitas Populer',
+                konten: 'Hafalkan kesetaraan jumlah satuan kuantitas yang sering muncul di soal cerita:\n-> Satuan Kuantitas (Jumlah): 1 lusin = 12 buah | 1 gros = 144 buah (12 lusin) | 1 kodi = 20 lembar/potong | 1 rim = 500 lembar',
+                rumus: '1 lusin = 12  |  1 gros = 144  |  1 kodi = 20  |  1 rim = 500',
+                contoh: '• 3 gros kancing = 3 × 144 = 432 buah.\n• 2 kodi kain + 1 lusin sapu tangan = (2 × 20) + 12 = 40 + 12 = 52 potong.'
+              },
+              {
+                subjudul: 'Satuan Waktu (Jam, Menit, Detik)',
+                konten: 'Berbeda dengan tangga desimal (×10), konversi jam, menit, dan detik menggunakan kelipatan 60:\n-> Konversi Waktu Utama: 1 jam = 60 menit | 1 menit = 60 detik | 1 jam = 3.600 detik | 1 hari = 24 jam | 1 minggu = 7 hari',
+                rumus: 'Jam ➔ Menit (× 60)  |  Menit ➔ Detik (× 60)  |  Jam ➔ Detik (× 3.600)',
+                contoh: '• 3 jam 15 menit = (3 × 60) + 15 = 180 + 15 = 195 menit.\n• 2,5 jam = 2,5 × 60 = 150 menit.'
+              }
+            ],
+            contohSoal: {
+              soal: 'Ibu membeli 2 kg tepung terigu, 500 gram gula pasir, dan 15 ons beras. Berapa gram berat total belanjaan Ibu?',
+              penjelasan: 'Samakan semua satuan ke gram (g) memakai tangga satuan berat:\n-> 2 kg ➔ g (turun 3 tangga, × 1.000): 2 × 1.000 = 2.000 g.\n-> 500 g = 500 g (tetap).\n-> 15 ons (hg) ➔ g (turun 2 tangga, × 100): 15 × 100 = 1.500 g.\n-> Total belanjaan Ibu = 2.000 + 500 + 1.500 = 4.000 gram.'
+            },
+            tipsJuara: 'Samakan semua satuan ke satuan yang ditanyakan pada pilihan ganda sebelum menjumlahkan atau mengurangkan. Gunakan aturan geser koma agar tidak keliru saat bertemu bilangan desimal!',
+            soalLatihan: [
+              {
+                id: 1,
+                pertanyaan: '2,5 ton + 4 kuintal = ... kg.',
+                pilihan: ['2.700 kg', '2.900 kg', '3.100 kg', '3.400 kg'],
+                jawabanBenar: 1,
+                hint: '2,5 ton = 2,5 × 1.000 = 2.500 kg; 4 kuintal = 4 × 100 = 400 kg. 2.500 + 400 = 2.900 kg.'
+              },
+              {
+                id: 2,
+                pertanyaan: 'Paman membeli 3 gros kancing baju. Jumlah kancing baju Paman adalah...',
+                pilihan: ['36 buah', '360 buah', '432 buah', '600 buah'],
+                jawabanBenar: 2,
+                hint: '1 gros = 144 buah. 3 × 144 = 432 buah.'
+              },
+              {
+                id: 3,
+                pertanyaan: '3 jam 15 menit sama dengan berapa menit?',
+                pilihan: ['180 menit', '195 menit', '205 menit', '215 menit'],
+                jawabanBenar: 1,
+                hint: '3 jam = 3 × 60 = 180 menit. 180 + 15 = 195 menit.'
+              }
+            ]
+          },
+          {
+            id: 'mtk_2',
+            no: 3,
             judul: 'Perbandingan dan Skala',
             ringkasan: 'Konsep perbandingan senilai (kelipatan & rasio), perbandingan berbalik nilai, serta rumus skala peta/denah terhadap jarak sebenarnya.',
             tujuan: 'Murid mampu menghitung perbandingan senilai (model kelipatan maupun rasio), perbandingan berbalik nilai, serta menghitung jarak peta/denah, skala, dan jarak sebenarnya.',
@@ -165,7 +229,7 @@ export const PUSMENDIK_MATERI = {
           },
           {
             id: 'mtk_3',
-            no: 3,
+            no: 4,
             judul: 'KPK dan FPB',
             ringkasan: 'Kelipatan Persekutuan Terkecil (KPK) dan Faktor Persekutuan Terbesar (FPB) dengan pohon faktor.',
             tujuan: 'Murid mampu menentukan KPK dan FPB dari dua atau tiga bilangan serta menyelesaikan soal cerita kontekstual.',
@@ -212,7 +276,7 @@ export const PUSMENDIK_MATERI = {
           },
           {
             id: 'mtk_4',
-            no: 4,
+            no: 5,
             judul: 'Bilangan Pangkat',
             ringkasan: 'Operasi pangkat dua (kuadrat), akar kuadrat, pangkat tiga (kubik), dan akar pangkat tiga.',
             tujuan: 'Murid mampu menghitung kuadrat dan kubik bilangan serta menarik akar kuadrat dan akar kubik.',
@@ -261,55 +325,9 @@ export const PUSMENDIK_MATERI = {
       },
       {
         id: 'mtk_geometri_pengukuran',
-        namaElemen: '2. Pengukuran, Geometri & Bangun Ruang',
-        deskripsi: 'Satuan ukuran, kecepatan, bangun datar, ruang, sudut, dan taksiran.',
+        namaElemen: '2. Geometri, Bangun Ruang & Pengolahan Data',
+        deskripsi: 'Kecepatan, bangun datar, bangun ruang, koordinat, data, sudut, dan taksiran.',
         bab: [
-          {
-            id: 'mtk_5',
-            no: 5,
-            judul: 'Pengukuran',
-            ringkasan: 'Konversi satuan panjang (km-mm), massa/berat (kg-mg), waktu (jam-detik), dan kuantitas (lusin, kodi, rim).',
-            tujuan: 'Murid mampu mengonversi satuan ukuran baku dalam kehidupan sehari-hari.',
-            konsepKunci: '-> Hubungan Tangga Satuan Luas & Volume: Turun 1 tangga luas (m²): × 100 | Turun 1 tangga volume (m³): × 1.000 | 1 liter = 1 dm³ = 1.000 ml\n-> Tangga satuan baku panjang: turun 1 tangga dikali 10, naik 1 tangga dibagi 10.',
-            uraianMateri: [
-              {
-                subjudul: 'Satuan Kuantitas Populer',
-                konten: 'Hafalkan kesetaraan jumlah satuan kuantitas berikut:\n-> Satuan Kuantitas (Jumlah): 1 lusin = 12 buah | 1 gros = 144 buah (12 lusin) | 1 kodi = 20 lembar | 1 rim = 500 lembar'
-              },
-              {
-                subjudul: 'Satuan Berat & Volume',
-                konten: 'Hafalkan konversi satuan berat dan volume berikut:\n-> Konversi Satuan Berat: 1 ton = 1.000 kg | 1 kuintal = 100 kg | 1 kg = 10 ons | 1 kg = 1.000 g | 1 ons = 100 g\n-> Konversi Satuan Volume: 1 liter = 1 dm³ | 1 dm³ = 1.000 ml | 1 ml = 1 cm³ (cc)'
-              }
-            ],
-            contohSoal: {
-              soal: 'Ibu membeli 2 kg tepung terigu, 500 gram gula pasir, dan 15 ons beras. Berapa gram berat total belanjaan Ibu?',
-              penjelasan: '2 kg = 2.000 g. 500 g = 500 g. 15 ons = 1.500 g. Total = 2.000 + 500 + 1.500 = 4.000 gram.'
-            },
-            tipsJuara: 'Samakan semua satuan ke satuan yang ditanyakan pada pilihan ganda sebelum melakukan penjumlahan!',
-            soalLatihan: [
-              {
-                id: 1,
-                pertanyaan: '2,5 ton + 4 kuintal = ... kg.',
-                pilihan: ['2.700 kg', '2.900 kg', '3.100 kg', '3.400 kg'],
-                jawabanBenar: 1,
-                hint: '2,5 ton = 2.500 kg; 4 kuintal = 400 kg. 2.500 + 400 = 2.900 kg.'
-              },
-              {
-                id: 2,
-                pertanyaan: 'Paman membeli 3 gros kancing baju. Jumlah kancing baju Paman adalah...',
-                pilihan: ['36 buah', '360 buah', '432 buah', '600 buah'],
-                jawabanBenar: 2,
-                hint: '1 gros = 144 buah. 3 × 144 = 432 buah.'
-              },
-              {
-                id: 3,
-                pertanyaan: '3 jam 15 menit sama dengan berapa menit?',
-                pilihan: ['180 menit', '195 menit', '205 menit', '215 menit'],
-                jawabanBenar: 1,
-                hint: '3 jam = 3 × 60 = 180 menit. 180 + 15 = 195 menit.'
-              }
-            ]
-          },
           {
             id: 'mtk_6',
             no: 6,

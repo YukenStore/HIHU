@@ -1,12 +1,14 @@
 import api from './api';
 import { PUSMENDIK_MATERI } from '../data/pusmendikData';
 import { PUSMENDIK_LATIHAN } from '../data/latihanData';
+import { PUSMENDIK_TRYOUT } from '../data/tryoutData';
 
 const STORAGE_KEY = 'tka_sd_custom_contents_v1';
 
 // Simpan salinan awal (baseline) dari kode bawaan agar selalu bisa di-reset ke default
 const BASE_MATERI = JSON.parse(JSON.stringify(PUSMENDIK_MATERI));
 const BASE_LATIHAN = JSON.parse(JSON.stringify(PUSMENDIK_LATIHAN));
+const BASE_TRYOUT = JSON.parse(JSON.stringify(PUSMENDIK_TRYOUT));
 
 export const DEFAULT_SUBJECT_KEYS = ['bahasa_indonesia', 'matematika'];
 
@@ -195,10 +197,23 @@ const ensureSubjectContainer = (subjectKey, meta = {}) => {
       PUSMENDIK_LATIHAN[subjectKey].deskripsi = meta.deskripsi;
     }
   }
+
+  if (!PUSMENDIK_TRYOUT[subjectKey]) {
+    PUSMENDIK_TRYOUT[subjectKey] = {
+      nama: title,
+      deskripsi,
+      paket: [],
+    };
+  } else {
+    PUSMENDIK_TRYOUT[subjectKey].nama = title;
+    if (meta.deskripsi) {
+      PUSMENDIK_TRYOUT[subjectKey].deskripsi = meta.deskripsi;
+    }
+  }
 };
 
 /**
- * Menerapkan daftar kustomisasi (Mapel, Materi & Latihan Soal) langsung ke objek PUSMENDIK_MATERI dan PUSMENDIK_LATIHAN
+ * Menerapkan daftar kustomisasi (Mapel, Materi, Latihan Soal & Tryout) langsung ke objek data aplikasi
  */
 export const applyCustomContentsToData = (items = []) => {
   // 1. Bersihkan mapel kustom yang ada dan kembalikan mapel bawaan ke baseline awal
@@ -210,6 +225,11 @@ export const applyCustomContentsToData = (items = []) => {
   Object.keys(PUSMENDIK_LATIHAN).forEach((k) => {
     if (!BASE_LATIHAN[k]) {
       delete PUSMENDIK_LATIHAN[k];
+    }
+  });
+  Object.keys(PUSMENDIK_TRYOUT).forEach((k) => {
+    if (!BASE_TRYOUT[k]) {
+      delete PUSMENDIK_TRYOUT[k];
     }
   });
 
@@ -226,6 +246,9 @@ export const applyCustomContentsToData = (items = []) => {
       PUSMENDIK_LATIHAN[subj].colorTheme =
         subj === 'bahasa_indonesia' ? 'emerald' : 'rose';
     }
+    if (BASE_TRYOUT[subj]) {
+      PUSMENDIK_TRYOUT[subj] = JSON.parse(JSON.stringify(BASE_TRYOUT[subj]));
+    }
   });
 
   // 2. Tahap Pertama: Terapkan definisi mata pelajaran kustom (contentType === 'subject')
@@ -240,6 +263,7 @@ export const applyCustomContentsToData = (items = []) => {
       if (!DEFAULT_SUBJECT_KEYS.includes(subject)) {
         delete PUSMENDIK_MATERI[subject];
         delete PUSMENDIK_LATIHAN[subject];
+        delete PUSMENDIK_TRYOUT[subject];
       }
     } else if (payload) {
       deletedSubjects.delete(subject);
@@ -247,7 +271,7 @@ export const applyCustomContentsToData = (items = []) => {
     }
   });
 
-  // 3. Tahap Kedua: Terapkan setiap item Materi & Latihan Soal
+  // 3. Tahap Kedua: Terapkan setiap item Materi, Latihan Soal, & Tryout
   items.forEach((rawItem) => {
     const item = stripHorizontalTagsDeep(rawItem);
     if (!item || !item.contentType || !item.subject || !item.itemId) return;
@@ -258,7 +282,7 @@ export const applyCustomContentsToData = (items = []) => {
       return;
     }
 
-    if (!PUSMENDIK_MATERI[subject] || !PUSMENDIK_LATIHAN[subject]) {
+    if (!PUSMENDIK_MATERI[subject] || !PUSMENDIK_LATIHAN[subject] || !PUSMENDIK_TRYOUT[subject]) {
       ensureSubjectContainer(subject);
     }
 
@@ -327,10 +351,48 @@ export const applyCustomContentsToData = (items = []) => {
           soal: Array.isArray(payload.soal) ? payload.soal : [],
         });
       }
+    } else if (contentType === 'tryout' && PUSMENDIK_TRYOUT[subject]) {
+      const paketList = PUSMENDIK_TRYOUT[subject].paket || [];
+      PUSMENDIK_TRYOUT[subject].paket = paketList;
+      const idx = paketList.findIndex(
+        (pkg) =>
+          String(pkg.nomorPaket) === String(itemId) ||
+          String(pkg.kode) === String(itemId)
+      );
+
+      if (idx !== -1) {
+        if (action === 'delete') {
+          paketList.splice(idx, 1);
+        } else if (payload) {
+          const pkgNum = Number(payload.nomorPaket || paketList[idx].nomorPaket);
+          paketList[idx] = {
+            ...paketList[idx],
+            ...payload,
+            nomorPaket: pkgNum,
+            durasiMenit: Number(payload.durasiMenit) || paketList[idx].durasiMenit || 60,
+            totalSoal: Array.isArray(payload.soal)
+              ? payload.soal.length
+              : payload.totalSoal || paketList[idx].totalSoal,
+          };
+        }
+      } else if (action !== 'delete' && payload) {
+        const pkgNum = Number(payload.nomorPaket || itemId) || paketList.length + 1;
+        paketList.push({
+          ...payload,
+          nomorPaket: pkgNum,
+          namaPaket: payload.namaPaket || `Paket ${pkgNum}`,
+          kode: payload.kode || `TO-${subject.toUpperCase().slice(0, 3)}-${String(pkgNum).padStart(2, '0')}`,
+          durasiMenit: Number(payload.durasiMenit) || 60,
+          totalSoal: Array.isArray(payload.soal)
+            ? payload.soal.length
+            : Number(payload.totalSoal) || 0,
+          soal: Array.isArray(payload.soal) ? payload.soal : [],
+        });
+      }
     }
   });
 
-  // 4. Rapikan penomoran urut Materi (no: 1..N) dan pengurutan Level Latihan di semua mapel
+  // 4. Rapikan penomoran urut Materi (no: 1..N), Level Latihan, dan Paket Tryout di semua mapel
   Object.keys(PUSMENDIK_MATERI).forEach((subj) => {
     if (PUSMENDIK_MATERI[subj]?.elemen) {
       let counter = 1;
@@ -346,6 +408,14 @@ export const applyCustomContentsToData = (items = []) => {
     if (PUSMENDIK_LATIHAN[subj]?.levels) {
       PUSMENDIK_LATIHAN[subj].levels.sort(
         (a, b) => Number(a.level) - Number(b.level)
+      );
+    }
+  });
+
+  Object.keys(PUSMENDIK_TRYOUT).forEach((subj) => {
+    if (PUSMENDIK_TRYOUT[subj]?.paket) {
+      PUSMENDIK_TRYOUT[subj].paket.sort(
+        (a, b) => Number(a.nomorPaket) - Number(b.nomorPaket)
       );
     }
   });
@@ -447,6 +517,10 @@ export const isDefaultContentItem = (contentType, subject, itemId) => {
   if (contentType === 'latihan') {
     const levels = BASE_LATIHAN[subject]?.levels || [];
     return levels.some((l) => String(l.level) === String(itemId));
+  }
+  if (contentType === 'tryout') {
+    const paketList = BASE_TRYOUT[subject]?.paket || [];
+    return paketList.some((p) => String(p.nomorPaket) === String(itemId));
   }
   return false;
 };

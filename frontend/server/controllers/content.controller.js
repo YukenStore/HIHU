@@ -22,16 +22,16 @@ export const getCustomContentList = async (req, res, next) => {
 
 /**
  * PUT atau POST /api/admin/content
- * Menyimpan perubahan / penambahan / penghapusan Mata Pelajaran, Materi, atau Latihan Soal (Khusus Admin)
+ * Menyimpan perubahan / penambahan / penghapusan Mata Pelajaran, Materi, Latihan Soal, atau Tryout (Khusus Admin)
  */
 export const saveCustomContent = async (req, res, next) => {
   try {
     const { contentType, subject, itemId, action = 'upsert', payload } = req.body || {};
 
-    if (!contentType || !['materi', 'latihan', 'subject'].includes(contentType)) {
+    if (!contentType || !['materi', 'latihan', 'tryout', 'subject'].includes(contentType)) {
       return res.status(400).json({
         success: false,
-        message: 'Tipe konten harus berupa "materi", "latihan", atau "subject".',
+        message: 'Tipe konten harus berupa "materi", "latihan", "tryout", atau "subject".',
       });
     }
 
@@ -63,6 +63,8 @@ export const saveCustomContent = async (req, res, next) => {
         ? 'Mata Pelajaran'
         : contentType === 'materi'
         ? 'Materi'
+        : contentType === 'tryout'
+        ? 'Paket Tryout'
         : 'Latihan Soal';
 
     return res.status(200).json({

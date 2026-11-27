@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar';
 import RichTextEditor from '../components/RichTextEditor';
 import { PUSMENDIK_MATERI } from '../data/pusmendikData';
 import { PUSMENDIK_LATIHAN } from '../data/latihanData';
+import { PUSMENDIK_TRYOUT } from '../data/tryoutData';
 import {
   syncCustomContentFromServer,
   saveAdminContentItem,
@@ -41,6 +42,8 @@ import {
   Pencil,
   Layers,
   X,
+  Trophy,
+  Clock,
 } from 'lucide-react';
 
 /**
@@ -51,7 +54,7 @@ const AdminPanel = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // State tab utama: 'materi' | 'latihan'
+  // State tab utama: 'materi' | 'latihan' | 'tryout'
   const [activeTab, setActiveTab] = useState('materi');
   // State mata pelajaran: 'matematika' | 'bahasa_indonesia'
   const [selectedSubject, setSelectedSubject] = useState('matematika');
@@ -65,6 +68,11 @@ const AdminPanel = () => {
   const [selectedLatihanLevel, setSelectedLatihanLevel] = useState(null);
   const [latihanForm, setLatihanForm] = useState(null);
   const [openQuestionIdx, setOpenQuestionIdx] = useState(0);
+
+  const [selectedTryoutPaket, setSelectedTryoutPaket] = useState(null);
+  const [tryoutForm, setTryoutForm] = useState(null);
+  const [openTryoutQuestionIdx, setOpenTryoutQuestionIdx] = useState(0);
+  const [tryoutQuestionSearch, setTryoutQuestionSearch] = useState('');
 
   // State status simpan / notifikasi
   const [isSaving, setIsSaving] = useState(false);
@@ -114,6 +122,9 @@ const AdminPanel = () => {
 
   // Ambil daftar Level Latihan untuk mapel terpilih
   const latihanList = PUSMENDIK_LATIHAN[selectedSubject]?.levels || [];
+
+  // Ambil daftar Paket Tryout untuk mapel terpilih
+  const tryoutList = PUSMENDIK_TRYOUT[selectedSubject]?.paket || [];
 
   // Buka Modal Tambah Mapel Baru
   const handleOpenCreateSubject = (defaultCategory = 'pilihan') => {
@@ -306,6 +317,8 @@ const AdminPanel = () => {
       setMateriForm(null);
       setSelectedLatihanLevel(null);
       setLatihanForm(null);
+      setSelectedTryoutPaket(null);
+      setTryoutForm(null);
       showToast(`Mata pelajaran "${subj.title}" berhasil dihapus.`);
     } catch (err) {
       setErrorMessage(
@@ -729,6 +742,309 @@ const AdminPanel = () => {
     );
   });
 
+  // ========================================================
+  // HANDLER KELOLA TRYOUT (PILIH, TAMBAH, SIMPAN, RESET)
+  // ========================================================
+  const handleSelectTryout = (pkg) => {
+    setErrorMessage('');
+    setSelectedTryoutPaket(pkg.nomorPaket);
+    setOpenTryoutQuestionIdx(0);
+    setTryoutQuestionSearch('');
+
+    const clonedSoal = (pkg.soal || []).map((q, idx) => {
+      const qType = q.type || q.tipe || 'mcq';
+      const opts = Array.isArray(q.options)
+        ? [...q.options]
+        : Array.isArray(q.pilihan)
+        ? [...q.pilihan]
+        : ['Pilihan A', 'Pilihan B', 'Pilihan C', 'Pilihan D'];
+
+      const rawAns = q.answer !== undefined ? q.answer : q.jawabanBenar;
+      let answer = rawAns;
+      let answerIndex = typeof q.answerIndex === 'number' ? q.answerIndex : 0;
+
+      if (qType === 'mcq') {
+        if (typeof rawAns === 'number' && opts[rawAns] !== undefined) {
+          answerIndex = rawAns;
+          answer = opts[rawAns];
+        } else {
+          const foundIdx = opts.findIndex(
+            (o) => String(o).trim() === String(rawAns ?? '').trim()
+          );
+          if (foundIdx !== -1) {
+            answerIndex = foundIdx;
+            answer = opts[foundIdx];
+          } else if (typeof q.answerIndex === 'number' && opts[q.answerIndex] !== undefined) {
+            answerIndex = q.answerIndex;
+            answer = opts[q.answerIndex];
+          } else {
+            answerIndex = 0;
+            answer = opts[0] || '';
+          }
+        }
+      } else if (qType === 'mcma') {
+        answer = Array.isArray(rawAns) ? [...rawAns] : rawAns ? [rawAns] : [];
+      } else if (qType === 'isian') {
+        answer = rawAns !== undefined && rawAns !== null ? String(rawAns) : '';
+      }
+
+      return {
+        ...q,
+        id: q.id ?? idx + 1,
+        type: qType,
+        level: Number(q.level) || 3,
+        kesulitan: q.kesulitan || 'Sedang',
+        stimulus: q.stimulus || '',
+        question: q.question || q.pertanyaan || '',
+        indicator: q.indicator || '',
+        options: opts,
+        answer,
+        answerIndex,
+        statements: Array.isArray(q.statements)
+          ? q.statements.map((s) => ({ text: s.text || '', answer: Boolean(s.answer) }))
+          : [],
+        explanation: q.explanation || q.penjelasan || '',
+      };
+    });
+
+    setTryoutForm({
+      nomorPaket: Number(pkg.nomorPaket) || 1,
+      namaPaket: pkg.namaPaket || `Paket ${pkg.nomorPaket || 1}`,
+      kode:
+        pkg.kode ||
+        `TO-${selectedSubject.toUpperCase().slice(0, 3)}-${String(
+          pkg.nomorPaket || 1
+        ).padStart(2, '0')}`,
+      deskripsi: pkg.deskripsi || `Paket Simulasi Tryout ${pkg.nomorPaket || 1}`,
+      durasiMenit: Number(pkg.durasiMenit) || 60,
+      totalSoal: clonedSoal.length,
+      soal: clonedSoal,
+    });
+  };
+
+  // Buat Paket Tryout Baru
+  const handleCreateNewTryoutPaket = () => {
+    const maxPaket = tryoutList.reduce(
+      (max, p) => Math.max(max, Number(p.nomorPaket) || 0),
+      0
+    );
+    const nextNum = maxPaket + 1;
+    const subjCode =
+      selectedSubject === 'matematika'
+        ? 'MTK'
+        : selectedSubject === 'bahasa_indonesia'
+        ? 'BI'
+        : selectedSubject.toUpperCase().slice(0, 4);
+
+    const newPkg = {
+      nomorPaket: nextNum,
+      namaPaket: `Paket ${nextNum}`,
+      kode: `TO-${subjCode}-${String(nextNum).padStart(2, '0')}`,
+      deskripsi: `Simulasi Tryout Paket ${nextNum} (Tambahan Admin)`,
+      durasiMenit: 60,
+      totalSoal: 1,
+      soal: [
+        {
+          id: 1,
+          type: 'mcq',
+          level: 3,
+          kesulitan: 'Sedang',
+          stimulus: '',
+          question: 'Tulis pertanyaan soal tryout di sini...',
+          indicator: 'Indikator soal tryout',
+          options: ['Pilihan A', 'Pilihan B', 'Pilihan C', 'Pilihan D'],
+          answer: 'Pilihan A',
+          answerIndex: 0,
+          statements: [],
+          explanation: 'Tulis pembahasan soal tryout di sini...',
+        },
+      ],
+    };
+    handleSelectTryout(newPkg);
+  };
+
+  // Tambah Soal Baru di Paket Tryout aktif
+  const handleAddTryoutQuestion = () => {
+    if (!tryoutForm) return;
+    const nextNo = tryoutForm.soal.length + 1;
+    const newQuestion = {
+      id: nextNo,
+      type: 'mcq',
+      level: 3,
+      kesulitan: 'Sedang',
+      stimulus: '',
+      question: '',
+      indicator: '',
+      options: ['Pilihan A', 'Pilihan B', 'Pilihan C', 'Pilihan D'],
+      answer: 'Pilihan A',
+      answerIndex: 0,
+      statements: [
+        { text: 'Pernyataan 1', answer: true },
+        { text: 'Pernyataan 2', answer: false },
+      ],
+      explanation: '',
+    };
+    const nextSoal = [...tryoutForm.soal, newQuestion];
+    setTryoutForm({
+      ...tryoutForm,
+      totalSoal: nextSoal.length,
+      soal: nextSoal,
+    });
+    setTryoutQuestionSearch('');
+    setOpenTryoutQuestionIdx(nextSoal.length - 1);
+  };
+
+  // Simpan Paket Tryout ke Database
+  const handleSaveTryout = async (e) => {
+    if (e) e.preventDefault();
+    if (!tryoutForm) return;
+    setErrorMessage('');
+
+    if (!tryoutForm.namaPaket.trim()) {
+      setErrorMessage('Nama Paket Tryout wajib diisi.');
+      return;
+    }
+    if (!tryoutForm.soal || tryoutForm.soal.length === 0) {
+      setErrorMessage('Minimal harus ada 1 soal pada paket tryout.');
+      return;
+    }
+
+    const normalizedSoal = tryoutForm.soal.map((q, idx) => {
+      const qType = q.type || 'mcq';
+      const opts = Array.isArray(q.options) ? q.options : ['', '', '', ''];
+      let answer = q.answer;
+      let answerIndex = q.answerIndex ?? 0;
+
+      if (qType === 'mcq') {
+        if (typeof q.answerIndex === 'number' && opts[q.answerIndex] !== undefined) {
+          answerIndex = q.answerIndex;
+          answer = opts[q.answerIndex];
+        } else {
+          const foundIdx = opts.findIndex((o) => o === answer);
+          if (foundIdx !== -1) {
+            answerIndex = foundIdx;
+            answer = opts[foundIdx];
+          } else {
+            answerIndex = 0;
+            answer = opts[0] || '';
+          }
+        }
+      } else if (qType === 'mcma') {
+        answer = Array.isArray(answer) ? answer : answer ? [answer] : [];
+      } else if (qType === 'isian') {
+        answer = String(answer ?? '').trim();
+      } else if (qType === 'category') {
+        answer = undefined;
+      }
+
+      return {
+        ...q,
+        id: idx + 1,
+        type: qType,
+        level: Number(q.level) || 3,
+        kesulitan: q.kesulitan || 'Sedang',
+        stimulus: q.stimulus || '',
+        question: q.question || '',
+        indicator: q.indicator || '',
+        options: qType === 'mcq' || qType === 'mcma' ? opts : undefined,
+        answer,
+        answerIndex: qType === 'mcq' ? answerIndex : undefined,
+        statements:
+          qType === 'category'
+            ? (q.statements || []).map((s) => ({
+                text: s.text || '',
+                answer: Boolean(s.answer),
+              }))
+            : undefined,
+        explanation: q.explanation || '',
+      };
+    });
+
+    const payloadToSave = {
+      ...tryoutForm,
+      nomorPaket: Number(tryoutForm.nomorPaket) || 1,
+      durasiMenit: Math.max(5, Number(tryoutForm.durasiMenit) || 60),
+      totalSoal: normalizedSoal.length,
+      soal: normalizedSoal,
+    };
+
+    try {
+      setIsSaving(true);
+      await saveAdminContentItem({
+        contentType: 'tryout',
+        subject: selectedSubject,
+        itemId: String(payloadToSave.nomorPaket),
+        action: 'upsert',
+        payload: payloadToSave,
+      });
+      setTryoutForm(payloadToSave);
+      setRefreshTick((t) => t + 1);
+      showToast(
+        `${payloadToSave.namaPaket} (${activeSubjectMeta?.title || selectedSubject}) berhasil disimpan!`
+      );
+    } catch (err) {
+      setErrorMessage(
+        err.response?.data?.message ||
+          err.message ||
+          'Gagal menyimpan paket tryout.'
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Reset atau Hapus Paket Tryout
+  const handleResetOrDeleteTryout = async () => {
+    if (!tryoutForm) return;
+    const isDefault = isDefaultContentItem(
+      'tryout',
+      selectedSubject,
+      tryoutForm.nomorPaket
+    );
+
+    const confirmMsg = isDefault
+      ? `Kembalikan ${tryoutForm.namaPaket} ke soal-soal tryout default awal?`
+      : `Hapus ${tryoutForm.namaPaket} tambahan ini?`;
+
+    if (!window.confirm(confirmMsg)) return;
+
+    try {
+      setIsSaving(true);
+      await resetAdminContentItem({
+        contentType: 'tryout',
+        subject: selectedSubject,
+        itemId: String(tryoutForm.nomorPaket),
+      });
+      setRefreshTick((t) => t + 1);
+      setSelectedTryoutPaket(null);
+      setTryoutForm(null);
+      showToast(
+        isDefault
+          ? 'Paket Tryout berhasil dikembalikan ke default!'
+          : 'Paket Tryout tambahan berhasil dihapus!'
+      );
+    } catch (err) {
+      setErrorMessage(
+        err.response?.data?.message ||
+          err.message ||
+          'Gagal mereset paket tryout.'
+      );
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const filteredTryout = tryoutList.filter((p) => {
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase();
+    return (
+      p.namaPaket?.toLowerCase().includes(q) ||
+      p.kode?.toLowerCase().includes(q) ||
+      p.deskripsi?.toLowerCase().includes(q) ||
+      `paket ${p.nomorPaket}`.includes(q)
+    );
+  });
+
   return (
     <div className="min-h-screen flex flex-col bg-transparent text-slate-800 pb-12">
       <Navbar />
@@ -775,12 +1091,12 @@ const AdminPanel = () => {
               <span>Panel Pengelola Konten (Khusus Admin)</span>
             </div>
             <h1 className="text-lg sm:text-2xl font-bold text-white tracking-tight">
-              Admin Panel Materi & Latihan Soal
+              Admin Panel Materi, Latihan & Tryout
             </h1>
           </div>
 
-          {/* Tab Switcher: Materi vs Latihan Soal */}
-          <div className="flex items-center bg-[#0F2042] p-1.5 rounded-xl border border-blue-500/40 self-start md:self-center flex-shrink-0">
+          {/* Tab Switcher: Materi vs Latihan Soal vs Tryout */}
+          <div className="flex flex-wrap items-center gap-1 bg-[#0F2042] p-1.5 rounded-xl border border-blue-500/40 self-start md:self-center flex-shrink-0">
             <button
               type="button"
               onClick={() => {
@@ -810,6 +1126,21 @@ const AdminPanel = () => {
             >
               <ClipboardCheck className="w-3.5 h-3.5" />
               <span>Kelola Latihan Soal</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setActiveTab('tryout');
+                setErrorMessage('');
+              }}
+              className={`px-3.5 py-2 rounded-lg text-xs font-bold flex items-center space-x-1.5 transition-all cursor-pointer ${
+                activeTab === 'tryout'
+                  ? 'bg-amber-600 text-white shadow-sm'
+                  : 'text-blue-200 hover:text-white'
+              }`}
+            >
+              <Trophy className="w-3.5 h-3.5" />
+              <span>Kelola Tryout</span>
             </button>
           </div>
         </div>
@@ -857,6 +1188,8 @@ const AdminPanel = () => {
                           setMateriForm(null);
                           setSelectedLatihanLevel(null);
                           setLatihanForm(null);
+                          setSelectedTryoutPaket(null);
+                          setTryoutForm(null);
                         }}
                         style={
                           isSelected
@@ -918,6 +1251,8 @@ const AdminPanel = () => {
                             setMateriForm(null);
                             setSelectedLatihanLevel(null);
                             setLatihanForm(null);
+                            setSelectedTryoutPaket(null);
+                            setTryoutForm(null);
                           }}
                           style={
                             isSelected
@@ -1001,7 +1336,9 @@ const AdminPanel = () => {
                   placeholder={
                     activeTab === 'materi'
                       ? 'Cari judul materi...'
-                      : 'Cari level latihan...'
+                      : activeTab === 'latihan'
+                      ? 'Cari level latihan...'
+                      : 'Cari paket tryout...'
                   }
                   className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#0F2042] border border-blue-500/40 text-xs text-white placeholder-blue-300/60 focus:outline-none focus:border-blue-400"
                 />
@@ -1016,7 +1353,7 @@ const AdminPanel = () => {
                   <Plus className="w-4 h-4" />
                   <span>Tambah Topik Materi Baru</span>
                 </button>
-              ) : (
+              ) : activeTab === 'latihan' ? (
                 <button
                   type="button"
                   onClick={handleCreateNewLatihanLevel}
@@ -1024,6 +1361,15 @@ const AdminPanel = () => {
                 >
                   <Plus className="w-4 h-4" />
                   <span>Tambah Level Latihan Baru</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleCreateNewTryoutPaket}
+                  className="w-full py-2.5 px-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold flex items-center justify-center space-x-1.5 transition-all cursor-pointer shadow-sm active:scale-98"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>Tambah Paket Tryout Baru</span>
                 </button>
               )}
             </div>
@@ -1081,7 +1427,7 @@ const AdminPanel = () => {
                     </button>
                   );
                 })
-              ) : (
+              ) : activeTab === 'latihan' ? (
                 filteredLatihan.map((lvl) => {
                   const isSelected =
                     String(selectedLatihanLevel) === String(lvl.level);
@@ -1130,6 +1476,70 @@ const AdminPanel = () => {
                         </h4>
                         <p className="text-[11px] text-blue-300 line-clamp-1 mt-0.5">
                           {lvl.deskripsi}
+                        </p>
+                      </div>
+                    </button>
+                  );
+                })
+              ) : filteredTryout.length === 0 ? (
+                <div className="p-4 rounded-xl bg-[#0F2042] border border-dashed border-blue-500/40 text-center text-xs text-blue-200 space-y-1.5">
+                  <Trophy className="w-7 h-7 text-amber-400/80 mx-auto" />
+                  <p className="font-semibold text-white">
+                    Belum ada paket tryout di mapel ini.
+                  </p>
+                  <p className="text-[11px] text-blue-300">
+                    Pilih Matematika / B. Indonesia atau klik tombol &ldquo;Tambah Paket Tryout Baru&rdquo;.
+                  </p>
+                </div>
+              ) : (
+                filteredTryout.map((pkg) => {
+                  const isSelected =
+                    String(selectedTryoutPaket) === String(pkg.nomorPaket);
+                  const isModified = hasCustomOverride(
+                    'tryout',
+                    selectedSubject,
+                    pkg.nomorPaket
+                  );
+                  const isDefault = isDefaultContentItem(
+                    'tryout',
+                    selectedSubject,
+                    pkg.nomorPaket
+                  );
+
+                  return (
+                    <button
+                      key={pkg.nomorPaket}
+                      type="button"
+                      onClick={() => handleSelectTryout(pkg)}
+                      className={`w-full text-left p-3 rounded-xl border transition-all cursor-pointer flex items-start justify-between gap-2 ${
+                        isSelected
+                          ? 'bg-[#1E3A8A] border-amber-400 text-white shadow-sm'
+                          : 'bg-[#0F2042] border-blue-500/30 text-blue-100 hover:border-amber-400/60'
+                      }`}
+                    >
+                      <div className="min-w-0">
+                        <div className="flex items-center space-x-1.5 flex-wrap gap-y-1">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-900/80 text-amber-200 border border-amber-500/40">
+                            {pkg.namaPaket || `Paket ${pkg.nomorPaket}`}
+                          </span>
+                          <span className="text-[10px] font-semibold text-blue-300">
+                            {pkg.soal?.length || 0} Soal • {pkg.durasiMenit || 60} Menit
+                          </span>
+                          {!isDefault ? (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-900/80 text-emerald-300 border border-emerald-500/40">
+                              Baru
+                            </span>
+                          ) : isModified ? (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-900/80 text-amber-300 border border-amber-500/40">
+                              Diedit
+                            </span>
+                          ) : null}
+                        </div>
+                        <h4 className="text-xs sm:text-sm font-bold text-white mt-1 truncate">
+                          {pkg.deskripsi || `Simulasi Tryout Paket ${pkg.nomorPaket}`}
+                        </h4>
+                        <p className="text-[11px] text-blue-300 line-clamp-1 mt-0.5">
+                          Kode: {pkg.kode || `TO-${pkg.nomorPaket}`}
                         </p>
                       </div>
                     </button>
@@ -2454,6 +2864,929 @@ const AdminPanel = () => {
                             </div>
                           );
                         })}
+                      </div>
+                    </div>
+                  </form>
+                )}
+              </>
+            )}
+
+            {/* ==================== EDITOR TRYOUT ==================== */}
+            {activeTab === 'tryout' && (
+              <>
+                {!tryoutForm ? (
+                  <div className="py-16 text-center space-y-3">
+                    <Trophy className="w-12 h-12 text-amber-400 mx-auto opacity-85" />
+                    <h3 className="text-base sm:text-lg font-bold text-white">
+                      Pilih Paket Tryout di Sebelah Kiri atau Buat Paket Baru
+                    </h3>
+                    <p className="text-xs text-blue-200 max-w-md mx-auto">
+                      Klik salah satu paket tryout (Paket 1 s.d. 5) untuk mengedit durasi, bacaan/stimulus, pertanyaan, gambar, kunci jawaban, dan pembahasan setiap butir soal.
+                    </p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSaveTryout} className="space-y-6">
+                    {/* Header Form Tryout */}
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-blue-800/60">
+                      <div>
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-amber-300">
+                          Editor Tryout • {activeSubjectMeta?.title || selectedSubject}
+                        </span>
+                        <h2 className="text-base sm:text-xl font-bold text-white">
+                          {tryoutForm.namaPaket}: {tryoutForm.deskripsi || tryoutForm.kode}
+                        </h2>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        {(hasCustomOverride(
+                          'tryout',
+                          selectedSubject,
+                          tryoutForm.nomorPaket
+                        ) ||
+                          !isDefaultContentItem(
+                            'tryout',
+                            selectedSubject,
+                            tryoutForm.nomorPaket
+                          )) && (
+                          <button
+                            type="button"
+                            disabled={isSaving}
+                            onClick={handleResetOrDeleteTryout}
+                            className="px-3 py-2 rounded-xl bg-rose-900/70 hover:bg-rose-800 text-rose-200 border border-rose-500/50 text-xs font-bold flex items-center space-x-1.5 transition-all cursor-pointer"
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" />
+                            <span>
+                              {isDefaultContentItem(
+                                'tryout',
+                                selectedSubject,
+                                tryoutForm.nomorPaket
+                              )
+                                ? 'Reset Default'
+                                : 'Hapus Paket'}
+                            </span>
+                          </button>
+                        )}
+
+                        <button
+                          type="submit"
+                          disabled={isSaving}
+                          className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-60 text-white text-xs font-bold flex items-center space-x-1.5 transition-all cursor-pointer shadow-md"
+                        >
+                          {isSaving ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              <span>Menyimpan...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Save className="w-4 h-4" />
+                              <span>Simpan Paket Tryout</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* 1. Informasi Paket Tryout */}
+                    <div className="p-4 rounded-xl bg-[#0F2042] border border-blue-500/40 space-y-3">
+                      <h3 className="text-xs sm:text-sm font-bold text-amber-300 uppercase tracking-wider flex items-center space-x-1.5">
+                        <Trophy className="w-4 h-4" />
+                        <span>1. Informasi Paket Tryout</span>
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-xs font-semibold text-blue-200 mb-1">
+                            Nama Paket *
+                          </label>
+                          <input
+                            type="text"
+                            value={tryoutForm.namaPaket}
+                            onChange={(e) =>
+                              setTryoutForm({
+                                ...tryoutForm,
+                                namaPaket: e.target.value,
+                              })
+                            }
+                            className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs font-semibold"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-blue-200 mb-1">
+                            Kode Paket
+                          </label>
+                          <input
+                            type="text"
+                            value={tryoutForm.kode}
+                            onChange={(e) =>
+                              setTryoutForm({
+                                ...tryoutForm,
+                                kode: e.target.value,
+                              })
+                            }
+                            className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs font-mono"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-semibold text-blue-200 mb-1">
+                            Durasi Ujian (Menit)
+                          </label>
+                          <div className="relative">
+                            <Clock className="w-3.5 h-3.5 text-amber-300 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                            <input
+                              type="number"
+                              min={5}
+                              max={180}
+                              value={tryoutForm.durasiMenit}
+                              onChange={(e) =>
+                                setTryoutForm({
+                                  ...tryoutForm,
+                                  durasiMenit: Number(e.target.value) || 60,
+                                })
+                              }
+                              className="w-full pl-8 pr-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs font-semibold"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-blue-200 mb-1">
+                          Deskripsi Paket Tryout
+                        </label>
+                        <input
+                          type="text"
+                          value={tryoutForm.deskripsi}
+                          onChange={(e) =>
+                            setTryoutForm({
+                              ...tryoutForm,
+                              deskripsi: e.target.value,
+                            })
+                          }
+                          className="w-full px-3 py-2 rounded-lg bg-[#162E5B] border border-blue-500/50 text-white text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    {/* 2. Daftar Butir Soal Tryout */}
+                    <div className="p-4 rounded-xl bg-[#0F2042] border border-blue-500/40 space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                        <h3 className="text-xs sm:text-sm font-bold text-amber-300 uppercase tracking-wider">
+                          2. Daftar Butir Soal Tryout ({tryoutForm.soal.length} Soal)
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={handleAddTryoutQuestion}
+                          className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold flex items-center space-x-1 cursor-pointer self-start sm:self-auto"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Tambah Soal Baru</span>
+                        </button>
+                      </div>
+
+                      {/* Filter & Navigasi Cepat Nomor Soal */}
+                      <div className="space-y-2.5 p-3 rounded-xl bg-[#162E5B]/70 border border-blue-500/30">
+                        <div className="relative">
+                          <Search className="w-3.5 h-3.5 text-blue-300 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                          <input
+                            type="text"
+                            value={tryoutQuestionSearch}
+                            onChange={(e) => setTryoutQuestionSearch(e.target.value)}
+                            placeholder="Cari nomor soal (mis. 12) atau kata kunci pertanyaan..."
+                            className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-xs text-white placeholder-blue-300/60 focus:outline-none focus:border-amber-400"
+                          />
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {tryoutForm.soal.map((_, idx) => {
+                            const isActive = openTryoutQuestionIdx === idx;
+                            return (
+                              <button
+                                key={idx}
+                                type="button"
+                                onClick={() => {
+                                  setTryoutQuestionSearch('');
+                                  setOpenTryoutQuestionIdx(idx);
+                                }}
+                                className={`w-7 h-7 rounded-lg text-[11px] font-bold border transition-all cursor-pointer ${
+                                  isActive
+                                    ? 'bg-amber-500 border-amber-300 text-slate-950 shadow-xs'
+                                    : 'bg-[#0F2042] border-blue-500/40 text-blue-200 hover:border-amber-400 hover:text-white'
+                                }`}
+                                title={`Buka Soal #${idx + 1}`}
+                              >
+                                {idx + 1}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        {tryoutForm.soal.map((q, qIdx) => {
+                          if (tryoutQuestionSearch.trim()) {
+                            const term = tryoutQuestionSearch.trim().toLowerCase();
+                            const plainQuestion = (q.question || '')
+                              .replace(/<[^>]*>/g, '')
+                              .toLowerCase();
+                            const plainStimulus = (q.stimulus || '')
+                              .replace(/<[^>]*>/g, '')
+                              .toLowerCase();
+                            const matches =
+                              String(qIdx + 1) === term ||
+                              `soal ${qIdx + 1}`.includes(term) ||
+                              `#${qIdx + 1}`.includes(term) ||
+                              plainQuestion.includes(term) ||
+                              plainStimulus.includes(term) ||
+                              (q.indicator || '').toLowerCase().includes(term);
+                            if (!matches) return null;
+                          }
+
+                          const isOpen = openTryoutQuestionIdx === qIdx;
+                          const qType = q.type || 'mcq';
+
+                          return (
+                            <div
+                              key={`${tryoutForm.nomorPaket}_q_${qIdx}`}
+                              className="rounded-xl bg-[#162E5B] border border-blue-500/40 overflow-hidden"
+                            >
+                              {/* Header Accordion Soal Tryout */}
+                              <div
+                                onClick={() =>
+                                  setOpenTryoutQuestionIdx(isOpen ? -1 : qIdx)
+                                }
+                                className="p-3.5 flex items-center justify-between cursor-pointer hover:bg-[#1E3A8A]/60 transition-colors"
+                              >
+                                <div className="flex items-center space-x-2 min-w-0">
+                                  <span className="px-2 py-0.5 rounded bg-amber-600 text-white text-xs font-bold flex-shrink-0">
+                                    Soal #{qIdx + 1}
+                                  </span>
+                                  <span className="px-2 py-0.5 rounded bg-[#0F2042] border border-blue-400/40 text-blue-200 text-[10px] font-semibold flex-shrink-0">
+                                    {qType === 'mcma'
+                                      ? 'PG Kompleks'
+                                      : qType === 'category'
+                                      ? 'Benar / Salah'
+                                      : qType === 'isian'
+                                      ? 'Isian Singkat'
+                                      : 'Pilihan Ganda'}
+                                  </span>
+                                  <span className="px-1.5 py-0.5 rounded bg-blue-950/90 border border-blue-500/30 text-amber-200 text-[10px] font-semibold flex-shrink-0">
+                                    {q.kesulitan || 'Sedang'}
+                                  </span>
+                                  {(() => {
+                                    const hasImageInQ =
+                                      /<(?:img|svg)\b/i.test(q.question || '') ||
+                                      /<(?:img|svg)\b/i.test(q.stimulus || '') ||
+                                      (q.options || []).some((o) =>
+                                        /<(?:img|svg)\b/i.test(o || '')
+                                      ) ||
+                                      (q.statements || []).some((s) =>
+                                        /<(?:img|svg)\b/i.test(s?.text || '')
+                                      );
+                                    const plainQ = (q.question || '')
+                                      .replace(/<[^>]*>/g, '')
+                                      .trim();
+                                    return (
+                                      <>
+                                        {hasImageInQ && (
+                                          <span className="px-1.5 py-0.5 rounded bg-emerald-900/80 border border-emerald-400/50 text-emerald-200 text-[10px] font-bold flex-shrink-0">
+                                            🖼️ Gambar
+                                          </span>
+                                        )}
+                                        <span className="text-xs text-blue-100 truncate">
+                                          {plainQ ||
+                                            (hasImageInQ
+                                              ? '(Soal dengan ilustrasi gambar)'
+                                              : '(Pertanyaan belum diisi)')}
+                                        </span>
+                                      </>
+                                    );
+                                  })()}
+                                </div>
+
+                                <div className="flex items-center space-x-2 flex-shrink-0">
+                                  {tryoutForm.soal.length > 1 && (
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (
+                                          !window.confirm(
+                                            `Hapus Soal Tryout #${qIdx + 1}?`
+                                          )
+                                        )
+                                          return;
+                                        const nextSoal = tryoutForm.soal.filter(
+                                          (_, i) => i !== qIdx
+                                        );
+                                        setTryoutForm({
+                                          ...tryoutForm,
+                                          totalSoal: nextSoal.length,
+                                          soal: nextSoal,
+                                        });
+                                        if (openTryoutQuestionIdx >= nextSoal.length) {
+                                          setOpenTryoutQuestionIdx(
+                                            Math.max(0, nextSoal.length - 1)
+                                          );
+                                        }
+                                      }}
+                                      className="p-1.5 rounded-lg bg-rose-950/80 hover:bg-rose-800 text-rose-300 border border-rose-500/40 cursor-pointer"
+                                      title="Hapus Soal"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  )}
+                                  {isOpen ? (
+                                    <ChevronUp className="w-4 h-4 text-blue-300" />
+                                  ) : (
+                                    <ChevronDown className="w-4 h-4 text-blue-300" />
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Body Detail Soal Tryout */}
+                              {isOpen && (
+                                <div className="p-4 border-t border-blue-800/60 space-y-3.5 bg-[#12264B]">
+                                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    <div>
+                                      <label className="block text-[11px] font-semibold text-blue-200 mb-1">
+                                        Tipe Soal
+                                      </label>
+                                      <select
+                                        value={qType}
+                                        onChange={(e) => {
+                                          const newType = e.target.value;
+                                          const next = [...tryoutForm.soal];
+                                          const currentOpts =
+                                            Array.isArray(q.options) &&
+                                            q.options.length > 0
+                                              ? q.options
+                                              : [
+                                                  'Pilihan A',
+                                                  'Pilihan B',
+                                                  'Pilihan C',
+                                                  'Pilihan D',
+                                                ];
+                                          next[qIdx] = {
+                                            ...next[qIdx],
+                                            type: newType,
+                                            options: currentOpts,
+                                            answer:
+                                              newType === 'mcma'
+                                                ? [currentOpts[0]]
+                                                : newType === 'isian'
+                                                ? ''
+                                                : currentOpts[0],
+                                            answerIndex: 0,
+                                            statements:
+                                              Array.isArray(q.statements) &&
+                                              q.statements.length > 0
+                                                ? q.statements
+                                                : [
+                                                    {
+                                                      text: 'Pernyataan 1',
+                                                      answer: true,
+                                                    },
+                                                    {
+                                                      text: 'Pernyataan 2',
+                                                      answer: false,
+                                                    },
+                                                  ],
+                                          };
+                                          setTryoutForm({
+                                            ...tryoutForm,
+                                            soal: next,
+                                          });
+                                        }}
+                                        className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs font-semibold"
+                                      >
+                                        <option value="mcq">
+                                          Pilihan Ganda Tunggal (MCQ)
+                                        </option>
+                                        <option value="mcma">
+                                          Pilihan Ganda Kompleks (MCMA)
+                                        </option>
+                                        <option value="category">
+                                          Benar / Salah (Kategori)
+                                        </option>
+                                        <option value="isian">
+                                          Isian Singkat
+                                        </option>
+                                      </select>
+                                    </div>
+
+                                    <div>
+                                      <label className="block text-[11px] font-semibold text-blue-200 mb-1">
+                                        Tingkat Kesulitan
+                                      </label>
+                                      <select
+                                        value={q.kesulitan || 'Sedang'}
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          const next = [...tryoutForm.soal];
+                                          next[qIdx] = {
+                                            ...next[qIdx],
+                                            kesulitan: val,
+                                            level:
+                                              val === 'Mudah'
+                                                ? 1
+                                                : val === 'HOTS'
+                                                ? 5
+                                                : 3,
+                                          };
+                                          setTryoutForm({
+                                            ...tryoutForm,
+                                            soal: next,
+                                          });
+                                        }}
+                                        className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs font-semibold"
+                                      >
+                                        <option value="Mudah">Mudah</option>
+                                        <option value="Sedang">Sedang</option>
+                                        <option value="HOTS">HOTS (Menantang)</option>
+                                      </select>
+                                    </div>
+
+                                    <div>
+                                      <label className="block text-[11px] font-semibold text-blue-200 mb-1">
+                                        Indikator Kompetensi (Opsional)
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={q.indicator || ''}
+                                        onChange={(e) => {
+                                          const next = [...tryoutForm.soal];
+                                          next[qIdx] = {
+                                            ...next[qIdx],
+                                            indicator: e.target.value,
+                                          };
+                                          setTryoutForm({
+                                            ...tryoutForm,
+                                            soal: next,
+                                          });
+                                        }}
+                                        placeholder="Contoh: Menghitung skala peta..."
+                                        className="w-full px-3 py-1.5 rounded-lg bg-[#0F2042] border border-blue-500/40 text-white text-xs"
+                                      />
+                                    </div>
+                                  </div>
+
+                                  <div>
+                                    <label className="block text-[11px] font-semibold text-blue-200 mb-1">
+                                      Teks Stimulus / Bacaan Cerita (Kosongkan jika tidak ada)
+                                    </label>
+                                    <RichTextEditor
+                                      rows={2}
+                                      value={q.stimulus || ''}
+                                      onChange={(e) => {
+                                        const next = [...tryoutForm.soal];
+                                        next[qIdx] = {
+                                          ...next[qIdx],
+                                          stimulus: e.target.value,
+                                        };
+                                        setTryoutForm({
+                                          ...tryoutForm,
+                                          soal: next,
+                                        });
+                                      }}
+                                      bgClass="bg-[#0F2042]"
+                                      placeholder="Tulis teks stimulus atau bacaan cerita..."
+                                    />
+                                  </div>
+
+                                  <div>
+                                    <label className="block text-[11px] font-semibold text-blue-200 mb-1">
+                                      Pertanyaan Soal *
+                                    </label>
+                                    <RichTextEditor
+                                      rows={3}
+                                      value={q.question || ''}
+                                      onChange={(e) => {
+                                        const next = [...tryoutForm.soal];
+                                        next[qIdx] = {
+                                          ...next[qIdx],
+                                          question: e.target.value,
+                                        };
+                                        setTryoutForm({
+                                          ...tryoutForm,
+                                          soal: next,
+                                        });
+                                      }}
+                                      bgClass="bg-[#0F2042]"
+                                      placeholder="Tulis pertanyaan soal tryout di sini..."
+                                    />
+                                  </div>
+
+                                  {/* Opsi Jawaban untuk MCQ */}
+                                  {qType === 'mcq' && (
+                                    <div className="space-y-2.5">
+                                      <label className="block text-[11px] font-semibold text-amber-300">
+                                        Pilihan Jawaban (Klik bulatan radio untuk Kunci Jawaban • Mendukung teks, rumus, &amp; gambar)
+                                      </label>
+                                      {(q.options || ['', '', '', '']).map(
+                                        (opt, oIdx) => {
+                                          const isCorrect =
+                                            typeof q.answerIndex === 'number'
+                                              ? q.answerIndex === oIdx
+                                              : q.answer === opt;
+                                          return (
+                                            <div
+                                              key={oIdx}
+                                              className={`p-2.5 rounded-xl border space-y-2 ${
+                                                isCorrect
+                                                  ? 'bg-emerald-950/60 border-emerald-400'
+                                                  : 'bg-[#0F2042] border-blue-500/30'
+                                              }`}
+                                            >
+                                              <label className="flex items-center space-x-2 cursor-pointer">
+                                                <input
+                                                  type="radio"
+                                                  name={`tryout_mcq_${qIdx}`}
+                                                  checked={isCorrect}
+                                                  onChange={() => {
+                                                    const next = [
+                                                      ...tryoutForm.soal,
+                                                    ];
+                                                    next[qIdx] = {
+                                                      ...next[qIdx],
+                                                      answer: opt,
+                                                      answerIndex: oIdx,
+                                                    };
+                                                    setTryoutForm({
+                                                      ...tryoutForm,
+                                                      soal: next,
+                                                    });
+                                                  }}
+                                                  className="cursor-pointer"
+                                                />
+                                                <span className="text-xs font-bold text-blue-300">
+                                                  Pilihan {String.fromCharCode(65 + oIdx)}
+                                                </span>
+                                                {isCorrect && (
+                                                  <span className="px-1.5 py-0.5 rounded bg-emerald-600/90 text-white text-[10px] font-bold">
+                                                    Kunci Jawaban Benar
+                                                  </span>
+                                                )}
+                                              </label>
+                                              <RichTextEditor
+                                                compact
+                                                rows={1}
+                                                value={opt || ''}
+                                                onChange={(e) => {
+                                                  const newVal = e.target.value;
+                                                  const next = [
+                                                    ...tryoutForm.soal,
+                                                  ];
+                                                  const nextOpts = [
+                                                    ...(next[qIdx].options ||
+                                                      []),
+                                                  ];
+                                                  const wasCorrect =
+                                                    typeof next[qIdx]
+                                                      .answerIndex === 'number'
+                                                      ? next[qIdx]
+                                                          .answerIndex === oIdx
+                                                      : next[qIdx].answer ===
+                                                        opt;
+                                                  nextOpts[oIdx] = newVal;
+                                                  next[qIdx] = {
+                                                    ...next[qIdx],
+                                                    options: nextOpts,
+                                                    ...(wasCorrect && {
+                                                      answer: newVal,
+                                                      answerIndex: oIdx,
+                                                    }),
+                                                  };
+                                                  setTryoutForm({
+                                                    ...tryoutForm,
+                                                    soal: next,
+                                                  });
+                                                }}
+                                                bgClass="bg-[#162E5B]"
+                                                placeholder={`Tulis jawaban ${String.fromCharCode(65 + oIdx)} atau klik tombol Gambar / Ctrl+V...`}
+                                              />
+                                            </div>
+                                          );
+                                        }
+                                      )}
+                                    </div>
+                                  )}
+
+                                  {/* Opsi Jawaban untuk MCMA */}
+                                  {qType === 'mcma' && (
+                                    <div className="space-y-2.5">
+                                      <label className="block text-[11px] font-semibold text-amber-300">
+                                        Pilihan Jawaban Kompleks (Centang semua kunci jawaban benar • Mendukung gambar)
+                                      </label>
+                                      {(q.options || ['', '', '', '']).map(
+                                        (opt, oIdx) => {
+                                          const currentCorrect = Array.isArray(
+                                            q.answer
+                                          )
+                                            ? q.answer
+                                            : [];
+                                          const isChecked =
+                                            currentCorrect.includes(opt);
+                                          return (
+                                            <div
+                                              key={oIdx}
+                                              className={`p-2.5 rounded-xl border space-y-2 ${
+                                                isChecked
+                                                  ? 'bg-emerald-950/60 border-emerald-400'
+                                                  : 'bg-[#0F2042] border-blue-500/30'
+                                              }`}
+                                            >
+                                              <label className="flex items-center space-x-2 cursor-pointer">
+                                                <input
+                                                  type="checkbox"
+                                                  checked={isChecked}
+                                                  onChange={(e) => {
+                                                    const next = [
+                                                      ...tryoutForm.soal,
+                                                    ];
+                                                    const nextCorrect = e.target
+                                                      .checked
+                                                      ? [...currentCorrect, opt]
+                                                      : currentCorrect.filter(
+                                                          (item) => item !== opt
+                                                        );
+                                                    next[qIdx] = {
+                                                      ...next[qIdx],
+                                                      answer: nextCorrect,
+                                                    };
+                                                    setTryoutForm({
+                                                      ...tryoutForm,
+                                                      soal: next,
+                                                    });
+                                                  }}
+                                                  className="cursor-pointer"
+                                                />
+                                                <span className="text-xs font-bold text-blue-300">
+                                                  Pilihan {String.fromCharCode(65 + oIdx)}
+                                                </span>
+                                                {isChecked && (
+                                                  <span className="px-1.5 py-0.5 rounded bg-emerald-600/90 text-white text-[10px] font-bold">
+                                                    Termasuk Kunci Benar
+                                                  </span>
+                                                )}
+                                              </label>
+                                              <RichTextEditor
+                                                compact
+                                                rows={1}
+                                                value={opt || ''}
+                                                onChange={(e) => {
+                                                  const newVal = e.target.value;
+                                                  const next = [
+                                                    ...tryoutForm.soal,
+                                                  ];
+                                                  const nextOpts = [
+                                                    ...(next[qIdx].options ||
+                                                      []),
+                                                  ];
+                                                  nextOpts[oIdx] = newVal;
+                                                  const nextCorrect =
+                                                    currentCorrect.map((c) =>
+                                                      c === opt ? newVal : c
+                                                    );
+                                                  next[qIdx] = {
+                                                    ...next[qIdx],
+                                                    options: nextOpts,
+                                                    answer: nextCorrect,
+                                                  };
+                                                  setTryoutForm({
+                                                    ...tryoutForm,
+                                                    soal: next,
+                                                  });
+                                                }}
+                                                bgClass="bg-[#162E5B]"
+                                                placeholder={`Tulis jawaban ${String.fromCharCode(65 + oIdx)} atau sisipkan gambar...`}
+                                              />
+                                            </div>
+                                          );
+                                        }
+                                      )}
+                                    </div>
+                                  )}
+
+                                  {/* Pernyataan Benar / Salah untuk Category */}
+                                  {qType === 'category' && (
+                                    <div className="space-y-2.5">
+                                      <div className="flex items-center justify-between">
+                                        <label className="block text-[11px] font-semibold text-amber-300">
+                                          Daftar Pernyataan Benar / Salah (Mendukung teks, rumus, &amp; gambar)
+                                        </label>
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            const next = [...tryoutForm.soal];
+                                            const stmts = Array.isArray(
+                                              q.statements
+                                            )
+                                              ? [...q.statements]
+                                              : [];
+                                            stmts.push({
+                                              text: 'Pernyataan baru...',
+                                              answer: true,
+                                            });
+                                            next[qIdx] = {
+                                              ...next[qIdx],
+                                              statements: stmts,
+                                            };
+                                            setTryoutForm({
+                                              ...tryoutForm,
+                                              soal: next,
+                                            });
+                                          }}
+                                          className="text-[11px] font-bold text-blue-300 hover:text-white flex items-center space-x-1 cursor-pointer"
+                                        >
+                                          <Plus className="w-3 h-3" />
+                                          <span>Tambah Pernyataan</span>
+                                        </button>
+                                      </div>
+
+                                      {(q.statements || []).map(
+                                        (stmt, sIdx) => (
+                                          <div
+                                            key={sIdx}
+                                            className="p-2.5 rounded-xl bg-[#0F2042] border border-blue-500/30 space-y-2"
+                                          >
+                                            <div className="flex items-center justify-between gap-2">
+                                              <span className="text-[11px] font-bold text-blue-300">
+                                                Pernyataan #{sIdx + 1}
+                                              </span>
+                                              <div className="flex items-center space-x-2">
+                                                <button
+                                                  type="button"
+                                                  onClick={() => {
+                                                    const next = [
+                                                      ...tryoutForm.soal,
+                                                    ];
+                                                    const stmts = [
+                                                      ...(next[qIdx]
+                                                        .statements || []),
+                                                    ];
+                                                    stmts[sIdx] = {
+                                                      ...stmts[sIdx],
+                                                      answer:
+                                                        !stmts[sIdx].answer,
+                                                    };
+                                                    next[qIdx] = {
+                                                      ...next[qIdx],
+                                                      statements: stmts,
+                                                    };
+                                                    setTryoutForm({
+                                                      ...tryoutForm,
+                                                      soal: next,
+                                                    });
+                                                  }}
+                                                  className={`px-2.5 py-1 rounded text-[11px] font-bold cursor-pointer ${
+                                                    stmt.answer
+                                                      ? 'bg-emerald-600 text-white'
+                                                      : 'bg-rose-600 text-white'
+                                                  }`}
+                                                >
+                                                  Kunci: {stmt.answer ? 'Benar' : 'Salah'}
+                                                </button>
+                                                {(q.statements || []).length >
+                                                  1 && (
+                                                  <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                      const next = [
+                                                        ...tryoutForm.soal,
+                                                      ];
+                                                      const stmts = (
+                                                        next[qIdx].statements ||
+                                                        []
+                                                      ).filter(
+                                                        (_, i) => i !== sIdx
+                                                      );
+                                                      next[qIdx] = {
+                                                        ...next[qIdx],
+                                                        statements: stmts,
+                                                      };
+                                                      setTryoutForm({
+                                                        ...tryoutForm,
+                                                        soal: next,
+                                                      });
+                                                    }}
+                                                    className="text-rose-400 hover:text-rose-200 cursor-pointer"
+                                                    title="Hapus Pernyataan"
+                                                  >
+                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                  </button>
+                                                )}
+                                              </div>
+                                            </div>
+                                            <RichTextEditor
+                                              compact
+                                              rows={1}
+                                              value={stmt.text || ''}
+                                              onChange={(e) => {
+                                                const next = [
+                                                  ...tryoutForm.soal,
+                                                ];
+                                                const stmts = [
+                                                  ...(next[qIdx].statements ||
+                                                    []),
+                                                ];
+                                                stmts[sIdx] = {
+                                                  ...stmts[sIdx],
+                                                  text: e.target.value,
+                                                };
+                                                next[qIdx] = {
+                                                  ...next[qIdx],
+                                                  statements: stmts,
+                                                };
+                                                setTryoutForm({
+                                                  ...tryoutForm,
+                                                  soal: next,
+                                                });
+                                              }}
+                                              bgClass="bg-[#162E5B]"
+                                              placeholder={`Tulis pernyataan #${sIdx + 1} atau sisipkan gambar...`}
+                                            />
+                                          </div>
+                                        )
+                                      )}
+                                    </div>
+                                  )}
+
+                                  {/* Kunci Jawaban untuk Isian Singkat */}
+                                  {qType === 'isian' && (
+                                    <div>
+                                      <label className="block text-[11px] font-semibold text-amber-300 mb-1">
+                                        Kunci Jawaban Isian Singkat *
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={
+                                          typeof q.answer === 'string'
+                                            ? q.answer
+                                            : ''
+                                        }
+                                        onChange={(e) => {
+                                          const next = [...tryoutForm.soal];
+                                          next[qIdx] = {
+                                            ...next[qIdx],
+                                            answer: e.target.value,
+                                          };
+                                          setTryoutForm({
+                                            ...tryoutForm,
+                                            soal: next,
+                                          });
+                                        }}
+                                        placeholder="Tulis kunci jawaban singkat yang tepat..."
+                                        className="w-full px-3 py-2 rounded-lg bg-[#0F2042] border border-emerald-400/60 text-white text-xs font-semibold"
+                                      />
+                                    </div>
+                                  )}
+
+                                  <div>
+                                    <label className="block text-[11px] font-semibold text-blue-200 mb-1">
+                                      Penjelasan / Pembahasan Soal
+                                    </label>
+                                    <RichTextEditor
+                                      rows={2}
+                                      value={q.explanation || ''}
+                                      onChange={(e) => {
+                                        const next = [...tryoutForm.soal];
+                                        next[qIdx] = {
+                                          ...next[qIdx],
+                                          explanation: e.target.value,
+                                        };
+                                        setTryoutForm({
+                                          ...tryoutForm,
+                                          soal: next,
+                                        });
+                                      }}
+                                      bgClass="bg-[#0F2042]"
+                                      placeholder="Tulis penjelasan / pembahasan lengkap soal tryout..."
+                                    />
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      <div className="pt-2 flex justify-end">
+                        <button
+                          type="submit"
+                          disabled={isSaving}
+                          className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-60 text-white text-xs font-bold flex items-center space-x-1.5 transition-all cursor-pointer shadow-md"
+                        >
+                          {isSaving ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              <span>Menyimpan...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Save className="w-4 h-4" />
+                              <span>Simpan Paket Tryout</span>
+                            </>
+                          )}
+                        </button>
                       </div>
                     </div>
                   </form>

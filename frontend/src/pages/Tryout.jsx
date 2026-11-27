@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { PUSMENDIK_TRYOUT } from '../data/tryoutData';
+import { syncCustomContentFromServer } from '../services/contentService';
 import {
   recordTryout,
   getActivityData,
@@ -259,7 +260,18 @@ const Tryout = () => {
   const [isReviewMode, setIsReviewMode] = useState(false);
   const [scoreResult, setScoreResult] = useState(null);
   const [completedTryouts, setCompletedTryouts] = useState({});
+  const [, setContentVersion] = useState(0);
   const activeNavBtnRef = useRef(null);
+
+  // Sinkronkan perubahan soal Tryout dari Admin Panel / server
+  useEffect(() => {
+    const handleContentUpdate = () => setContentVersion((v) => v + 1);
+    window.addEventListener('tka_content_updated', handleContentUpdate);
+    syncCustomContentFromServer();
+    return () => {
+      window.removeEventListener('tka_content_updated', handleContentUpdate);
+    };
+  }, []);
 
   // Auto-scroll ke nomor soal yang sedang aktif di lembar navigasi
   useEffect(() => {
@@ -688,7 +700,7 @@ const Tryout = () => {
                               <BookOpen className="w-6 h-6" />
                             </div>
                             <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#ECFDF5] text-[#047857] border border-[#A7F3D0] transition-all duration-300 group-hover:scale-105 shadow-2xs">
-                              5 Paket Soal
+                              {biPackages.length} Paket Soal
                             </span>
                           </div>
 
@@ -737,7 +749,7 @@ const Tryout = () => {
                             <div className="flex items-center justify-between text-xs mb-1.5 font-medium text-slate-600">
                               <span>Progres Paket:</span>
                               <span className="text-[#047857] font-bold">
-                                {biCompletedCount} dari 5 Selesai ({biPercent}%)
+                                {biCompletedCount} dari {biPackages.length} Selesai ({biPercent}%)
                               </span>
                             </div>
                             <div className="w-full bg-[#E2E8F0] rounded-full h-2 overflow-hidden">
@@ -752,7 +764,7 @@ const Tryout = () => {
                         {/* Footer Action Link */}
                         <div className="relative z-10 mt-5 pt-3.5 border-t border-[#E6DFD5] flex items-center justify-between text-xs sm:text-sm font-bold text-[#047857] transition-all">
                           <span className="group-hover:translate-x-1 transition-transform duration-300">
-                            Pilih Paket 1 s.d. 5
+                            Pilih Paket 1 s.d. {biPackages.length}
                           </span>
                           <div className="w-7 h-7 rounded-lg bg-[#ECFDF5] border border-[#A7F3D0] flex items-center justify-center group-hover:translate-x-1.5 group-hover:bg-[#047857] group-hover:text-white transition-all duration-300 shadow-2xs">
                             <ChevronRight className="w-4 h-4" />
@@ -796,7 +808,7 @@ const Tryout = () => {
                               <Calculator className="w-6 h-6" />
                             </div>
                             <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-[#FFF1F2] text-[#881337] border border-[#FECDD3] transition-all duration-300 group-hover:scale-105 shadow-2xs">
-                              5 Paket Soal
+                              {mtkPackages.length} Paket Soal
                             </span>
                           </div>
 
@@ -845,7 +857,7 @@ const Tryout = () => {
                             <div className="flex items-center justify-between text-xs mb-1.5 font-medium text-slate-600">
                               <span>Progres Paket:</span>
                               <span className="text-[#881337] font-bold">
-                                {mtkCompletedCount} dari 5 Selesai ({mtkPercent}%)
+                                {mtkCompletedCount} dari {mtkPackages.length} Selesai ({mtkPercent}%)
                               </span>
                             </div>
                             <div className="w-full bg-[#E2E8F0] rounded-full h-2 overflow-hidden">
@@ -860,7 +872,7 @@ const Tryout = () => {
                         {/* Footer Action Link */}
                         <div className="relative z-10 mt-5 pt-3.5 border-t border-[#E6DFD5] flex items-center justify-between text-xs sm:text-sm font-bold text-[#881337] group-hover:text-[#700D2B] transition-all">
                           <span className="group-hover:translate-x-1 transition-transform duration-300">
-                            Pilih Paket 1 s.d. 5
+                            Pilih Paket 1 s.d. {mtkPackages.length}
                           </span>
                           <div className="w-7 h-7 rounded-lg bg-[#FFF1F2] border border-[#FECDD3] flex items-center justify-center group-hover:translate-x-1.5 group-hover:bg-[#881337] group-hover:text-white transition-all duration-300 shadow-2xs">
                             <ChevronRight className="w-4 h-4" />
@@ -945,16 +957,16 @@ const Tryout = () => {
                             ) : (
                               <span className="text-[11px] text-slate-500 font-medium flex items-center space-x-1">
                                 <Clock className="w-3 h-3" />
-                                <span>60 Menit</span>
+                                <span>{pkg.durasiMenit || 60} Menit</span>
                               </span>
                             )}
                           </div>
 
                           <h4 className="text-sm sm:text-base font-bold text-slate-800">
-                            Paket Tryout
+                            {pkg.deskripsi || 'Paket Tryout'}
                           </h4>
                           <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                            {pkg.totalSoal || pkg.soal.length} soal campuran dari mudah sampai menantang (PG & Isian).
+                            {pkg.soal?.length || pkg.totalSoal || 0} soal campuran dari mudah sampai menantang (PG & Isian).
                           </p>
                         </div>
 
@@ -1130,7 +1142,7 @@ const Tryout = () => {
                             <span>Bacaan / Pengantar:</span>
                           </div>
                           <div
-                            className="text-[#261C14] leading-relaxed font-normal"
+                            className="text-[#261C14] leading-relaxed font-normal rich-content-display"
                             dangerouslySetInnerHTML={{ __html: formatMath(currentQ.stimulus) }}
                           />
                         </div>
@@ -1138,27 +1150,33 @@ const Tryout = () => {
 
                       {/* Teks Pertanyaan */}
                       <div
-                        className="text-xs sm:text-sm font-semibold text-[#261C14] leading-relaxed"
+                        className="text-xs sm:text-sm font-semibold text-[#261C14] leading-relaxed rich-content-display"
                         dangerouslySetInnerHTML={{ __html: formatMath(currentQ.question || currentQ.pertanyaan) }}
                       />
 
                       {/* OPSI JAWABAN */}
                       {/* 1. MCQ (Pilihan Ganda Tunggal) */}
                       {qType === 'mcq' && (
-                        <div className="space-y-2 pt-1">
+                        <div
+                          className={
+                            options.some((o) => /<(?:img|svg)\b/i.test(String(o || '')))
+                              ? 'grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1'
+                              : 'space-y-2 pt-1'
+                          }
+                        >
                           {options.map((opt, oIdx) => {
                             const isSelected = currentAnswer === opt || currentAnswer === oIdx;
                             return (
                               <button
                                 key={oIdx}
                                 onClick={() => handleAnswerChange(opt)}
-                                className={`w-full p-3 sm:p-3.5 rounded-xl text-left text-xs sm:text-sm font-medium border-2 transition-all flex items-center justify-between cursor-pointer min-h-[46px] active:scale-[0.99] ${
+                                className={`w-full p-3 sm:p-3.5 rounded-xl text-left text-xs sm:text-sm font-medium border-2 transition-all flex items-start justify-between gap-2 cursor-pointer min-h-[46px] active:scale-[0.99] ${
                                   isSelected
                                     ? 'bg-[#FAECE6] border-[#C25E38] text-[#261C14] font-semibold ring-2 ring-[#C25E38]/30 shadow-xs'
                                     : 'bg-white border-[#E6DFD5] hover:border-[#C25E38] hover:bg-[#FAECE6]/40 text-[#261C14]'
                                 }`}
                               >
-                                <span className="pr-2 leading-relaxed" dangerouslySetInnerHTML={{ __html: formatMath(opt) }} />
+                                <div className="flex-1 min-w-0 pr-2 leading-relaxed rich-content-display" dangerouslySetInnerHTML={{ __html: formatMath(opt) }} />
                                 <div
                                   className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center text-xs font-bold flex-shrink-0 ml-2 transition-colors ${
                                     isSelected
@@ -1181,6 +1199,13 @@ const Tryout = () => {
                             <CheckCircle2 className="w-4 h-4 text-[#C25E38] flex-shrink-0" />
                             <span>Kamu boleh memilih lebih dari satu jawaban yang benar.</span>
                           </div>
+                          <div
+                            className={
+                              options.some((o) => /<(?:img|svg)\b/i.test(String(o || '')))
+                                ? 'grid grid-cols-1 sm:grid-cols-2 gap-2.5'
+                                : 'space-y-2'
+                            }
+                          >
                           {options.map((opt, oIdx) => {
                             const selectedList = Array.isArray(currentAnswer) ? currentAnswer : [];
                             const isSelected = selectedList.includes(opt);
@@ -1193,13 +1218,13 @@ const Tryout = () => {
                                     : [...selectedList, opt];
                                   handleAnswerChange(nextList);
                                 }}
-                                className={`w-full p-3 rounded-xl text-left text-xs sm:text-sm font-medium border-2 transition-colors flex items-center justify-between cursor-pointer ${
+                                className={`w-full p-3 rounded-xl text-left text-xs sm:text-sm font-medium border-2 transition-colors flex items-start justify-between gap-2 cursor-pointer ${
                                   isSelected
                                     ? 'bg-[#FAECE6] border-[#C25E38] text-[#261C14] font-semibold ring-2 ring-[#C25E38]/20 shadow-xs'
                                     : 'bg-white border-[#E6DFD5] hover:border-[#C25E38] hover:bg-[#FAECE6]/40 text-[#261C14]'
                                 }`}
                               >
-                                <span dangerouslySetInnerHTML={{ __html: formatMath(opt) }} />
+                                <div className="flex-1 min-w-0 rich-content-display" dangerouslySetInnerHTML={{ __html: formatMath(opt) }} />
                                 <div
                                   className={`w-5 h-5 rounded-md border-2 flex items-center justify-center text-xs font-semibold flex-shrink-0 ml-2 transition-colors ${
                                     isSelected
@@ -1212,6 +1237,7 @@ const Tryout = () => {
                               </button>
                             );
                           })}
+                          </div>
                         </div>
                       )}
 
