@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import originalImage from '../assets/10280401.jpg';
+import originalImage from '../assets/mascot.png';
 
 /**
  * Komponen Karakter Siswa TKA SD (Ilustrasi Bersih)
