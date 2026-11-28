@@ -127,7 +127,7 @@ const Login = () => {
             <img
               src="/logo.png"
               alt="Logo MyAkademika"
-              className="h-14 w-auto object-contain"
+              className="h-9 sm:h-10 md:h-14 w-auto object-contain"
             />
           </div>
           <h1 className="text-2xl font-bold text-white tracking-tight drop-shadow-sm">

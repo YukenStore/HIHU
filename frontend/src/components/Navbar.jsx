@@ -81,7 +81,7 @@ const Navbar = () => {
               <img
                 src="/logo.png"
                 alt="Logo MyAkademika"
-                className="h-8 sm:h-9 w-auto object-contain rounded-md"
+                className="h-12 sm:h-14 w-auto object-contain rounded-md"
               />
               <span className="font-bold text-sm sm:text-base text-slate-800 tracking-tight">
                 MyAkademika
