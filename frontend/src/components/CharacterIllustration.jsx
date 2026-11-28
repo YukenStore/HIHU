@@ -85,8 +85,45 @@ const CharacterIllustration = () => {
         }
 
         ctx.putImageData(imgData, 0, 0);
+
+        // Pangkas area transparan di tepi gambar agar ukuran karakter tampil maksimal & proporsional di mobile
+        let minX = w;
+        let minY = h;
+        let maxX = 0;
+        let maxY = 0;
+        let hasOpaque = false;
+
+        for (let y = 0; y < h; y++) {
+          const rowOffset = y * w;
+          for (let x = 0; x < w; x++) {
+            if (data[(rowOffset + x) * 4 + 3] > 10) {
+              if (x < minX) minX = x;
+              if (x > maxX) maxX = x;
+              if (y < minY) minY = y;
+              if (y > maxY) maxY = y;
+              hasOpaque = true;
+            }
+          }
+        }
+
+        let outputCanvas = canvas;
+        if (hasOpaque && maxX > minX && maxY > minY) {
+          const pad = Math.round(Math.max(w, h) * 0.015);
+          const sx = Math.max(0, minX - pad);
+          const sy = Math.max(0, minY - pad);
+          const sw = Math.min(w - sx, maxX - minX + 1 + pad * 2);
+          const sh = Math.min(h - sy, maxY - minY + 1 + pad * 2);
+
+          const cropped = document.createElement('canvas');
+          cropped.width = sw;
+          cropped.height = sh;
+          const croppedCtx = cropped.getContext('2d');
+          croppedCtx.drawImage(canvas, sx, sy, sw, sh, 0, 0, sw, sh);
+          outputCanvas = cropped;
+        }
+
         if (isMounted) {
-          setProcessedSrc(canvas.toDataURL('image/png'));
+          setProcessedSrc(outputCanvas.toDataURL('image/png'));
         }
       } catch (err) {
         console.warn('Gagal memproses transparansi gambar:', err);
@@ -99,13 +136,13 @@ const CharacterIllustration = () => {
   }, []);
 
   return (
-    <div className="relative flex flex-col items-center justify-center select-none w-full max-w-[150px] xs:max-w-[190px] sm:max-w-[320px] md:max-w-[420px]">
+    <div className="relative flex flex-col items-center justify-center select-none w-full max-w-[230px] sm:max-w-[300px] md:max-w-[360px] lg:max-w-[420px]">
       {/* Character Container (Murni Ilustrasi Bersih Tanpa Button & Tulisan Klik) */}
       <div className="relative z-10 w-full flex justify-center">
         <img
           src={processedSrc || originalImage}
           alt="Ilustrasi Siswa MyAkademika"
-          className="w-auto h-[175px] xs:h-[215px] sm:h-[350px] md:h-[440px] lg:h-[490px] object-contain transition-all duration-200 max-w-full drop-shadow-sm pointer-events-none"
+          className="w-full h-[300px] sm:h-[350px] md:h-[400px] lg:h-[440px] object-contain transition-all duration-200 max-w-full drop-shadow-sm pointer-events-none"
           draggable="false"
         />
       </div>

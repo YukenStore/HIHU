@@ -216,7 +216,7 @@ const Dashboard = () => {
           {/* ========================================
               2.2 AREA MENU DAN KARAKTER
           ======================================== */}
-          <div className="grid grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] md:grid-cols-2 gap-2 sm:gap-5 lg:gap-8 items-center">
+          <div className="grid grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)] sm:grid-cols-2 gap-1.5 sm:gap-5 lg:gap-8 items-center">
 
             {/* Kolom Menu */}
             <section className="min-w-0 flex flex-col justify-center gap-2 sm:gap-3 lg:gap-4">
@@ -263,7 +263,7 @@ const Dashboard = () => {
             {/* Kolom Ilustrasi Karakter */}
             <section className="min-w-0 w-full flex items-center justify-center">
 
-              <div className="w-full max-w-[180px] sm:max-w-[260px] md:max-w-[320px] lg:max-w-[400px]">
+              <div className="w-full max-w-[230px] sm:max-w-[300px] md:max-w-[360px] lg:max-w-[420px] flex justify-center">
                 <CharacterIllustration />
               </div>
 
