@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { isAdminUser, ADMIN_EMAILS } from '../config/adminConfig';
 import Navbar from '../components/Navbar';
 import RichTextEditor from '../components/RichTextEditor';
+import { hasVisibleContent } from '../utils/mathRenderer';
 import { PUSMENDIK_MATERI } from '../data/pusmendikData';
 import { PUSMENDIK_LATIHAN } from '../data/latihanData';
 import { PUSMENDIK_TRYOUT } from '../data/tryoutData';
@@ -647,6 +648,7 @@ const AdminPanel = () => {
       return {
         ...q,
         nomor: idx + 1,
+        stimulus: hasVisibleContent(q.stimulus) ? q.stimulus : '',
         jawabanBenar,
         answerIndex,
       };
@@ -943,7 +945,7 @@ const AdminPanel = () => {
         type: qType,
         level: Number(q.level) || 3,
         kesulitan: q.kesulitan || 'Sedang',
-        stimulus: q.stimulus || '',
+        stimulus: hasVisibleContent(q.stimulus) ? q.stimulus : '',
         question: q.question || '',
         indicator: q.indicator || '',
         options: qType === 'mcq' || qType === 'mcma' ? opts : undefined,

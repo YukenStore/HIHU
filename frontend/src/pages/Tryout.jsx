@@ -9,7 +9,7 @@ import {
   isGuestSession,
   triggerGuestRestrictionModal,
 } from '../utils/activityTracker';
-import { formatMath } from '../utils/mathRenderer';
+import { formatMath, hasVisibleContent } from '../utils/mathRenderer';
 import {
   BookOpen,
   Calculator,
@@ -1134,8 +1134,8 @@ const Tryout = () => {
                         </div>
                       </div>
 
-                      {/* Stimulus Bacaan / Konteks (jika ada) */}
-                      {currentQ.stimulus && (
+                      {/* Stimulus Bacaan / Konteks (jika ada isi nyata) */}
+                      {hasVisibleContent(currentQ.stimulus) && (
                         <div className="p-3.5 rounded-xl border-2 border-l-4 border-[#F4D3C4] border-l-[#C25E38] bg-[#FAECE6]/60 text-[#261C14] text-xs sm:text-sm leading-relaxed space-y-1">
                           <div className="flex items-center space-x-1.5 font-semibold text-xs text-[#C25E38]">
                             <BookOpen className="w-3.5 h-3.5 text-[#C25E38]" />
@@ -1590,8 +1590,8 @@ const Tryout = () => {
                           )}
                         </div>
 
-                        {/* Stimulus jika ada */}
-                        {q.stimulus && (
+                        {/* Stimulus jika ada isi nyata */}
+                        {hasVisibleContent(q.stimulus) && (
                           <div className="p-3 rounded-lg bg-[#FAF7F2] border border-[#E6DFD5] text-xs text-[#261C14] mb-3 leading-relaxed">
                             <strong className="text-[#261C14] block text-xs mb-1 font-semibold">Bacaan / Pengantar:</strong>
                             <div dangerouslySetInnerHTML={{ __html: formatMath(q.stimulus) }} />

@@ -23,9 +23,17 @@ const api = axios.create({
 // Interceptor untuk menyertakan token JWT pada setiap request
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const rawToken = localStorage.getItem('token');
+    const token = typeof rawToken === 'string' ? rawToken.trim() : '';
+    if (token && token !== 'GUEST_SIMULATION_TOKEN') {
+      if (config.headers && typeof config.headers.set === 'function') {
+        config.headers.set('Authorization', `Bearer ${token}`);
+      } else {
+        config.headers = {
+          ...(config.headers || {}),
+          Authorization: `Bearer ${token}`,
+        };
+      }
     }
     return config;
   },
@@ -38,14 +46,17 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Jika token tidak valid / kedaluwarsa (401), hapus dari localStorage
-    if (error.response && error.response.status === 401) {
-      // Hanya hapus jika ada token tersimpan sebelumnya (menghindari redirect loop saat login gagal)
-      const existingToken = localStorage.getItem('token');
-      if (existingToken && !error.config.url.includes('/login')) {
+    // Jika token tidak valid / kedaluwarsa / hilang (401), sinkronkan logout ke AuthContext & arahkan ke Login
+    const reqUrl = String(error.config?.url || '');
+    if (error.response && error.response.status === 401 && !reqUrl.includes('/login')) {
+      const currentToken = localStorage.getItem('token');
+      if (currentToken !== 'GUEST_SIMULATION_TOKEN') {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        window.location.hash = '#/';
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new Event('tka_auth_expired'));
+          window.location.hash = '#/';
+        }
       }
     }
     return Promise.reject(error);

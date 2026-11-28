@@ -78,4 +78,22 @@ export function formatMath(text) {
   return result;
 }
 
+/**
+ * Memeriksa apakah sebuah string konten/HTML (seperti stimulus / bacaan pengantar)
+ * benar-benar memiliki teks terlihat atau media (gambar/svg/tabel), bukan sekadar tag kosong (<br>, <div><br></div>, spasi, &nbsp;).
+ */
+export function hasVisibleContent(value) {
+  if (value === null || value === undefined) return false;
+  const str = String(value);
+  if (/<(?:img|svg|table|hr|video|audio|iframe)\b/i.test(str)) {
+    return true;
+  }
+  const plain = str
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;|&#160;/gi, ' ')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    .trim();
+  return plain.length > 0;
+}
+
 export default formatMath;

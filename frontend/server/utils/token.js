@@ -2,13 +2,13 @@ import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 
 /**
- * Membuat token JWT dengan masa berlaku 1 hari (1d)
+ * Membuat token JWT dengan masa berlaku 7 hari (7d)
  * @param {Object} payload - Data pengguna yang disimpan dalam token
  * @returns {string} Token JWT
  */
 export const generateToken = (payload) => {
   return jwt.sign(payload, env.jwtSecret, {
-    expiresIn: '1d',
+    expiresIn: '7d',
   });
 };
 

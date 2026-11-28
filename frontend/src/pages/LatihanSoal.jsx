@@ -19,7 +19,7 @@ import {
   triggerGuestRestrictionModal,
 } from '../utils/activityTracker';
 import { getCharacterAvatar } from '../utils/characterAvatars';
-import { formatMath } from '../utils/mathRenderer';
+import { formatMath, hasVisibleContent } from '../utils/mathRenderer';
 import {
   BookOpen,
   Calculator,
@@ -1024,8 +1024,8 @@ const LatihanSoal = () => {
                         </div>
                       )}
 
-                      {/* Stimulus Bacaan (jika ada) */}
-                      {currentQ.stimulus && (
+                      {/* Stimulus Bacaan (jika ada isi nyata) */}
+                      {hasVisibleContent(currentQ.stimulus) && (
                         <div className={`p-4 rounded-lg text-[#261C14] text-xs sm:text-sm leading-relaxed space-y-1 border-l-4 ${
                           selectedSubject === 'matematika'
                             ? 'bg-[#FFF1F2]/50 border-l-[#881337]'
@@ -1579,7 +1579,7 @@ const LatihanSoal = () => {
                             )}
                           </div>
 
-                          {q.stimulus && (
+                          {hasVisibleContent(q.stimulus) && (
                             <div className="p-3 mb-3 rounded-lg bg-[#FAF7F2] border border-[#E6DFD5] text-[#261C14] text-xs">
                               <span className="font-semibold text-[#261C14] block mb-1">Bacaan / Pengantar:</span>
                               <div

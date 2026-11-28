@@ -671,7 +671,16 @@ const serializeNodesToValue = (parentNode) => {
   };
 
   const result = serializeInlineOrBlock(Array.from(parentNode.childNodes), false);
-  return result.replace(/\u00A0/g, ' ').replace(/\n{3,}/g, '\n\n');
+  const cleaned = result.replace(/\u00A0/g, ' ').replace(/\n{3,}/g, '\n\n');
+  if (!/<(?:img|svg|table|hr|video|audio|iframe)\b/i.test(cleaned)) {
+    const plain = cleaned
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/&nbsp;|&#160;/gi, ' ')
+      .replace(/[\u200B-\u200D\uFEFF]/g, '')
+      .trim();
+    if (!plain) return '';
+  }
+  return cleaned;
 };
 
 /**

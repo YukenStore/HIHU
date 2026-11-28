@@ -52,6 +52,16 @@ export const AuthProvider = ({ children }) => {
     };
 
     initAuth();
+
+    // Sinkronkan state autentikasi saat token kedaluwarsa/ditolak (401) oleh API interceptor
+    const handleAuthExpired = () => {
+      setToken(null);
+      setUser(null);
+    };
+    window.addEventListener('tka_auth_expired', handleAuthExpired);
+    return () => {
+      window.removeEventListener('tka_auth_expired', handleAuthExpired);
+    };
   }, []);
 
   /**

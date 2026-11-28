@@ -1172,7 +1172,7 @@ export const PUSMENDIK_LATIHAN = {
         "level": 3,
         "kesulitan": "Sedang",
         "pertanyaan": "Berdasarkan deskripsi di paragraf 1, objek yang berfungsi sebagai perisai alami bagi komodo adalah...",
-        "stimulus": "",
+        "stimulus": "Paragraf 1:\nKomodo (Varanus komodoensis) adalah kadal terbesar yang masih eksis di dunia dan kerap dijuluki 'naga purba terakhir' dari Indonesia. Satwa endemik ini hidup di beberapa pulau di Nusa Tenggara Timur, seperti Pulau Komodo dan Pulau Rinca. Kulitnya yang tebal dan kasar dilengkapi sisik bertulang kecil yang memberikannya perisai alami yang tangguh saat bertahan maupun berburu.\n\nParagraf 2:\nSebagai predator puncak, komodo berburu secara soliter (sendiri) mangsa berukuran besar seperti rusa, babi hutan, atau kerbau liar. Senjata utamanya bukan hanya rahang dan cakar yang kuat, melainkan juga air liurnya yang mengandung bisa antikoagulan (zat pencegah pembekuan darah). Setelah menggigit mangsanya, komodo tidak perlu langsung melumpuhkannya; ia cukup menunggu mangsanya lemah dan mati akibat infeksi atau pendarahan.\n\nParagraf 3:\nMeski menjadi pemburu yang tangguh, kelestarian komodo kini berada dalam bahaya. Organisasi konservasi internasional IUCN menetapkan status konservasi komodo dalam kategori 'Genting' (Endangered). Ancaman utamanya meliputi perburuan liar terhadap mangsanya serta kerusakan habitat akibat aktivitas manusia dan perubahan iklim. Oleh karena itu, Taman Nasional Komodo berperan sebagai benteng pertahanan krusial, dan upaya pelestariannya membutuhkan kerja sama semua pihak, baik di Indonesia maupun dunia internasional.",
         "indicator": "Siswa dapat mengidentifikasi bagian tubuh objek (komodo) dan fungsinya sesuai informasi eksplisit dalam teks.",
         "pilihan": [
           "Taringnya yang tajam",
@@ -1193,7 +1193,7 @@ export const PUSMENDIK_LATIHAN = {
         "level": 3,
         "kesulitan": "Sedang",
         "pertanyaan": "Berdasarkan jenis makanannya yang disebutkan dalam teks (rusa atau kerbau), komodo dapat dikelompokkan sebagai objek...",
-        "stimulus": "",
+        "stimulus": "Paragraf 1:\nKomodo (Varanus komodoensis) adalah kadal terbesar yang masih eksis di dunia dan kerap dijuluki 'naga purba terakhir' dari Indonesia. Satwa endemik ini hidup di beberapa pulau di Nusa Tenggara Timur, seperti Pulau Komodo dan Pulau Rinca. Kulitnya yang tebal dan kasar dilengkapi sisik bertulang kecil yang memberikannya perisai alami yang tangguh saat bertahan maupun berburu.\n\nParagraf 2:\nSebagai predator puncak, komodo berburu secara soliter (sendiri) mangsa berukuran besar seperti rusa, babi hutan, atau kerbau liar. Senjata utamanya bukan hanya rahang dan cakar yang kuat, melainkan juga air liurnya yang mengandung bisa antikoagulan (zat pencegah pembekuan darah). Setelah menggigit mangsanya, komodo tidak perlu langsung melumpuhkannya; ia cukup menunggu mangsanya lemah dan mati akibat infeksi atau pendarahan.\n\nParagraf 3:\nMeski menjadi pemburu yang tangguh, kelestarian komodo kini berada dalam bahaya. Organisasi konservasi internasional IUCN menetapkan status konservasi komodo dalam kategori 'Genting' (Endangered). Ancaman utamanya meliputi perburuan liar terhadap mangsanya serta kerusakan habitat akibat aktivitas manusia dan perubahan iklim. Oleh karena itu, Taman Nasional Komodo berperan sebagai benteng pertahanan krusial, dan upaya pelestariannya membutuhkan kerja sama semua pihak, baik di Indonesia maupun dunia internasional.",
         "indicator": "Siswa dapat mengklasifikasikan objek (komodo) ke dalam kelompok tertentu (karnivora) berdasarkan informasi eksplisit tentang makanannya.",
         "pilihan": [
           "Herbivora",
@@ -1713,7 +1713,7 @@ export const PUSMENDIK_LATIHAN = {
         "level": 4,
         "kesulitan": "HOTS",
         "pertanyaan": "Manakah yang merupakan ciri-ciri komodo sebagai predator menurut teks? (Pilih semua jawaban yang benar)",
-        "stimulus": "",
+        "stimulus": "Paragraf 1:\nKomodo (Varanus komodoensis) adalah kadal terbesar yang masih eksis di dunia dan kerap dijuluki 'naga purba terakhir' dari Indonesia. Satwa endemik ini hidup di beberapa pulau di Nusa Tenggara Timur, seperti Pulau Komodo dan Pulau Rinca. Kulitnya yang tebal dan kasar dilengkapi sisik bertulang kecil yang memberikannya perisai alami yang tangguh saat bertahan maupun berburu.\n\nParagraf 2:\nSebagai predator puncak, komodo berburu secara soliter (sendiri) mangsa berukuran besar seperti rusa, babi hutan, atau kerbau liar. Senjata utamanya bukan hanya rahang dan cakar yang kuat, melainkan juga air liurnya yang mengandung bisa antikoagulan (zat pencegah pembekuan darah). Setelah menggigit mangsanya, komodo tidak perlu langsung melumpuhkannya; ia cukup menunggu mangsanya lemah dan mati akibat infeksi atau pendarahan.\n\nParagraf 3:\nMeski menjadi pemburu yang tangguh, kelestarian komodo kini berada dalam bahaya. Organisasi konservasi internasional IUCN menetapkan status konservasi komodo dalam kategori 'Genting' (Endangered). Ancaman utamanya meliputi perburuan liar terhadap mangsanya serta kerusakan habitat akibat aktivitas manusia dan perubahan iklim. Oleh karena itu, Taman Nasional Komodo berperan sebagai benteng pertahanan krusial, dan upaya pelestariannya membutuhkan kerja sama semua pihak, baik di Indonesia maupun dunia internasional.",
         "indicator": "Siswa dapat menganalisis dan memilih beberapa karakteristik spesifik dari objek (komodo) yang dijelaskan dalam teks.",
         "pilihan": [
           "Dijuluki naga purba terakhir",
@@ -1736,7 +1736,7 @@ export const PUSMENDIK_LATIHAN = {
         "level": 4,
         "kesulitan": "HOTS",
         "pertanyaan": "Mengapa komodo tidak perlu langsung melumpuhkan mangsanya saat berburu?",
-        "stimulus": "",
+        "stimulus": "Paragraf 1:\nKomodo (Varanus komodoensis) adalah kadal terbesar yang masih eksis di dunia dan kerap dijuluki 'naga purba terakhir' dari Indonesia. Satwa endemik ini hidup di beberapa pulau di Nusa Tenggara Timur, seperti Pulau Komodo dan Pulau Rinca. Kulitnya yang tebal dan kasar dilengkapi sisik bertulang kecil yang memberikannya perisai alami yang tangguh saat bertahan maupun berburu.\n\nParagraf 2:\nSebagai predator puncak, komodo berburu secara soliter (sendiri) mangsa berukuran besar seperti rusa, babi hutan, atau kerbau liar. Senjata utamanya bukan hanya rahang dan cakar yang kuat, melainkan juga air liurnya yang mengandung bisa antikoagulan (zat pencegah pembekuan darah). Setelah menggigit mangsanya, komodo tidak perlu langsung melumpuhkannya; ia cukup menunggu mangsanya lemah dan mati akibat infeksi atau pendarahan.\n\nParagraf 3:\nMeski menjadi pemburu yang tangguh, kelestarian komodo kini berada dalam bahaya. Organisasi konservasi internasional IUCN menetapkan status konservasi komodo dalam kategori 'Genting' (Endangered). Ancaman utamanya meliputi perburuan liar terhadap mangsanya serta kerusakan habitat akibat aktivitas manusia dan perubahan iklim. Oleh karena itu, Taman Nasional Komodo berperan sebagai benteng pertahanan krusial, dan upaya pelestariannya membutuhkan kerja sama semua pihak, baik di Indonesia maupun dunia internasional.",
         "indicator": "Siswa dapat menyimpulkan alasan di balik perilaku objek (strategi berburu komodo) berdasarkan informasi tersirat mengenai 'senjata utamanya'.",
         "pilihan": [
           "Karena komodo adalah pelari yang sangat lambat.",
@@ -1757,7 +1757,7 @@ export const PUSMENDIK_LATIHAN = {
         "level": 4,
         "kesulitan": "HOTS",
         "pertanyaan": "Ancaman mana saja terhadap kelestarian komodo yang dapat disimpulkan dari teks? (Pilih semua jawaban yang benar)",
-        "stimulus": "",
+        "stimulus": "Paragraf 1:\nKomodo (Varanus komodoensis) adalah kadal terbesar yang masih eksis di dunia dan kerap dijuluki 'naga purba terakhir' dari Indonesia. Satwa endemik ini hidup di beberapa pulau di Nusa Tenggara Timur, seperti Pulau Komodo dan Pulau Rinca. Kulitnya yang tebal dan kasar dilengkapi sisik bertulang kecil yang memberikannya perisai alami yang tangguh saat bertahan maupun berburu.\n\nParagraf 2:\nSebagai predator puncak, komodo berburu secara soliter (sendiri) mangsa berukuran besar seperti rusa, babi hutan, atau kerbau liar. Senjata utamanya bukan hanya rahang dan cakar yang kuat, melainkan juga air liurnya yang mengandung bisa antikoagulan (zat pencegah pembekuan darah). Setelah menggigit mangsanya, komodo tidak perlu langsung melumpuhkannya; ia cukup menunggu mangsanya lemah dan mati akibat infeksi atau pendarahan.\n\nParagraf 3:\nMeski menjadi pemburu yang tangguh, kelestarian komodo kini berada dalam bahaya. Organisasi konservasi internasional IUCN menetapkan status konservasi komodo dalam kategori 'Genting' (Endangered). Ancaman utamanya meliputi perburuan liar terhadap mangsanya serta kerusakan habitat akibat aktivitas manusia dan perubahan iklim. Oleh karena itu, Taman Nasional Komodo berperan sebagai benteng pertahanan krusial, dan upaya pelestariannya membutuhkan kerja sama semua pihak, baik di Indonesia maupun dunia internasional.",
         "indicator": "Siswa dapat menganalisis dan menyimpulkan beberapa faktor ancaman yang dihadapi objek dari informasi yang tersebar di dalam teks.",
         "pilihan": [
           "Berkurangnya hewan yang menjadi makanannya",
@@ -2291,7 +2291,7 @@ export const PUSMENDIK_LATIHAN = {
         "level": 5,
         "kesulitan": "HOTS",
         "pertanyaan": "Evaluasi kebenaran pernyataan-pernyataan berikut berdasarkan keseluruhan informasi dalam teks.",
-        "stimulus": "",
+        "stimulus": "Paragraf 1:\nKomodo (Varanus komodoensis) adalah kadal terbesar yang masih eksis di dunia dan kerap dijuluki 'naga purba terakhir' dari Indonesia. Satwa endemik ini hidup di beberapa pulau di Nusa Tenggara Timur, seperti Pulau Komodo dan Pulau Rinca. Kulitnya yang tebal dan kasar dilengkapi sisik bertulang kecil yang memberikannya perisai alami yang tangguh saat bertahan maupun berburu.\n\nParagraf 2:\nSebagai predator puncak, komodo berburu secara soliter (sendiri) mangsa berukuran besar seperti rusa, babi hutan, atau kerbau liar. Senjata utamanya bukan hanya rahang dan cakar yang kuat, melainkan juga air liurnya yang mengandung bisa antikoagulan (zat pencegah pembekuan darah). Setelah menggigit mangsanya, komodo tidak perlu langsung melumpuhkannya; ia cukup menunggu mangsanya lemah dan mati akibat infeksi atau pendarahan.\n\nParagraf 3:\nMeski menjadi pemburu yang tangguh, kelestarian komodo kini berada dalam bahaya. Organisasi konservasi internasional IUCN menetapkan status konservasi komodo dalam kategori 'Genting' (Endangered). Ancaman utamanya meliputi perburuan liar terhadap mangsanya serta kerusakan habitat akibat aktivitas manusia dan perubahan iklim. Oleh karena itu, Taman Nasional Komodo berperan sebagai benteng pertahanan krusial, dan upaya pelestariannya membutuhkan kerja sama semua pihak, baik di Indonesia maupun dunia internasional.",
         "indicator": "Siswa dapat menilai kebenaran dari beberapa pernyataan dengan membandingkan informasi eksplisit dan implisit dari seluruh teks.",
         "pilihan": [],
         "answerIndex": -1,
@@ -2305,11 +2305,11 @@ export const PUSMENDIK_LATIHAN = {
             "answer": false
           },
           {
-            "text": "Komodo disebut naga purba karena ukurannya yang gigantik dan reputasinya sebagai predator.",
+            "text": "Komodo disebut naga purba karena ukurannya yang sangat besar dan reputasinya sebagai predator puncak.",
             "answer": true
           }
         ],
-        "penjelasan": "1. Benar, teks menyebut bisa 'antikoagulan' (anti pembekuan darah). 2. Salah, teks menyebut statusnya 'Genting' (Endangered). 3. Benar, julukan ini disiratkan dari deskripsi sebagai 'kadal terbesar' dan 'predator puncak'.",
+        "penjelasan": "1. **Benar**, paragraf 2 menyebut air liur komodo mengandung bisa 'antikoagulan' (zat pencegah pembekuan darah). 2. **Salah**, paragraf 3 menyatakan status konservasi komodo menurut IUCN adalah 'Genting' (Endangered), bukan aman. 3. **Benar**, julukan 'naga purba terakhir' berkaitan dengan deskripsinya sebagai kadal terbesar yang masih eksis dan predator puncak.",
         "nomor": 2
       },
       {
@@ -2318,19 +2318,18 @@ export const PUSMENDIK_LATIHAN = {
         "level": 5,
         "kesulitan": "HOTS",
         "pertanyaan": "Apa tujuan utama penulis pada paragraf ketiga?",
-        "stimulus": "",
+        "stimulus": "Paragraf 1:\nKomodo (Varanus komodoensis) adalah kadal terbesar yang masih eksis di dunia dan kerap dijuluki 'naga purba terakhir' dari Indonesia. Satwa endemik ini hidup di beberapa pulau di Nusa Tenggara Timur, seperti Pulau Komodo dan Pulau Rinca. Kulitnya yang tebal dan kasar dilengkapi sisik bertulang kecil yang memberikannya perisai alami yang tangguh saat bertahan maupun berburu.\n\nParagraf 2:\nSebagai predator puncak, komodo berburu secara soliter (sendiri) mangsa berukuran besar seperti rusa, babi hutan, atau kerbau liar. Senjata utamanya bukan hanya rahang dan cakar yang kuat, melainkan juga air liurnya yang mengandung bisa antikoagulan (zat pencegah pembekuan darah). Setelah menggigit mangsanya, komodo tidak perlu langsung melumpuhkannya; ia cukup menunggu mangsanya lemah dan mati akibat infeksi atau pendarahan.\n\nParagraf 3:\nMeski menjadi pemburu yang tangguh, kelestarian komodo kini berada dalam bahaya. Organisasi konservasi internasional IUCN menetapkan status konservasi komodo dalam kategori 'Genting' (Endangered). Ancaman utamanya meliputi perburuan liar terhadap mangsanya serta kerusakan habitat akibat aktivitas manusia dan perubahan iklim. Oleh karena itu, Taman Nasional Komodo berperan sebagai benteng pertahanan krusial, dan upaya pelestariannya membutuhkan kerja sama semua pihak, baik di Indonesia maupun dunia internasional.",
         "indicator": "Siswa dapat mengevaluasi dan menyintesis informasi dari satu paragraf untuk menentukan pesan utama atau maksud penulis.",
         "pilihan": [
-          "Untuk mendeskripsikan cara komodo berkembang biak.",
-          "Untuk menjelaskan secara rinci jenis mangsa komodo.",
+          "Untuk mendeskripsikan cara komodo berkembang biak di pulau.",
+          "Untuk menjelaskan secara rinci jenis mangsa yang diburu komodo.",
           "Untuk menyoroti ancaman yang dihadapi komodo dan pentingnya upaya pelestarian.",
-          "Untuk membandingkan komodo dengan reptil purba lainnya.",
           "Untuk mengajak pembaca berwisata ke Taman Nasional Komodo."
         ],
         "jawabanBenar": "Untuk menyoroti ancaman yang dihadapi komodo dan pentingnya upaya pelestarian.",
         "answerIndex": 2,
         "statements": [],
-        "penjelasan": "Paragraf ketiga berfokus pada status 'Genting', ancaman-ancaman seperti hilangnya mangsa dan habitat, serta pentingnya konservasi.",
+        "penjelasan": "Paragraf ketiga berfokus pada status 'Genting', berbagai ancaman seperti hilangnya mangsa dan kerusakan habitat, serta pentingnya konservasi dan kerja sama pelestarian.",
         "nomor": 3
       },
       {
@@ -2338,8 +2337,8 @@ export const PUSMENDIK_LATIHAN = {
         "type": "category",
         "level": 5,
         "kesulitan": "HOTS",
-        "pertanyaan": "Tentukan apakah simpulan berikut Benar atau Salah berdasarkan teks.",
-        "stimulus": "",
+        "pertanyaan": "Tentukan apakah simpulan berikut Benar atau Salah berdasarkan keseluruhan teks.",
+        "stimulus": "Paragraf 1:\nKomodo (Varanus komodoensis) adalah kadal terbesar yang masih eksis di dunia dan kerap dijuluki 'naga purba terakhir' dari Indonesia. Satwa endemik ini hidup di beberapa pulau di Nusa Tenggara Timur, seperti Pulau Komodo dan Pulau Rinca. Kulitnya yang tebal dan kasar dilengkapi sisik bertulang kecil yang memberikannya perisai alami yang tangguh saat bertahan maupun berburu.\n\nParagraf 2:\nSebagai predator puncak, komodo berburu secara soliter (sendiri) mangsa berukuran besar seperti rusa, babi hutan, atau kerbau liar. Senjata utamanya bukan hanya rahang dan cakar yang kuat, melainkan juga air liurnya yang mengandung bisa antikoagulan (zat pencegah pembekuan darah). Setelah menggigit mangsanya, komodo tidak perlu langsung melumpuhkannya; ia cukup menunggu mangsanya lemah dan mati akibat infeksi atau pendarahan.\n\nParagraf 3:\nMeski menjadi pemburu yang tangguh, kelestarian komodo kini berada dalam bahaya. Organisasi konservasi internasional IUCN menetapkan status konservasi komodo dalam kategori 'Genting' (Endangered). Ancaman utamanya meliputi perburuan liar terhadap mangsanya serta kerusakan habitat akibat aktivitas manusia dan perubahan iklim. Oleh karena itu, Taman Nasional Komodo berperan sebagai benteng pertahanan krusial, dan upaya pelestariannya membutuhkan kerja sama semua pihak, baik di Indonesia maupun dunia internasional.",
         "indicator": "Siswa dapat mengevaluasi simpulan yang bersifat inferensial tentang status dan karakteristik objek.",
         "pilihan": [],
         "answerIndex": -1,
@@ -2357,376 +2356,381 @@ export const PUSMENDIK_LATIHAN = {
             "answer": false
           }
         ],
-        "penjelasan": "1. Benar, kelangsungan hidupnya terancam jika mangsanya berkurang. 2. Salah, deskripsi sebagai predator mematikan menyiratkan sebaliknya. 3. Salah, status IUCN 'Genting' menunjukkan ini adalah isu internasional.",
+        "penjelasan": "1. **Benar**, paragraf 3 menjelaskan kelangsungan hidup komodo terancam akibat perburuan liar terhadap hewan mangsanya. 2. **Salah**, deskripsi sebagai predator puncak dengan bisa antikoagulan menunjukkan komodo adalah satwa liar berbahaya. 3. **Salah**, status IUCN 'Genting' dan kalimat terakhir menegaskan pelestarian komodo membutuhkan kerja sama semua pihak di Indonesia maupun dunia internasional.",
         "nomor": 4
       },
       {
         "id": "bi_lvl10_q5",
         "type": "mcq",
-        "level": 1,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Bacalah teks berikut:\n'Di atas sehelai daun, ada seekor ulat hijau yang gemuk. Setiap hari, ia hanya makan dan makan. Setelah tubuhnya cukup besar, ulat itu membuat sarang yang membungkus seluruh tubuhnya. Beberapa minggu kemudian, sarang itu robek dan keluarlah seekor makhluk dengan sayap indah berwarna-warni.'\n\nPerubahan apa yang dialami ulat pada akhir cerita?",
-        "stimulus": "",
-        "indicator": "Menyimpulkan perubahan bentuk objek (makhluk hidup) yang dijelaskan secara berurutan dalam teks.",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Berdasarkan kedua teks di atas, manakah simpulan yang paling tepat untuk menyatukan gagasan kedua penulis?",
+        "stimulus": "Teks 1:\nMembaca buku cetak tetap memiliki keunggulan yang sulit digantikan. Kertas tidak memancarkan cahaya layar sehingga mata tidak cepat lelah saat membaca dalam waktu lama. Selain itu, pembaca dapat fokus tanpa terganggu notifikasi pesan atau aplikasi lain.\n\nTeks 2:\nBuku digital (e-book) memudahkan siswa membawa ratusan judul bacaan hanya dalam satu perangkat tipis. Fitur pencarian kata dan pengatur ukuran huruf sangat membantu anak belajar lebih cepat. Namun, pembaca tetap perlu mengatur waktu layar dan mematikan notifikasi agar tetap berkonsentrasi.",
+        "indicator": "Membandingkan dan menyintesis gagasan utama dari dua teks yang membahas topik yang sama dari sudut pandang berbeda.",
         "pilihan": [
-          "Ulat itu menjadi lebih gemuk.",
-          "Ulat itu berubah menjadi kupu-kupu.",
-          "Ulat itu memakan sarangnya.",
-          "Ulat itu jatuh dari daun."
+          "Buku digital seharusnya menggantikan seluruh buku cetak di perpustakaan sekolah.",
+          "Buku cetak maupun buku digital sama-sama bermanfaat, asalkan pembaca menjaga fokus dan kenyamanan saat membaca.",
+          "Membaca buku cetak tidak lagi efektif bagi siswa sekolah dasar di era modern.",
+          "Kedua penulis sepakat bahwa buku digital lebih merusak konsentrasi dibandingkan manfaatnya."
         ],
-        "jawabanBenar": "Ulat itu berubah menjadi kupu-kupu.",
+        "jawabanBenar": "Buku cetak maupun buku digital sama-sama bermanfaat, asalkan pembaca menjaga fokus dan kenyamanan saat membaca.",
         "answerIndex": 1,
         "statements": [],
-        "penjelasan": "Cerita tersebut menjelaskan proses metamorfosis. Ulat yang membungkus diri dalam sarang (kepompong) dan kemudian keluar dengan sayap indah adalah proses perubahan menjadi **kupu-kupu**.",
+        "penjelasan": "Teks 1 menonjolkan kenyamanan mata dan fokus pada **buku cetak**, sedangkan Teks 2 menonjolkan kepraktisan **buku digital** sambil mengingatkan perlunya menjaga waktu layar dan fokus. Maka simpulan yang menyatukan keduanya adalah kedua media sama-sama bermanfaat jika digunakan dengan fokus dan nyaman.",
         "nomor": 5
       },
       {
         "id": "bi_lvl10_q6",
-        "type": "category",
-        "level": 1,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Bacalah cerita berikut:\n'Dita menangis tersedu-sedu di teras rumah. Boneka beruang kesayangannya rusak, tangannya sobek. Tiba-tiba, Kak Roni datang membawa jarum dan benang. Dengan telaten, Kak Roni menjahit kembali tangan boneka itu hingga rapi seperti semula. Melihat bonekanya utuh kembali, wajah Dita langsung berseri-seri dan ia memeluk kakaknya.'\n\nTentukan apakah kesimpulan tentang perubahan perasaan Dita berikut Benar atau Salah.",
-        "stimulus": "",
-        "indicator": "Menyimpulkan perubahan perasaan tokoh dari sedih menjadi senang berdasarkan peristiwa yang dialaminya.",
-        "pilihan": [],
-        "answerIndex": -1,
-        "statements": [
-          {
-            "text": "Perasaan Dita berubah dari sedih menjadi gembira.",
-            "answer": true
-          },
-          {
-            "text": "Dita tetap merasa sedih di akhir cerita.",
-            "answer": false
-          },
-          {
-            "text": "Dita menjadi marah kepada kakaknya.",
-            "answer": false
-          }
+        "type": "mcma",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Manakah pernyataan berikut yang merupakan **fakta** (bukan opini) berdasarkan teks di atas? (Pilih lebih dari satu jawaban)",
+        "stimulus": "Program Pengolahan Sampah Organik di SD Harapan dimulai sejak Agustus 2025. Setiap hari, kantin sekolah menghasilkan sekitar 12 kilogram sisa makanan dan kulit buah. Sisa organik tersebut diolah menggunakan tiga kotak komposter menjadi pupuk padat untuk kebun sekolah. Menurut Pak Hendra, program ini adalah kegiatan lingkungan paling hebat di kota kami dan seharusnya ditiru semua sekolah.",
+        "indicator": "Mengevaluasi dan membedakan pernyataan fakta yang dapat diverifikasi dengan pernyataan opini dalam teks informatif.",
+        "pilihan": [
+          "Program pengolahan sampah organik di SD Harapan dimulai sejak Agustus 2025.",
+          "Kegiatan lingkungan di SD Harapan adalah yang paling hebat di kota tersebut.",
+          "Kantin sekolah menghasilkan sekitar 12 kilogram sisa makanan dan kulit buah setiap hari.",
+          "Sisa makanan diolah memakai tiga kotak komposter menjadi pupuk padat.",
+          "Semua sekolah seharusnya langsung meniru program milik SD Harapan."
         ],
-        "penjelasan": "1. **Benar**, Dita awalnya 'menangis tersedu-sedu' (sedih) lalu wajahnya 'berseri-seri' (gembira). 2. **Salah**, perasaannya berubah. 3. **Salah**, ia justru memeluk kakaknya sebagai tanda terima kasih.",
+        "jawabanBenar": [
+          "Program pengolahan sampah organik di SD Harapan dimulai sejak Agustus 2025.",
+          "Kantin sekolah menghasilkan sekitar 12 kilogram sisa makanan dan kulit buah setiap hari.",
+          "Sisa makanan diolah memakai tiga kotak komposter menjadi pupuk padat."
+        ],
+        "answerIndex": -1,
+        "statements": [],
+        "penjelasan": "**Fakta** berisi data yang dapat dibuktikan kebenarannya secara objektif (waktu mulai Agustus 2025, jumlah 12 kg/hari, dan penggunaan 3 kotak komposter). Sedangkan kata **'paling hebat'** dan **'seharusnya'** merupakan **opini** atau penilaian pribadi Pak Hendra.",
         "nomor": 6
       },
       {
         "id": "bi_lvl10_q7",
-        "type": "mcq",
-        "level": 1,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Bacalah kalimat berikut:\n'Setiap kali dinasihati orang tuanya, Doni selalu saja *keras kepala* dan tidak mau mendengarkan.'\n\nApa arti ungkapan *keras kepala* dalam kalimat tersebut?",
-        "stimulus": "",
-        "indicator": "Menjelaskan makna ungkapan umum yang sering digunakan dalam kehidupan sehari-hari.",
-        "pilihan": [
-          "Kepalanya terbuat dari batu",
-          "Sangat pintar",
-          "Tidak mau menuruti nasihat",
-          "Sangat pendiam"
-        ],
-        "jawabanBenar": "Tidak mau menuruti nasihat",
-        "answerIndex": 2,
-        "statements": [],
-        "penjelasan": "Ungkapan **keras kepala** adalah sebutan untuk orang yang tidak mau mendengarkan atau menuruti nasihat orang lain.",
-        "nomor": 7
-      },
-      {
-        "id": "bi_lvl10_q8",
         "type": "category",
-        "level": 1,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Bacalah kalimat berikut:\n'Rina adalah *bintang kelas* karena ia selalu mendapat peringkat pertama.'\n\nTentukan apakah pernyataan tentang makna ungkapan *bintang kelas* berikut Benar atau Salah.",
-        "stimulus": "",
-        "indicator": "Membedakan makna sebenarnya (denotasi) dan makna kiasan (konotasi) dari sebuah ungkapan sederhana.",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Tentukan apakah hubungan sebab-akibat berikut Benar atau Salah berdasarkan teks di atas.",
+        "stimulus": "Hutan mangrove di pesisir Desa Nelayan menyusut hampir separuhnya dalam lima tahun terakhir akibat alih fungsi lahan menjadi tambak terbuka. Akar mangrove yang rapat sejatinya berfungsi memecah gelombang laut sekaligus menjadi tempat berlindung anak ikan dan kepiting. Sejak banyak mangrove ditebang, ombak besar mulai mengikis jalan utama desa setiap pasang tinggi, dan hasil tangkapan nelayan tradisional di pinggir pantai menurun drastis.",
+        "indicator": "Menganalisis dan mengevaluasi hubungan sebab-akibat tersirat dalam teks eksplanasi lingkungan.",
         "pilihan": [],
         "answerIndex": -1,
         "statements": [
           {
-            "text": "Artinya, Rina adalah benda langit yang bersinar di kelas.",
-            "answer": false
-          },
-          {
-            "text": "Artinya, Rina adalah anak yang paling pandai di kelasnya.",
+            "text": "Pengikisan jalan desa saat pasang tinggi berkaitan erat dengan hilangnya akar mangrove sebagai pemecah gelombang.",
             "answer": true
           },
           {
-            "text": "Artinya, Rina suka menggambar bintang di kelas.",
+            "text": "Menurunnya tangkapan nelayan disebabkan oleh anak ikan dan kepiting yang kehilangan tempat berlindung.",
+            "answer": true
+          },
+          {
+            "text": "Pembukaan tambak terbuka di pesisir membuat garis pantai desa menjadi lebih aman dari ombak besar.",
             "answer": false
           }
         ],
-        "penjelasan": "1. **Salah**, ini adalah makna sebenarnya, bukan makna ungkapan. 2. **Benar**, *bintang kelas* adalah ungkapan untuk menyebut siswa yang paling menonjol prestasinya. 3. **Salah**, tidak ada hubungannya dengan kegiatan menggambar.",
+        "penjelasan": "1. **Benar**, teks menyebut akar mangrove memecah gelombang, sehingga ketika ditebang ombak mulai mengikis jalan desa. 2. **Benar**, hilangnya tempat berlindung anak ikan dan kepiting berdampak langsung pada berkurangnya tangkapan nelayan. 3. **Salah**, alih fungsi lahan menjadi tambak terbuka justru menyebabkan penyusutan mangrove dan memperparah abrasi.",
+        "nomor": 7
+      },
+      {
+        "id": "bi_lvl10_q8",
+        "type": "mcq",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Bagaimana penilaian yang paling tepat terhadap keputusan Lani dalam cerita di atas?",
+        "stimulus": "Sepuluh menit sebelum babak final lomba cerdas cermat tingkat kecamatan, Lani melihat selembar kertas terjatuh di dekat pintu ruang juri. Sekilas ia terbaca tulisan 'Kunci Jawaban Final' di bagian atasnya. Tim sekolah Lani sedang tertinggal poin dari lawan terkuatnya. Jantung Lani berdebar keras. Ia tahu jika mengintip kertas itu, timnya hampir pasti juara. Namun, Lani segera melipat kertas itu tanpa membacanya dan menyerahkannya kepada panitia. Di akhir lomba, tim Lani hanya meraih juara kedua, tetapi Lani melangkah pulang dengan kepala tegak.",
+        "indicator": "Mengevaluasi tindakan tokoh dalam menghadapi dilema moral dan menyimpulkan nilai utama cerita.",
+        "pilihan": [
+          "Keputusan Lani merugikan sekolah karena ia melewatkan kesempatan emas untuk menang.",
+          "Lani mengutamakan kejujuran dan sportivitas meski harus menerima hasil juara kedua.",
+          "Lani mengembalikan kertas itu hanya karena takut ketahuan oleh panitia lomba.",
+          "Tim Lani kalah semata-mata karena kurang teliti dalam memahami aturan lomba."
+        ],
+        "jawabanBenar": "Lani mengutamakan kejujuran dan sportivitas meski harus menerima hasil juara kedua.",
+        "answerIndex": 1,
+        "statements": [],
+        "penjelasan": "Meskipun memiliki peluang curang untuk menang, Lani memilih tidak membaca kertas itu dan langsung mengembalikannya. Ungkapan **'pulang dengan kepala tegak'** menegaskan bahwa ia bangga telah menjaga **kejujuran dan sportivitas**.",
         "nomor": 8
       },
       {
         "id": "bi_lvl10_q9",
-        "type": "mcq",
-        "level": 1,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Bacalah cerita berikut:\n'Ani membawa bekal dua potong kue ke sekolah. Saat jam istirahat, ia melihat temannya, Dina, tidak membawa bekal dan tampak sedih. Tanpa ragu, Ani memberikan satu potong kuenya kepada Dina. Mereka pun makan bersama dengan gembira.'\n\nPerbuatan Ani dalam cerita mirip dengan kejadian apa dalam kehidupanmu sehari-hari?",
-        "stimulus": "",
-        "indicator": "Menilai relevansi tindakan berbagi dalam teks dengan pengalaman pribadi yang serupa.",
+        "type": "mcma",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Penafsiran mana saja yang paling tepat terhadap makna kias dan suasana dalam kutipan puisi di atas? (Pilih lebih dari satu jawaban)",
+        "stimulus": "Ombak menampar lambung perahu kayu,\nAngin malam menggigit tulang yang kaku,\nNamun layar lusuh tetap menantang badai,\nDemi sepiring nasi hangat di meja rumah.",
+        "indicator": "Mengapresiasi puisi dengan menafsirkan majas personifikasi, makna konotatif, dan pesan tersirat.",
         "pilihan": [
-          "Mengerjakan PR sendirian di rumah.",
-          "Meminjamkan pensil kepada teman yang membutuhkan.",
-          "Membeli jajanan untuk diri sendiri.",
-          "Menang dalam perlombaan lari."
+          "Baris 'Ombak menampar lambung perahu' menggunakan gaya bahasa yang menggambarkan ombak bertindak seperti manusia.",
+          "Frasa 'layar lusuh tetap menantang badai' melambangkan kegigihan nelayan menghadapi rintangan berat.",
+          "Puisi tersebut menceritakan liburan keluarga yang menyenangkan di tengah laut pada malam hari.",
+          "Baris terakhir menunjukkan bahwa perjuangan keras nelayan didorong oleh tanggung jawab menafkahi keluarga.",
+          "Kata 'menggigit' pada baris kedua bermakna ada hewan laut yang menggigit tubuh nelayan."
         ],
-        "jawabanBenar": "Meminjamkan pensil kepada teman yang membutuhkan.",
-        "answerIndex": 1,
+        "jawabanBenar": [
+          "Baris 'Ombak menampar lambung perahu' menggunakan gaya bahasa yang menggambarkan ombak bertindak seperti manusia.",
+          "Frasa 'layar lusuh tetap menantang badai' melambangkan kegigihan nelayan menghadapi rintangan berat.",
+          "Baris terakhir menunjukkan bahwa perjuangan keras nelayan didorong oleh tanggung jawab menafkahi keluarga."
+        ],
+        "answerIndex": -1,
         "statements": [],
-        "penjelasan": "Tindakan Ani memberikan kue adalah contoh **berbagi** atau **menolong teman**. Kejadian yang paling mirip dalam kehidupan sehari-hari adalah **meminjamkan pensil**, karena sama-sama membantu teman yang sedang kesusahan.",
+        "penjelasan": "**'Ombak menampar'** adalah majas personifikasi (benda mati bertindak seperti manusia), **'layar lusuh menantang badai'** melambangkan kegigihan, dan **'sepiring nasi hangat di meja rumah'** adalah kiasan untuk nafkah keluarga. Sedangkan 'angin menggigit' bermakna dingin yang menusuk, bukan gigitan hewan.",
         "nomor": 9
       },
       {
         "id": "bi_lvl10_q10",
         "type": "category",
-        "level": 1,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Bacalah teks berikut:\n'Setiap sore, tugas Bima adalah memberi makan Kiko, kelinci peliharaannya. Ia tidak pernah lupa melakukannya. Bima juga rutin membersihkan kandang Kiko setiap dua hari sekali agar Kiko selalu sehat dan nyaman.'\n\nTentukan apakah pernyataan berikut Sesuai atau Tidak Sesuai dengan pengalamanmu jika memiliki hewan peliharaan.",
-        "stimulus": "",
-        "indicator": "Menilai relevansi tindakan bertanggung jawab dalam teks dengan pengetahuan pribadi tentang merawat hewan.",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Tentukan apakah tindakan siswa berikut Sesuai atau Tidak Sesuai dengan tujuan program sekolah pada bacaan di atas.",
+        "stimulus": "Pengumuman Program 'Sekolah Hijau & Hemat Energi':\n1. Matikan lampu dan kipas angin setiap kali ruang kelas kosong lebih dari 10 menit.\n2. Bawa botol minum isi ulang dari rumah untuk mengurangi sampah plastik sekali pakai di kantin.\n3. Pilah sampah sesuai wadah: hijau untuk organik, kuning untuk plastik/kertas daur ulang, dan merah untuk residu.",
+        "indicator": "Mengevaluasi kesesuaian perilaku nyata dengan aturan dan tujuan utama sebuah teks imbauan/prosedur.",
         "pilihan": [],
         "answerIndex": -1,
         "statements": [
           {
-            "text": "Tindakan Bima memberi makan kelinci adalah contoh tanggung jawab.",
+            "text": "Raka mematikan sakelar kipas dan lampu sebelum seluruh kelas pergi mengikuti pelajaran olahraga selama 1 jam.",
             "answer": true
           },
           {
-            "text": "Membersihkan kandang tidak penting untuk kesehatan hewan.",
+            "text": "Nadia membeli tiga botol air mineral plastik baru setiap hari lalu membuang semuanya ke wadah hijau.",
             "answer": false
           },
           {
-            "text": "Memiliki hewan peliharaan berarti kita harus siap merawatnya setiap hari.",
+            "text": "Bima membawa tumbler sendiri dan membuang kulit pisangnya ke tempat sampah berwarna hijau.",
             "answer": true
           }
         ],
-        "penjelasan": "1. **Sesuai**, memberi makan adalah tanggung jawab utama pemilik hewan. 2. **Tidak Sesuai**, kandang yang bersih sangat penting. 3. **Sesuai**, merawat hewan adalah komitmen setiap hari, sama seperti yang dilakukan Bima.",
+        "penjelasan": "1. **Sesuai**, kelas kosong 1 jam (> 10 menit) sehingga mematikan lampu dan kipas tepat sesuai aturan 1. 2. **Tidak Sesuai**, membeli botol plastik baru bertentangan dengan pengurangan plastik dan wadah hijau khusus sampah organik, bukan plastik. 3. **Sesuai**, tumbler mengurangi plastik dan kulit pisang adalah sampah organik (wadah hijau).",
         "nomor": 10
       },
       {
         "id": "bi_lvl10_q11",
-        "type": "mcma",
-        "level": 2,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Bacalah cerita berikut:\n'Kelompok Nina mendapat tugas membuat maket rumah adat. Nina bertugas menggambar pola, Adi menggunting kardus, dan Rian menempelkannya. Mereka bekerja sama dengan kompak. Akhirnya, maket mereka selesai tepat waktu dan mendapat nilai terbaik.'\n\nPeristiwa kerja sama seperti dalam cerita juga sangat penting dalam kegiatan sehari-hari apa saja? (Pilih lebih dari satu jawaban)",
-        "stimulus": "",
-        "indicator": "Menilai relevansi konsep kerja sama dalam teks dengan berbagai situasi dalam kehidupan nyata.",
+        "type": "mcq",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Agar paragraf di atas menjadi padu, kalimat manakah yang seharusnya dihapus karena tidak mendukung ide pokok?",
+        "stimulus": "(1) Menanam tanaman obat keluarga (toga) di pekarangan rumah memberikan banyak manfaat bagi kesehatan. (2) Jahe dan kencur dapat diolah menjadi minuman hangat untuk meredakan batuk serta masuk angin. (3) Daun sirih sering dimanfaatkan sebagai antiseptik alami untuk membersihkan luka ringan. (4) Kemarin sore, lapangan sepak bola di ujung desa baru saja dicat ulang garis tepinya oleh warga. (5) Selain menyehatkan, kebun toga juga membuat halaman rumah tampak lebih asri dan hijau.",
+        "indicator": "Mengevaluasi kepaduan paragraf dengan mengidentifikasi kalimat sumbang yang menyimpang dari ide pokok.",
         "pilihan": [
-          "Bermain sepak bola dalam satu tim.",
-          "Mengerjakan soal ulangan harian.",
-          "Melaksanakan piket kebersihan kelas.",
-          "Menonton televisi sendirian.",
-          "Membantu ibu menyiapkan makan malam."
+          "Kalimat (2)",
+          "Kalimat (3)",
+          "Kalimat (4)",
+          "Kalimat (5)"
         ],
-        "jawabanBenar": [
-          "Bermain sepak bola dalam satu tim.",
-          "Melaksanakan piket kebersihan kelas.",
-          "Membantu ibu menyiapkan makan malam."
-        ],
-        "answerIndex": -1,
+        "jawabanBenar": "Kalimat (4)",
+        "answerIndex": 2,
         "statements": [],
-        "penjelasan": "Kerja sama seperti yang dilakukan kelompok Nina juga diperlukan saat **bermain sepak bola**, **melaksanakan piket kelas**, dan **membantu ibu di dapur**. Mengerjakan ulangan harus dilakukan sendiri.",
+        "penjelasan": "Ide pokok paragraf adalah **manfaat menanam tanaman obat keluarga (toga)** di pekarangan. Kalimat (2), (3), dan (5) mendukung ide pokok tersebut, sedangkan **Kalimat (4)** membahas pengecatan lapangan sepak bola sehingga menyimpang (kalimat sumbang).",
         "nomor": 11
       },
       {
         "id": "bi_lvl10_q12",
-        "type": "mcq",
-        "level": 1,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Bacalah paragraf berikut:\n'Setiap pagi, ayam jantan berkokok membangunkan semua penghuni peternakan. Sapi-sapi melenguh sambil berjalan menuju padang rumput. Kambing-kambing kecil berlarian gembira. Suasana di peternakan itu selalu ramai dan penuh kehidupan.'\n\nManakah judul yang paling sesuai untuk paragraf di atas?",
+        "type": "mcma",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Cermati kalimat tidak baku dan tidak efektif berikut:\n'Para siswa-siswa kelas enam di wajibkan berkumpul di lapangan pada hari senin pagi hari.'\n\nPerbaikan mana saja yang tepat sesuai kaidah kalimat efektif dan EYD V? (Pilih lebih dari satu jawaban)",
         "stimulus": "",
-        "indicator": "Menilai kesesuaian judul dengan isi paragraf yang mendeskripsikan suasana sederhana.",
+        "indicator": "Mengevaluasi dan menyunting kesalahan kalimat efektif (pleonasme), kata depan/imbuhan, serta huruf kapital sesuai EYD V.",
         "pilihan": [
-          "Liburan di Pantai",
-          "Suatu Pagi di Peternakan",
-          "Kisah Seekor Ayam Jantan",
-          "Cara Beternak Sapi"
+          "Mengubah 'Para siswa-siswa' menjadi 'Para siswa' atau 'Siswa-siswa' agar tidak boros kata.",
+          "Menulis kata 'di wajibkan' menjadi serangkai 'diwajibkan' karena 'di-' adalah awalan kata kerja pasif.",
+          "Mengubah penulisan 'senin' menjadi 'Senin' karena nama hari diawali huruf kapital.",
+          "Menulis kata 'di lapangan' menjadi serangkai 'dilapangan' agar lebih singkat.",
+          "Menghapus pengulangan kata 'hari' sehingga cukup ditulis 'pada hari Senin pagi'."
         ],
-        "jawabanBenar": "Suatu Pagi di Peternakan",
-        "answerIndex": 1,
+        "jawabanBenar": [
+          "Mengubah 'Para siswa-siswa' menjadi 'Para siswa' atau 'Siswa-siswa' agar tidak boros kata.",
+          "Menulis kata 'di wajibkan' menjadi serangkai 'diwajibkan' karena 'di-' adalah awalan kata kerja pasif.",
+          "Mengubah penulisan 'senin' menjadi 'Senin' karena nama hari diawali huruf kapital.",
+          "Menghapus pengulangan kata 'hari' sehingga cukup ditulis 'pada hari Senin pagi'."
+        ],
+        "answerIndex": -1,
         "statements": [],
-        "penjelasan": "Paragraf tersebut menceritakan berbagai kegiatan hewan di pagi hari dalam sebuah peternakan. Oleh karena itu, judul **'Suatu Pagi di Peternakan'** adalah yang paling tepat menggambarkan keseluruhan isi teks.",
+        "penjelasan": "Kalimat efektif menghilangkan pemborosan (**'Para siswa'** dan **'pada hari Senin pagi'**). Imbuhan pasif **'diwajibkan'** ditulis serangkai, nama hari **'Senin'** memakai kapital, sedangkan **'di lapangan'** tetap dipisah karena 'di' adalah kata depan penunjuk tempat.",
         "nomor": 12
       },
       {
         "id": "bi_lvl10_q13",
         "type": "category",
-        "level": 1,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Perhatikan gambar dan teks berikut.\n\n[Gambar: Seorang anak laki-laki sedang menyiram tanaman bunga di halaman rumah dengan gembor air.]\n\nTeks: 'Rudi adalah anak yang rajin. Setiap sore, ia membantu ibu menyiram tanaman. Ia sangat senang melihat bunga-bunga di tamannya tumbuh subur dan bermekaran.'\n\nTentukan apakah gambar tersebut Sesuai atau Tidak Sesuai dengan isi teks.",
-        "stimulus": "",
-        "indicator": "Menilai kesesuaian antara ilustrasi visual dengan deskripsi kegiatan dalam teks.",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Evaluasi kebenaran simpulan berikut berdasarkan data yang disajikan dalam laporan bacaan di atas.",
+        "stimulus": "Laporan Program '15 Menit Membaca' SD Nusantara:\nSejak program literasi dimulai pada awal semester, jumlah peminjaman buku di perpustakaan meningkat tajam dari 120 buku pada bulan Januari menjadi 285 buku pada bulan Maret. Meski demikian, petugas perpustakaan mencatat bahwa 75% buku yang dipinjam masih didominasi buku cerita bergambar dan komik edukasi, sedangkan buku sains populer serta ensiklopedia baru diminati sebagian kecil siswa kelas atas.",
+        "indicator": "Mengevaluasi ketepatan simpulan berdasarkan rincian data kuantitatif dan kualitatif dalam teks laporan.",
         "pilihan": [],
         "answerIndex": -1,
         "statements": [
           {
-            "text": "Gambar anak menyiram tanaman sesuai dengan teks.",
+            "text": "Jumlah peminjaman buku pada bulan Maret meningkat lebih dari dua kali lipat dibandingkan bulan Januari.",
             "answer": true
           },
           {
-            "text": "Gambar tersebut seharusnya menunjukkan anak yang sedang bermain bola.",
+            "text": "Sebagian besar siswa sudah beralih lebih menyukai ensiklopedia dibandingkan buku cerita bergambar.",
             "answer": false
           },
           {
-            "text": "Aktivitas pada gambar dan teks sama-sama menunjukkan kegiatan merawat tanaman.",
+            "text": "Perpustakaan perlu mencari cara kreatif agar minat siswa terhadap buku sains populer ikut meningkat.",
             "answer": true
           }
         ],
-        "penjelasan": "Gambar menunjukkan seorang anak yang sedang menyiram tanaman, yang **sesuai** dengan isi teks yang menceritakan Rudi yang rajin menyiram tanaman. Keduanya menunjukkan kegiatan merawat tanaman.",
+        "penjelasan": "1. **Benar**, 2 kali lipat dari 120 adalah 240, sedangkan bulan Maret mencapai 285 buku (> 240). 2. **Salah**, 75% peminjaman masih didominasi cerita bergambar dan komik edukasi. 3. **Benar**, karena minat pada sains populer masih kecil, tindak lanjut yang logis adalah strategi promosi buku sains agar minat baca lebih merata.",
         "nomor": 13
       },
       {
         "id": "bi_lvl10_q14",
         "type": "mcq",
-        "level": 2,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Bacalah kutipan cerita berikut:\n'\"Pokoknya aku mau mainan itu sekarang juga!\" rengek Toni sambil menghentakkan kakinya di lantai toko. Wajahnya memerah dan ia mulai menangis keras. Ibu mencoba menenangkannya, tetapi Toni tidak peduli. Ia terus berteriak hingga semua pengunjung toko melihat ke arahnya.'\n\nManakah kalimat yang paling sesuai untuk ditambahkan sebagai kalimat penutup yang menggambarkan sifat Toni?",
-        "stimulus": "",
-        "indicator": "Menilai kesesuaian sebuah kalimat simpulan dengan karakter tokoh yang telah digambarkan sebelumnya.",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Peristiwa kunci apakah yang mengubah pandangan Arka terhadap Bagas dalam cerita di atas?",
+        "stimulus": "Awalnya, Arka menggerutu saat Bu Guru memasangkannya dengan Bagas untuk proyek roket air IPA. Menurut Arka, Bagas terlalu pendiam dan lamban saat berdiskusi. Ketika Arka tergesa-gesa menyambung botol dan memompa udara, Bagas tiba-tiba menahan tangannya sambil menunjuk celah kecil pada karet penutup yang hampir lepas. Berkat ketelitian Bagas, sambungan diperbaiki tepat waktu dan roket mereka meluncur paling tinggi di kelas. Sejak hari itu, Arka selalu meminta pendapat Bagas sebelum mengambil keputusan.",
+        "indicator": "Menganalisis perubahan sikap tokoh dan menentukan peristiwa pemicu utamanya dalam teks fiksi.",
         "pilihan": [
-          "Toni memang anak yang sabar dan pengertian.",
-          "Sikap Toni menunjukkan bahwa ia adalah anak yang penurut.",
-          "Toni adalah anak yang sangat pemalu di depan orang banyak.",
-          "Sikap seperti itu menunjukkan bahwa Toni adalah anak yang manja dan pemaksa."
+          "Bu Guru menegur Arka karena menggerutu saat pembagian kelompok.",
+          "Bagas berhasil menggambar desain roket air lebih cepat daripada Arka.",
+          "Ketelitian Bagas menemukan celah pada karet penutup sehingga menyelamatkan percobaan mereka.",
+          "Arka menyadari bahwa roket milik kelompok lain tidak bisa terbang sama sekali."
         ],
-        "jawabanBenar": "Sikap seperti itu menunjukkan bahwa Toni adalah anak yang manja dan pemaksa.",
-        "answerIndex": 3,
+        "jawabanBenar": "Ketelitian Bagas menemukan celah pada karet penutup sehingga menyelamatkan percobaan mereka.",
+        "answerIndex": 2,
         "statements": [],
-        "penjelasan": "Perilaku Toni (merengek, menangis keras, berteriak) tidak menunjukkan sifat sabar, penurut, atau pemalu. Perilakunya paling tepat disimpulkan sebagai **manja dan pemaksa**.",
+        "penjelasan": "Pandangan Arka yang semula meremehkan Bagas berubah setelah **Bagas dengan teliti melihat celah karet penutup** yang luput dari perhatian Arka, sehingga proyek mereka justru berhasil meluncur paling tinggi.",
         "nomor": 14
       },
       {
         "id": "bi_lvl10_q15",
         "type": "mcma",
-        "level": 2,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Perhatikan kalimat utama berikut: 'Ada banyak cara untuk menjaga kesehatan mata.'\n\nManakah kalimat-kalimat penjelas di bawah ini yang sesuai untuk melengkapi kalimat utama tersebut? (Pilih lebih dari satu jawaban)",
-        "stimulus": "",
-        "indicator": "Menilai kesesuaian antara kalimat-kalimat pendukung dengan sebuah kalimat utama (ide pokok).",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Jika kamu atau keluargamu menerima pesan berantai seperti di atas, langkah kritis mana saja yang paling tepat dilakukan? (Pilih lebih dari satu jawaban)",
+        "stimulus": "Sebuah pesan berantai beredar di grup obrolan warga:\n'DARURAT!! Jangan pernah minum air dingin setelah makan siang karena lemak langsung membeku dan merusak tubuh dalam 5 menit! Info dari dokter terkenal. SEBARKAN KE 10 GRUP SEKARANG JUGA agar banyak orang selamat!!'",
+        "indicator": "Mengevaluasi kredibilitas informasi dan menentukan sikap literasi digital yang kritis terhadap pesan berantai.",
         "pilihan": [
-          "Membaca buku di tempat yang cukup terang.",
-          "Mata adalah salah satu panca indra yang penting.",
-          "Tidak menonton televisi terlalu dekat.",
-          "Makan sayuran seperti wortel yang baik untuk mata.",
-          "Banyak orang memakai kacamata."
+          "Memeriksa kebenaran informasi tersebut ke sumber kesehatan resmi seperti situs Kementerian Kesehatan atau bertanya kepada dokter.",
+          "Langsung meneruskannya ke 10 grup lain supaya cepat menolong banyak orang.",
+          "Mencurigai keabsahan pesan karena tidak menyebutkan nama dokter, lembaga resmi, maupun bukti ilmiah yang jelas.",
+          "Mengenali gaya bahasa yang memaksa ('SEBARKAN SEKARANG JUGA') sebagai ciri umum berita bohong (hoaks).",
+          "Mempercayainya langsung karena menggunakan huruf kapital dan banyak tanda seru."
         ],
         "jawabanBenar": [
-          "Membaca buku di tempat yang cukup terang.",
-          "Tidak menonton televisi terlalu dekat.",
-          "Makan sayuran seperti wortel yang baik untuk mata."
+          "Memeriksa kebenaran informasi tersebut ke sumber kesehatan resmi seperti situs Kementerian Kesehatan atau bertanya kepada dokter.",
+          "Mencurigai keabsahan pesan karena tidak menyebutkan nama dokter, lembaga resmi, maupun bukti ilmiah yang jelas.",
+          "Mengenali gaya bahasa yang memaksa ('SEBARKAN SEKARANG JUGA') sebagai ciri umum berita bohong (hoaks)."
         ],
         "answerIndex": -1,
         "statements": [],
-        "penjelasan": "Kalimat utama membahas tentang 'cara menjaga kesehatan mata'. Maka, kalimat penjelas yang sesuai adalah yang memberikan contoh cara-cara tersebut, yaitu **membaca di tempat terang**, **tidak menonton TV terlalu dekat**, dan **makan wortel**.",
+        "penjelasan": "Pesan berantai yang tidak mencantumkan sumber resmi, menggunakan kalimat menakut-nakuti, serta memaksa penerima segera menyebarkannya adalah ciri klasik **hoaks**. Sikap kritis yang tepat adalah **tidak langsung menyebarkan** dan **memverifikasi ke sumber terpercaya**.",
         "nomor": 15
       },
       {
         "id": "bi_lvl10_q16",
         "type": "mcq",
-        "level": 1,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Bacalah cerita berikut:\n'Di tengah hujan, seekor anak kucing kecil mengeong kedinginan di bawah bangku taman. Bulunya basah kuyup dan tubuhnya gemetar. Rara yang melihatnya merasa tidak tega. Ia segera mengambil anak kucing itu, membawanya pulang, dan memberinya susu hangat.'\n\nPerasaan apa yang paling mungkin kamu rasakan terhadap anak kucing dalam cerita tersebut?",
-        "stimulus": "",
-        "indicator": "Menyimpulkan respons emosional dasar (iba) terhadap kondisi tokoh dalam teks.",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Peribahasa manakah yang paling tepat untuk merangkum keseluruhan kisah perjuangan Pak Hasan di atas?",
+        "stimulus": "Tiga tahun lalu, usaha kerajinan anyaman bambu Pak Hasan sempat nyaris gulung tikar karena sepinya pembeli di pasar lokal. Alih-alih menyerah, Pak Hasan tekun belajar memotret produk dan memasarkannya melalui toko daring setiap malam sepulang kerja. Selama berbulan-bulan ia menerima sedikit pesanan dan berkali-kali memperbaiki kualitas anyamannya. Kini, kerajinan bambu Pak Hasan terjual hingga ke luar pulau dan mampu mempekerjakan delapan warga sekitar.",
+        "indicator": "Menyintesis keseluruhan alur teks untuk menentukan peribahasa yang paling akurat mewakili pesan cerita.",
         "pilihan": [
-          "Marah",
-          "Gembira",
-          "Iba atau kasihan",
-          "Takut"
+          "Besar pasak daripada tiang.",
+          "Berakit-rakit ke hulu, berenang-renang ke tepian.",
+          "Air beriak tanda tak dalam.",
+          "Bagaikan pungguk merindukan bulan."
         ],
-        "jawabanBenar": "Iba atau kasihan",
-        "answerIndex": 2,
+        "jawabanBenar": "Berakit-rakit ke hulu, berenang-renang ke tepian.",
+        "answerIndex": 1,
         "statements": [],
-        "penjelasan": "Deskripsi kondisi anak kucing yang 'kedinginan', 'basah kuyup', dan 'gemetar' dirancang untuk menimbulkan perasaan **iba atau kasihan** dari pembaca.",
+        "penjelasan": "Peribahasa **'Berakit-rakit ke hulu, berenang-renang ke tepian'** (bersakit-sakit dahulu, bersenang-senang kemudian) paling tepat menggambarkan perjuangan keras Pak Hasan yang tekun belajar dari nol hingga akhirnya memetik kesuksesan.",
         "nomor": 16
       },
       {
         "id": "bi_lvl10_q17",
         "type": "category",
-        "level": 1,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Bacalah cerita berikut:\n'Setelah berlatih berbulan-bulan, akhirnya hari perlombaan tiba. Jantung Budi berdebar kencang. Saat namanya dipanggil sebagai juara pertama lomba lari, Budi melompat kegirangan dan mengangkat pialanya tinggi-tinggi.'\n\nTentukan apakah perasaan berikut Sesuai atau Tidak Sesuai untuk dirasakan oleh pembaca terhadap Budi.",
-        "stimulus": "",
-        "indicator": "Menilai kesesuaian beberapa respons emosional positif terhadap keberhasilan tokoh.",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Tentukan apakah pernyataan mengenai penyelesaian masalah berikut Benar atau Salah berdasarkan bacaan di atas.",
+        "stimulus": "Menjelang pentas seni dan turnamen antarsekolah, tim futsal dan kelompok tari tradisional SD Merdeka sama-sama membutuhkan lapangan utama sepulang sekolah. Awalnya kedua tim sempat berselisih karena merasa sama-sama paling mendesak. Ketua kelas dan pembina ekstrakurikuler lalu mengajak kedua perwakilan berdiskusi. Akhirnya disepakati jadwal bergiliran: hari Senin dan Rabu untuk futsal, Selasa dan Kamis untuk tari, serta Jumat dibagi menjadi dua sesi. Kedua tim pun bisa berlatih dengan tenang tanpa saling mengganggu.",
+        "indicator": "Menilai relevansi penyelesaian konflik melalui musyawarah dalam teks dengan prinsip kehidupan sehari-hari.",
         "pilihan": [],
         "answerIndex": -1,
         "statements": [
           {
-            "text": "Ikut merasa senang atas kemenangan Budi.",
+            "text": "Pembagian jadwal bergiliran merupakan solusi adil karena kedua kelompok tetap mendapat waktu latihan.",
             "answer": true
           },
           {
-            "text": "Merasa bangga dengan usaha keras Budi.",
-            "answer": true
-          },
-          {
-            "text": "Merasa sedih karena Budi menang.",
+            "text": "Jika terjadi perebutan fasilitas sekolah, tim yang beranggotakan lebih banyak berhak memakai lapangan setiap hari.",
             "answer": false
+          },
+          {
+            "text": "Musyawarah dengan kepala dingin dapat mengubah perselisihan menjadi kesepakatan bersama.",
+            "answer": true
           }
         ],
-        "penjelasan": "Keberhasilan Budi setelah berlatih keras wajar jika membuat pembaca ikut **senang** dan **bangga**. Merasa sedih tentu **tidak sesuai** dengan suasana cerita yang gembira.",
+        "penjelasan": "1. **Benar**, jadwal bergiliran memberi hak yang setara bagi kedua ekstrakurikuler. 2. **Salah**, menang jumlah bukan dasar yang adil dalam penggunaan fasilitas bersama. 3. **Benar**, diskusi bersama terbukti mengakhiri perselisihan dan membuat semua pihak tenang.",
         "nomor": 17
       },
       {
         "id": "bi_lvl10_q18",
         "type": "mcq",
-        "level": 2,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Bacalah kutipan cerita berikut:\n'Semua teman-teman sudah pergi ke taman bermain, kecuali Dika. Ia tidak diajak karena kemarin ia tidak sengaja merusak mainan milik Rio. Dika hanya bisa memandangi mereka dari jendela kamarnya dengan tatapan nanar.'\n\nPerasaan apa yang paling mungkin kamu rasakan untuk Dika dalam situasi tersebut?",
-        "stimulus": "",
-        "indicator": "Menyimpulkan respons emosional (simpati) terhadap tokoh yang mengalami kesedihan atau penyesalan.",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Judul berita manakah yang paling objektif dan akurat mewakili keseluruhan isi paragraf di atas?",
+        "stimulus": "Pemerintah kota baru saja meresmikan jalur khusus sepeda sepanjang dua kilometer di pusat kota dengan cat hijau yang rapi. Namun, pada minggu pertama penerapannya, arus kendaraan bermotor di tiga persimpangan utama menjadi tersendat karena badan jalan menyempit. Selain itu, sejumlah rambu penunjuk arah belum terpasang lengkap sehingga beberapa pesepeda dan pengendara motor kerap bingung saat berbelok. Warga berharap dinas terkait segera menata ulang rambu dan titik persimpangan agar jalur tersebut aman bagi semua pengguna jalan.",
+        "indicator": "Mengevaluasi dan memilih judul berita yang paling akurat serta tidak bias terhadap keseluruhan isi teks.",
         "pilihan": [
-          "Gembira karena Dika dihukum",
-          "Marah kepada teman-teman Dika",
-          "Simpati atau ikut merasakan kesedihan Dika",
-          "Biasa saja karena itu salah Dika"
+          "Jalur Sepeda Baru Sukses Total Menghapus Kemacetan Kota",
+          "Pembangunan Jalur Sepeda Gagal dan Harus Segera Dibongkar",
+          "Jalur Sepeda Baru Diresmikan, Penataan Rambu dan Persimpangan Masih Perlu Dibenahi",
+          "Warga Kota Tidak Suka Bersepeda di Jalan Raya"
         ],
-        "jawabanBenar": "Simpati atau ikut merasakan kesedihan Dika",
+        "jawabanBenar": "Jalur Sepeda Baru Diresmikan, Penataan Rambu dan Persimpangan Masih Perlu Dibenahi",
         "answerIndex": 2,
         "statements": [],
-        "penjelasan": "Meskipun Dika berbuat salah, deskripsi dirinya yang 'memandangi dari jendela' dengan 'tatapan nanar' (sedih) cenderung menimbulkan rasa **simpati** dari pembaca. Kita ikut merasakan kesedihannya karena dikucilkan.",
+        "penjelasan": "Teks mengakui peresmian jalur sepeda yang rapi sekaligus menyoroti kendala persimpangan dan rambu yang masih perlu diperbaiki. Pilihan C paling **objektif dan akurat** karena merangkum kedua sisi tanpa melebih-lebihkan atau menyimpulkan pembongkaran.",
         "nomor": 18
       },
       {
         "id": "bi_lvl10_q19",
         "type": "mcma",
-        "level": 2,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Bacalah deskripsi berikut:\n'Angin sore berhembus sepoi-sepoi, menerbangkan beberapa helai daun kering. Dari kejauhan, tampak matahari perlahan tenggelam di ufuk barat, melukis langit dengan warna jingga keemasan. Suara jangkrik mulai terdengar, menandakan malam akan segera tiba.'\n\nPerasaan apa saja yang mungkin ingin dibangkitkan oleh penulis melalui deskripsi suasana tersebut? (Pilih lebih dari satu jawaban)",
-        "stimulus": "",
-        "indicator": "Menyimpulkan beberapa respons emosional yang ditimbulkan oleh deskripsi latar suasana dalam teks.",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Berdasarkan kedua paragraf biografi singkat di atas, kesimpulan karakter beserta bukti yang paling tepat adalah... (Pilih lebih dari satu jawaban)",
+        "stimulus": "Paragraf 1:\nDelapan tahun silam, lereng bukit di pinggir Desa Sukamaju gersang dan penuh semak kering. Bu Sari mulai menanam bibit mangga, alpukat, dan jambu seorang diri setiap pagi sambil memikul dua ember air dari sungai. Beberapa warga sempat menertawakannya karena menganggap tanah berbatu itu mustahil ditanami.\n\nParagraf 2:\nBu Sari tidak pernah membalas ejekan dengan kemarahan. Ia terus merawat bibit-bibitnya dengan kompos buatan sendiri hingga tiga tahun kemudian pohon-pohon itu mulai rimbun dan berbuah. Melihat hasilnya, warga desa beramai-ramai ikut menanam dan kini kebun buah tersebut menjadi sumber mata air sekaligus penghasilan bersama warga.",
+        "indicator": "Menyintesis informasi dari dua paragraf teks biografi untuk mengevaluasi sifat keteladanan tokoh beserta buktinya.",
         "pilihan": [
-          "Perasaan tegang dan takut",
-          "Perasaan damai dan tenang",
-          "Perasaan kagum akan keindahan alam",
-          "Perasaan marah dan kecewa",
-          "Perasaan gembira yang meluap-luap"
+          "Bu Sari berjiwa pantang menyerah karena tetap menanam dan menyiram bibit meski sempat ditertawakan.",
+          "Bu Sari sabar dan membuktikan gagasannya lewat tindakan nyata, bukan dengan berdebat.",
+          "Bu Sari adalah sosok yang egois karena menikmati hasil kebun buah seorang diri.",
+          "Ketekunan Bu Sari memberi dampak positif jangka panjang bagi lingkungan dan ekonomi warga desa.",
+          "Warga desa sejak awal langsung membantu Bu Sari menanam bibit buah di lereng bukit."
         ],
         "jawabanBenar": [
-          "Perasaan damai dan tenang",
-          "Perasaan kagum akan keindahan alam"
+          "Bu Sari berjiwa pantang menyerah karena tetap menanam dan menyiram bibit meski sempat ditertawakan.",
+          "Bu Sari sabar dan membuktikan gagasannya lewat tindakan nyata, bukan dengan berdebat.",
+          "Ketekunan Bu Sari memberi dampak positif jangka panjang bagi lingkungan dan ekonomi warga desa."
         ],
         "answerIndex": -1,
         "statements": [],
-        "penjelasan": "Deskripsi 'angin sepoi-sepoi', 'matahari tenggelam', dan 'suara jangkrik' dirancang untuk menciptakan suasana yang **damai dan tenang**. Selain itu, 'langit jingga keemasan' bisa menimbulkan rasa **kagum**.",
+        "penjelasan": "Dari paragraf 1 dan 2 terlihat Bu Sari **pantang menyerah**, **sabar** (membuktikan lewat hasil nyata, bukan marah), dan usahanya membawa **manfaat lingkungan (sumber mata air) serta ekonomi bersama** bagi warga desa.",
         "nomor": 19
       },
       {
         "id": "bi_lvl10_q20",
         "type": "mcq",
-        "level": 1,
-        "kesulitan": "Dasar",
-        "pertanyaan": "Perhatikan kalimat:\n'Di belakang rumah nenek ada hutan yang sangat *lebat*.'\n\nApa arti kata *lebat* pada kalimat di atas?",
-        "stimulus": "",
-        "indicator": "Mengidentifikasi makna kata sifat dalam konteks deskriptif.",
+        "level": 5,
+        "kesulitan": "HOTS",
+        "pertanyaan": "Perasaan campuran apakah yang ingin dibangun penulis melalui adegan penutup cerita di atas?",
+        "stimulus": "Bel terakhir kelulusan kelas enam baru saja berbunyi. Di halaman sekolah, Dira dan teman-temannya tertawa terbahak-bahak saat membaca catatan konyol di buku kenangan mereka. Namun, tawa itu perlahan berubah sunyi ketika Bu Wali Kelas memeluk mereka satu per satu. Mata Dira berkaca-kaca saat melangkah melewati gerbang sekolah, menyadari bahwa esok pagi mereka tidak lagi duduk di bangku kayu yang sama, meski kenangan enam tahun itu akan selalu tinggal di hati.",
+        "indicator": "Mengevaluasi nuansa emosional yang kompleks (perasaan campuran) pada bagian penutup teks fiksi.",
         "pilihan": [
-          "Memiliki banyak lubang",
-          "Penuh dengan pohon-pohon yang tumbuh rapat",
-          "Terlihat sangat terang",
-          "Tanahnya sangat kering"
+          "Rasa takut dan cemas karena harus menghadapi ujian sekolah lagi.",
+          "Perpaduan rasa bahagia atas kenangan indah sekaligus haru dan sedih karena harus berpisah.",
+          "Rasa marah dan kecewa terhadap guru serta teman-teman sekelas.",
+          "Perasaan bosan karena akhirnya terbebas dari tugas sekolah dasar."
         ],
-        "jawabanBenar": "Penuh dengan pohon-pohon yang tumbuh rapat",
+        "jawabanBenar": "Perpaduan rasa bahagia atas kenangan indah sekaligus haru dan sedih karena harus berpisah.",
         "answerIndex": 1,
         "statements": [],
-        "penjelasan": "Kata **lebat** digunakan untuk menggambarkan sesuatu yang tumbuh sangat rapat dan banyak, seperti rambut atau pohon di hutan. Jadi, hutan yang lebat berarti hutan yang penuh dengan pohon.",
+        "penjelasan": "Adegan 'tertawa terbahak-bahak' menggambarkan **kebahagiaan** mengenang masa sekolah, sementara 'mata berkaca-kaca' dan kesadaran tidak lagi duduk di bangku yang sama menghadirkan **rasa haru dan sedih perpisahan**.",
         "nomor": 20
       }
     ]

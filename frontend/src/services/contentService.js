@@ -474,36 +474,48 @@ export const saveAdminContentItem = async ({
       ? currentList.map((item, idx) => (idx === existingIdx ? nextItem : item))
       : [...currentList, nextItem];
 
-  // Update tampilan & cache lokal secara instan
+  // Update tampilan & cache lokal secara instan, namun rollback jika backend menolak (mis. 401/403/500)
   setCachedCustomContents(updatedList);
   applyCustomContentsToData(updatedList);
 
-  // Simpan ke database Cloudflare D1 lewat API backend
-  const response = await api.put('/admin/content', {
-    contentType,
-    subject,
-    itemId: String(itemId),
-    action,
-    payload,
-  });
-
-  return response.data;
+  try {
+    // Simpan ke database Cloudflare D1 lewat API backend
+    const response = await api.put('/admin/content', {
+      contentType,
+      subject,
+      itemId: String(itemId),
+      action,
+      payload,
+    });
+    return response.data;
+  } catch (err) {
+    setCachedCustomContents(currentList);
+    applyCustomContentsToData(currentList);
+    throw err;
+  }
 };
 
 /**
- * Reset suatu Materi atau Latihan Soal ke data default bawaan aplikasi
+ * Reset suatu Materi, Latihan Soal, atau Paket Tryout ke data default bawaan aplikasi
  */
 export const resetAdminContentItem = async ({ contentType, subject, itemId }) => {
   const id = `${contentType}:${subject}:${itemId}`;
-  const updatedList = getCachedCustomContents().filter((i) => i.id !== id);
+  const currentList = getCachedCustomContents();
+  const updatedList = currentList.filter((i) => i.id !== id);
 
   setCachedCustomContents(updatedList);
   applyCustomContentsToData(updatedList);
 
-  const response = await api.delete(
-    `/admin/content/${encodeURIComponent(contentType)}/${encodeURIComponent(subject)}/${encodeURIComponent(itemId)}`
-  );
-  return response.data;
+  try {
+    const response = await api.delete(
+      `/admin/content/${encodeURIComponent(contentType)}/${encodeURIComponent(subject)}/${encodeURIComponent(itemId)}`
+    );
+    return response.data;
+  } catch (err) {
+    setCachedCustomContents(currentList);
+    applyCustomContentsToData(currentList);
+    throw err;
+  }
 };
 
 /**
